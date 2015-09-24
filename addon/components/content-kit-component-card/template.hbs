@@ -1,0 +1,20 @@
+<div class="content-kit-component-card__actions">
+  {{#if this.isEditing}}
+    <button {{action 'save' data}} class="content-kit-component-card__action content-kit-component-card__save">Save</button>
+    <button {{action 'cancel'}} class="content-kit-component-card__action content-kit-component-card__cancel">Cancel</button>
+  {{else}}
+    <button {{action 'edit'}} class="content-kit-component-card__action content-kit-component-card__edit">Edit</button>
+    <button {{action 'moveCard' 'up'}} title="Move Up" class="content-kit-component-card__action content-kit-component-card__move-up">
+      Up
+    </button>
+    <button {{action 'moveCard' 'down'}} title="Move Down" class="content-kit-component-card__action content-kit-component-card__move-down">
+      Down
+    </button>
+  {{/if}}
+  <button {{action 'remove'}} class="content-kit-component-card__action content-kit-component-card__remove">Remove</button>
+</div>
+{{#if this.isEditing}}
+  {{component (concat cardName '-editor') data=data editorData=editorData saveAction=(action 'save') cancelAction=(action 'cancel')}}
+{{else}}
+  {{component cardName data=(unbound data) editAction=(action 'edit')}}
+{{/if}}
