@@ -1,12 +1,12 @@
-{{yield editor (hash
-    toggleMarkup=(action 'toggleMarkup')
-    toggleLink=(action 'toggleLink')
-    addCard=(action 'addCard')
-    toggleSectionTagName=(action 'toggleSectionTagName')
-    createListSection=(action 'createListSection')
-  )
-  this
-}}
+{{yield (hash
+  editor=editor
+  component=this
+  toggleMarkup=(action 'toggleMarkup')
+  toggleLink=(action 'toggleLink')
+  addCard=(action 'addCard')
+  toggleSectionTagName=(action 'toggleSectionTagName')
+  createListSection=(action 'createListSection')
+)}}
 
 <div class="content-kit-editor__editor-wrapper">
   <div class="content-kit-editor__editor"></div>

@@ -62,7 +62,7 @@ test('it boots content-kit with mobiledoc', function(assert) {
 test('it renders a yielded toolbar content-kit', function(assert) {
   assert.expect(1);
   this.render(hbs`
-    {{#content-kit-editor as |editor editorActions|}}
+    {{#content-kit-editor as |contentKit|}}
       Toolbar
     {{/content-kit-editor}}
   `);
@@ -81,8 +81,8 @@ test('it bolds the text and fires `on-change`', function(assert) {
     assert.ok(!!mobiledoc, 'change event fired with mobiledoc');
   });
   this.render(hbs`
-    {{#content-kit-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |editor editorActions|}}
-      <button {{action editorActions.toggleMarkup 'strong'}}>Bold</button>
+    {{#content-kit-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |contentKit|}}
+      <button {{action contentKit.toggleMarkup 'strong'}}>Bold</button>
     {{/content-kit-editor}}
   `);
   let textNode = this.$(`p:contains(${text})`)[0].firstChild;
@@ -103,8 +103,8 @@ test('it toggle the section type and fires `on-change`', function(assert) {
   this.set('mobiledoc', simpleMobileDoc(text));
   this.on('on-change', () => onChangeCount++);
   this.render(hbs`
-    {{#content-kit-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |editor editorActions|}}
-      <button {{action editorActions.toggleSectionTagName 'h2'}}>H2</button>
+    {{#content-kit-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |contentKit|}}
+      <button {{action contentKit.toggleSectionTagName 'h2'}}>H2</button>
     {{/content-kit-editor}}
   `);
   const textNode = this.$(`p:contains(${text})`)[0].firstChild;
@@ -128,8 +128,8 @@ test('toolbar buttons can be active', function(assert) {
   let text = 'abc';
   this.set('mobiledoc', simpleMobileDoc(text));
   this.render(hbs`
-    {{#content-kit-editor mobiledoc=mobiledoc as |editor editorActions editorComponent|}}
-      {{#content-kit-toolbar editorActions=editorActions editorComponent=editorComponent}}
+    {{#content-kit-editor mobiledoc=mobiledoc as |contentKit|}}
+      {{#content-kit-toolbar contentKit=contentKit}}
       {{/content-kit-toolbar}}
     {{/content-kit-editor}}
   `);
@@ -154,8 +154,8 @@ test('toolbar has list insertion button', function(assert) {
   let text = 'abc';
   this.set('mobiledoc', simpleMobileDoc(text));
   this.render(hbs`
-    {{#content-kit-editor mobiledoc=mobiledoc as |editor editorActions editorComponent|}}
-      {{#content-kit-toolbar editorActions=editorActions editorComponent=editorComponent}}
+    {{#content-kit-editor mobiledoc=mobiledoc as |contentKit|}}
+      {{#content-kit-toolbar contentKit=contentKit}}
       {{/content-kit-toolbar}}
     {{/content-kit-editor}}
   `);
@@ -177,8 +177,8 @@ test('it links selected text and fires `on-change`', function(assert) {
     assert.ok(!!mobiledoc, 'change event fired with mobiledoc');
   });
   this.render(hbs`
-    {{#content-kit-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |editor editorActions|}}
-      <button {{action editorActions.toggleLink}}>Link</button>
+    {{#content-kit-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |contentKit|}}
+      <button {{action contentKit.toggleLink}}>Link</button>
     {{/content-kit-editor}}
   `);
   let textNode = this.$(`p:contains(${text})`)[0].firstChild;
@@ -201,8 +201,8 @@ test('it de-links selected text and fires `on-change`', function(assert) {
     assert.ok(!!mobiledoc, 'change event fired with mobiledoc');
   });
   this.render(hbs`
-    {{#content-kit-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |editor editorActions|}}
-      <button {{action editorActions.toggleLink}}>Link</button>
+    {{#content-kit-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |contentKit|}}
+      <button {{action contentKit.toggleLink}}>Link</button>
     {{/content-kit-editor}}
   `);
   let textNode = this.$(`p:contains(${text})`)[0].firstChild.firstChild;

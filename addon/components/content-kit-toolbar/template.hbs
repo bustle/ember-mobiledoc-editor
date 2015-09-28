@@ -1,54 +1,73 @@
 <li class="content-kit-toolbar__control">
-  <button title="Bold" class="content-kit-toolbar__button {{if (in-array editorComponent.activeMarkupTagNames 'strong') 'active'}}"
-      {{action editorActions.toggleMarkup 'strong'}}>
-    <i class="icon-bold"></i>
+  <button
+    title="Bold"
+    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeMarkupTagNames 'strong') 'active'}}"
+    {{action contentKit.toggleMarkup 'strong'}}>
+    Bold
   </button>
 </li>
 <li class="content-kit-toolbar__control">
-  <button title="Italic" class="content-kit-toolbar__button {{if (in-array editorComponent.activeMarkupTagNames 'em') 'active'}}"
-    {{action editorActions.toggleMarkup 'em'}}>
-    <i class="icon-italic"></i>
+  <button
+    title="Italic"
+    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeMarkupTagNames 'em') 'active'}}"
+    {{action contentKit.toggleMarkup 'em'}}>
+    Italic
   </button>
 </li>
 <li class="content-kit-toolbar__control">
-  <button title="Link" class="content-kit-toolbar__button" {{action editorActions.toggleLink}}>
-    <i class="icon-link"></i>
+  <button
+    title="Link"
+    class="content-kit-toolbar__button" {{action contentKit.toggleLink}}>
+    Link
   </button>
 </li>
 <li class="content-kit-toolbar__control">
-  <button title="Heading" class="content-kit-toolbar__button {{if (in-array editorComponent.activeSectionTagNames 'h1') 'active'}}"
-    {{action editorActions.toggleSectionTagName 'h1'}}>
-    H1
+  <button
+    title="Heading"
+    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeSectionTagNames 'h1') 'active'}}"
+    {{action contentKit.toggleSectionTagName 'h1'}}>
+    Headline
   </button>
 </li>
 <li class="content-kit-toolbar__control">
-  <button title="Subheading" class="content-kit-toolbar__button {{if (in-array editorComponent.activeSectionTagNames 'h2') 'active'}}"
-    {{action editorActions.toggleSectionTagName 'h2'}}>
-    H2
+  <button
+    title="Subheading"
+    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeSectionTagNames 'h2') 'active'}}"
+    {{action contentKit.toggleSectionTagName 'h2'}}>
+    Subheadline
   </button>
 </li>
 <li class="content-kit-toolbar__control">
-  <button title="Block Quote" class="content-kit-toolbar__button {{if (in-array editorComponent.activeSectionTagNames 'blockquote') 'active'}}"
-    {{action editorActions.toggleSectionTagName 'blockquote'}}>
+  <button
+    title="Block Quote"
+    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeSectionTagNames 'blockquote') 'active'}}"
+    {{action contentKit.toggleSectionTagName 'blockquote'}}>
     <i class="icon-quote-block"></i>
+    Link
   </button>
 </li>
 <li class="content-kit-toolbar__control">
-  <button title="Pull Quote" class="content-kit-toolbar__button {{if (in-array editorComponent.activeSectionTagNames 'pull-quote') 'active'}}"
-    {{action editorActions.toggleSectionTagName 'pull-quote'}}>
-    <i class="icon-quote-pull"></i>
+  <button
+    title="Pull Quote"
+    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeSectionTagNames 'pull-quote') 'active'}}"
+    {{action contentKit.toggleSectionTagName 'pull-quote'}}>
+    Pull-quote
   </button>
 </li>
 <li class="content-kit-toolbar__control">
-  <button title="List" class="content-kit-toolbar__button"
-    {{action editorActions.createListSection 'ul'}}>
-    <i class="icon-list-bulleted"></i>
+  <button
+    title="List"
+    class="content-kit-toolbar__button"
+    {{action contentKit.createListSection 'ul'}}>
+    Unordered List
   </button>
 </li>
 <li class="content-kit-toolbar__control">
-  <button title="Numbered List" class="content-kit-toolbar__button"
-    {{action editorActions.createListSection 'ol'}}>
-    <i class="icon-list-numbered"></i>
+  <button
+    title="Numbered List"
+    class="content-kit-toolbar__button"
+    {{action contentKit.createListSection 'ol'}}>
+    Ordered List
   </button>
 </li>
 

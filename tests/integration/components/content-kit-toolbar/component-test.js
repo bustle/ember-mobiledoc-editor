@@ -11,13 +11,13 @@ const buttonTitles = ['Bold', 'Italic', 'Link', 'Heading', 'Subheading',
 test('it displays buttons', function(assert) {
   assert.expect(buttonTitles.length);
 
-  this.set('editorActions', {
+  this.set('contentKit', {
     toggleMarkup() {},
     toggleSectionTagName() {},
     createListSection() {},
     toggleLink() {}
   });
-  this.render(hbs`{{content-kit-toolbar editorActions=editorActions}}`);
+  this.render(hbs`{{content-kit-toolbar contentKit=contentKit}}`);
 
   buttonTitles.forEach(title => {
     assert.ok(!!this.$(`button[title="${title}"]`).length, `${title} button`);
