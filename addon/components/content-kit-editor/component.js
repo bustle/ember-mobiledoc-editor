@@ -1,13 +1,19 @@
 import Ember from 'ember';
 import layout from './template';
 
-export default Ember.Component.extend({
+let { computed, Component } = Ember;
+
+export default Component.extend({
   layout,
   tagName: 'article',
   classNames: ['content-kit-editor'],
 
-  activeMarkupTagNames: [],
-  activeSectionTagNames: [],
+  activeMarkupTagNames: computed(function() {
+    return Ember.A([]);
+  }),
+  activeSectionTagNames: computed(function() {
+    return Ember.A([]);
+  }),
 
   init() {
     this._super(...arguments);
@@ -109,11 +115,15 @@ export default Ember.Component.extend({
 
   },
 
-  editingContexts: Ember.computed(function() {
+  editingContexts: computed(function() {
     return Ember.A([]);
   }),
 
-  editor: Ember.computed('mobiledoc', 'isEditingDisabled', function() {
+  editor: computed('mobiledoc', 'isEditingDisabled', function() {
+    if (this._lastEditor) {
+      this._lastEditor.destroy();
+      this._lastEditor = null;
+    }
     let mobiledoc = this.get('mobiledoc');
     let editor = new window.ContentKit.Editor({
       mobiledoc,
@@ -168,6 +178,7 @@ export default Ember.Component.extend({
     if (this.get('isEditingDisabled')) {
       editor.disableEditing();
     }
+    this._lastEditor = editor;
     return editor;
   }),
 
