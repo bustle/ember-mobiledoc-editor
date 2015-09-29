@@ -120,6 +120,10 @@ export default Component.extend({
   }),
 
   editor: computed('mobiledoc', 'isEditingDisabled', function() {
+    if (this._lastEditor) {
+      this._lastEditor.destroy();
+      this._lastEditor = null;
+    }
     let mobiledoc = this.get('mobiledoc');
     let editor = new window.ContentKit.Editor({
       mobiledoc,
@@ -174,6 +178,7 @@ export default Component.extend({
     if (this.get('isEditingDisabled')) {
       editor.disableEditing();
     }
+    this._lastEditor = editor;
     return editor;
   }),
 
