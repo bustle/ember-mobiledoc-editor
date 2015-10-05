@@ -2,18 +2,21 @@ import Ember from 'ember';
 import layout from './template';
 
 let { computed, Component } = Ember;
+let { capitalize, camelize } = Ember.String;
+
+function arrayToMap(array, propertyName) {
+  let map = Object.create(null);
+  array.forEach(item => {
+    item = `is${capitalize(camelize(item[propertyName]))}`;
+    map[item] = true;
+  });
+  return map;
+}
 
 export default Component.extend({
   layout,
   tagName: 'article',
   classNames: ['content-kit-editor'],
-
-  activeMarkupTagNames: computed(function() {
-    return Ember.A([]);
-  }),
-  activeSectionTagNames: computed(function() {
-    return Ember.A([]);
-  }),
 
   init() {
     this._super(...arguments);
@@ -27,6 +30,8 @@ export default Component.extend({
     }
     this.set('componentCards', Ember.A([]));
     this.set('linkOffsets', null);
+    this.set('activeMarkupTagNames', {});
+    this.set('activeSectionTagNames', {});
     this._ignoreCursorDidChange = false;
   },
 
@@ -160,8 +165,8 @@ export default Component.extend({
     editor.cursorDidChange(() => {
       if (this.isDestroyed) { return; }
 
-      const markupTags = Ember.A(editor.markupsInSelection).mapBy('tagName');
-      const sectionTags = Ember.A(editor.activeSections).mapBy('tagName');
+      const markupTags = arrayToMap(editor.markupsInSelection, 'tagName');
+      const sectionTags = arrayToMap(editor.activeSections, 'tagName');
 
       Ember.run(() => {
         this.set('activeMarkupTagNames', markupTags);
