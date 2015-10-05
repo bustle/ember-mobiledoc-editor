@@ -1,7 +1,7 @@
 <li class="content-kit-toolbar__control">
   <button
     title="Bold"
-    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeMarkupTagNames 'strong') 'active'}}"
+    class="content-kit-toolbar__button {{if contentKit.activeMarkupTagNames.isStrong 'active'}}"
     {{action contentKit.toggleMarkup 'strong'}}>
     Bold
   </button>
@@ -9,7 +9,7 @@
 <li class="content-kit-toolbar__control">
   <button
     title="Italic"
-    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeMarkupTagNames 'em') 'active'}}"
+    class="content-kit-toolbar__button {{if contentKit.activeMarkupTagNames.isEm 'active'}}"
     {{action contentKit.toggleMarkup 'em'}}>
     Italic
   </button>
@@ -24,7 +24,7 @@
 <li class="content-kit-toolbar__control">
   <button
     title="Heading"
-    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeSectionTagNames 'h1') 'active'}}"
+    class="content-kit-toolbar__button {{if contentKit.activeSectionTagNames.isH1 'active'}}"
     {{action contentKit.toggleSectionTagName 'h1'}}>
     Headline
   </button>
@@ -32,7 +32,7 @@
 <li class="content-kit-toolbar__control">
   <button
     title="Subheading"
-    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeSectionTagNames 'h2') 'active'}}"
+    class="content-kit-toolbar__button {{if contentKit.activeSectionTagNames.isH2 'active'}}"
     {{action contentKit.toggleSectionTagName 'h2'}}>
     Subheadline
   </button>
@@ -40,7 +40,7 @@
 <li class="content-kit-toolbar__control">
   <button
     title="Block Quote"
-    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeSectionTagNames 'blockquote') 'active'}}"
+    class="content-kit-toolbar__button {{if contentKit.activeSectionTagNames.isBlockquote 'active'}}"
     {{action contentKit.toggleSectionTagName 'blockquote'}}>
     <i class="icon-quote-block"></i>
     Link
@@ -49,7 +49,7 @@
 <li class="content-kit-toolbar__control">
   <button
     title="Pull Quote"
-    class="content-kit-toolbar__button {{if (in-array contentKit.component.activeSectionTagNames 'pull-quote') 'active'}}"
+    class="content-kit-toolbar__button {{if contentKit.activeSectionTagNames.isPullQuote 'active'}}"
     {{action contentKit.toggleSectionTagName 'pull-quote'}}>
     Pull-quote
   </button>
