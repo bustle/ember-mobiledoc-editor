@@ -1,0 +1,1 @@
+export { default } from 'ember-content-kit/components/content-kit-markup-button/component';
