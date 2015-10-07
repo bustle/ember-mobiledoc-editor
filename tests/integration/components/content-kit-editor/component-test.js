@@ -1,6 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import { selectRange } from 'dummy/tests/helpers/selection';
 import hbs from 'htmlbars-inline-precompile';
+import createComponentCard from 'ember-content-kit/utils/create-component-card';
 
 function simpleMobileDoc(text) {
   return {
@@ -212,4 +213,19 @@ test('it de-links selected text and fires `on-change`', function(assert) {
     !this.$('a[href="http://example.com"]:contains(Howdy)').length,
     'a tag removed'
   );
+});
+
+test('it adds a component to the content-kit editor', function(assert) {
+  assert.expect(1);
+  this.registry.register('template:components/demo-card-editor', hbs`DEMO`);
+  this.set('cards', [
+    createComponentCard('demo-card')
+  ]);
+  this.render(hbs`
+    {{#content-kit-editor cards=cards as |contentKit|}}
+      <button {{action contentKit.addCard 'demo-card'}}></button>
+    {{/content-kit-editor}}
+  `);
+  this.$('button').click();
+  assert.ok(!!this.$(`div:contains(DEMO)`).length, 'Card added');
 });
