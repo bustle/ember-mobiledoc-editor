@@ -14,7 +14,7 @@
   <button {{action 'remove'}} class="content-kit-component-card__action content-kit-component-card__remove">Remove</button>
 </div>
 {{#if this.isEditing}}
-  {{component (concat cardName '-editor') data=data editorData=editorData saveAction=(action 'save') cancelAction=(action 'cancel')}}
+  {{component (concat cardName '-editor') data=data saveAction=(action 'save') cancelAction=(action 'cancel')}}
 {{else}}
   {{component cardName data=(unbound data) editAction=(action 'edit')}}
 {{/if}}
