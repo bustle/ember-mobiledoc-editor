@@ -7,8 +7,10 @@ let { capitalize, camelize } = Ember.String;
 function arrayToMap(array, propertyName) {
   let map = Object.create(null);
   array.forEach(item => {
-    item = `is${capitalize(camelize(item[propertyName]))}`;
-    map[item] = true;
+    if (item[propertyName]) {
+      item = `is${capitalize(camelize(item[propertyName]))}`;
+      map[item] = true;
+    }
   });
   return map;
 }
