@@ -20,6 +20,10 @@ export default Component.extend({
   tagName: 'article',
   classNames: ['content-kit-editor'],
 
+  placeholder: 'Write here...',
+  spellcheck: true,
+  autofocus: true,
+
   init() {
     this._super(...arguments);
     let mobiledoc = this.get('mobiledoc');
@@ -135,6 +139,9 @@ export default Component.extend({
     let editor = new window.ContentKit.Editor({
       mobiledoc,
       cards: this.get('cards') || [],
+      placeholder: this.get('placeholder'),
+      autofocus: this.get('autofocus'),
+      spellcheck: this.get('spellcheck'),
       cardOptions: {
         onAddComponentCard: (element, cardName, env, payload) => {
           let cardId = Ember.uuid();
