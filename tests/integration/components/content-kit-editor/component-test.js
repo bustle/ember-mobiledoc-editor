@@ -2,6 +2,9 @@ import { moduleForComponent, test } from 'ember-qunit';
 import { selectRange } from 'dummy/tests/helpers/selection';
 import hbs from 'htmlbars-inline-precompile';
 import createComponentCard from 'ember-content-kit/utils/create-component-card';
+import moveCursorTo from '../../../helpers/move-cursor-to';
+import simulateMouseup from '../../../helpers/simulate-mouse-up';
+import Ember from 'ember';
 
 function simpleMobileDoc(text) {
   return {
@@ -19,7 +22,7 @@ function simpleMobileDoc(text) {
 
 function linkMobileDoc(text) {
   return {
-    version: '0.0.1',
+    version: '0.2.0',
     sections: [
       [
         ['a', ['href', 'http://example.com']]
@@ -237,17 +240,190 @@ test('it de-links selected text and fires `on-change`', function(assert) {
   );
 });
 
-test('it adds a component to the content-kit editor', function(assert) {
-  assert.expect(1);
-  this.registry.register('template:components/demo-card-editor', hbs`DEMO`);
+test('it adds a component in display mode to the content-kit editor', function(assert) {
+  assert.expect(5);
+  this.registry.register('template:components/demo-card', hbs`
+    <div id="demo-card"><button id='edit-card' {{action editCard}}></button></div>
+   `);
+  this.registry.register('template:components/demo-card-editor', hbs`<div id="demo-card-editor"></div>`);
   this.set('cards', [
     createComponentCard('demo-card')
   ]);
   this.render(hbs`
     {{#content-kit-editor cards=cards as |contentKit|}}
-      <button {{action contentKit.addCard 'demo-card'}}></button>
+      <button id='add-card' {{action contentKit.addCard 'demo-card'}}></button>
     {{/content-kit-editor}}
   `);
-  this.$('button').click();
-  assert.ok(!!this.$(`div:contains(DEMO)`).length, 'Card added');
+
+  this.$('button#add-card').click();
+  assert.ok(this.$(`#demo-card`).length, 'Card added in display mode');
+  assert.ok(!this.$(`#demo-card-editor`).length, 'Card not in edit mode');
+  assert.ok(this.$('button#edit-card').length, 'has edit card button');
+
+  this.$('button#edit-card').click();
+  assert.ok(!this.$(`#demo-card`).length, 'Card not in display mode');
+  assert.ok(this.$(`#demo-card-editor`).length, 'Card changed to edit mode');
+});
+
+test('it has `addCardInEditMode` action to add card in edit mode', function(assert) {
+  assert.expect(2);
+  this.registry.register('template:components/demo-card',
+                         hbs`<div id="demo-card"></div>`);
+  this.registry.register('template:components/demo-card-editor',
+                         hbs`<div id="demo-card-editor"></div>`);
+  this.set('cards', [createComponentCard('demo-card')]);
+
+  this.render(hbs`
+    {{#content-kit-editor cards=cards as |contentKit|}}
+      <button id='add-card'
+              {{action contentKit.addCardInEditMode 'demo-card'}}>
+      </button>
+    {{/content-kit-editor}}
+  `);
+
+  this.$('button#add-card').click();
+
+  assert.ok(!this.$(`#demo-card`).length, 'Card added in edit mode');
+  assert.ok(this.$(`#demo-card-editor`).length, 'Card not in display mode');
+});
+
+test('`addCard` passes `data`, breaks reference to original payload', function(assert) {
+  assert.expect(6);
+
+  let passedPayload;
+
+  const DemoCardComponent = Ember.Component.extend({
+    init() {
+      this._super(...arguments);
+      passedPayload = this.get('data');
+    },
+    actions: {
+      mutatePayload() {
+        this.set('data.foo', 'baz');
+      }
+    }
+  });
+
+  this.registry.register('component:demo-card', DemoCardComponent);
+  this.registry.register('template:components/demo-card', hbs`
+    <div id="demo-card">
+      {{data.foo}}
+      <button id='mutate-payload' {{action 'mutatePayload'}}></button>
+    </div>
+  `);
+
+  this.set('cards', [createComponentCard('demo-card')]);
+  let payload = {foo: 'bar'};
+  this.set('payload', payload);
+
+  this.render(hbs`
+    {{#content-kit-editor cards=cards as |contentKit|}}
+      <button id='add-card' {{action contentKit.addCard 'demo-card' payload}}>
+      </button>
+    {{/content-kit-editor}}
+  `);
+
+  this.$('button#add-card').click();
+
+  assert.ok(!!passedPayload && passedPayload.foo === 'bar',
+            'payload is passed to card');
+  assert.ok(passedPayload !== payload,
+            'card receives data payload that is not the same object');
+
+  assert.ok(this.$('button#mutate-payload').length,
+            'has mutate-payload button');
+  assert.ok(this.$(`#demo-card:contains(${payload.foo})`).length,
+            'displays passed `data`');
+  this.$('button#mutate-payload').click();
+
+  assert.equal(passedPayload.foo, 'baz', 'mutates its payload');
+  assert.equal(payload.foo, 'bar', 'payload remains unchanged');
+});
+
+test('#activeSectionTagNames is correct', function(assert) {
+  let done = assert.async();
+
+  this.set('mobiledoc', {
+    version: '0.2.0',
+    sections: [
+      [],
+      [
+        [1, 'p', [[[], 0, "first paragraph"]]],
+        [1, 'blockquote', [[[], 0, "blockquote section"]]]
+      ]
+    ]
+  });
+  this.render(hbs`
+    {{#content-kit-editor mobiledoc=mobiledoc as |contentKit|}}
+      {{#if contentKit.activeSectionTagNames.isBlockquote}}
+        <div id='is-block-quote'>is block quote</div>
+      {{/if}}
+      {{#if contentKit.activeSectionTagNames.isP}}
+        <div id='is-p'>is p</div>
+      {{/if}}
+    {{/content-kit-editor}}
+  `);
+
+  moveCursorTo(this, 'blockquote:contains(blockquote section)');
+  simulateMouseup();
+
+  setTimeout(() => {
+    assert.ok(this.$('#is-block-quote').length, 'is block quote');
+
+    moveCursorTo(this, 'p:contains(first paragraph)');
+    simulateMouseup();
+
+    setTimeout(() => {
+      assert.ok(this.$('#is-p').length, 'is p');
+      done();
+    }, 10);
+  }, 10);
+});
+
+test('#activeSectionTagNames is correct when a card is selected', function(assert) {
+  let done = assert.async();
+
+  this.set('mobiledoc', {
+    version: '0.2.0',
+    sections: [
+      [],
+      [
+        [1, 'p', [[[], 0, "first paragraph"]]],
+        [10, 'test-card', {}]
+      ]
+    ]
+  });
+
+  this.set('cards', [{
+    name: 'test-card',
+    display: {
+      setup(element) {
+        let input = $('<input id="test-card-inner">');
+        $(element).append(input);
+        setTimeout(() => {
+          input.focus();
+        });
+      }
+    }
+  }]);
+
+  this.render(hbs`
+    {{#content-kit-editor cards=cards mobiledoc=mobiledoc as |contentKit|}}
+      {{#if contentKit.activeSectionTagNames.isP}}
+        <div id='is-p'>is p</div>
+      {{else}}
+        <div id='not-p'>not p</div>
+      {{/if}}
+    {{/content-kit-editor}}
+  `);
+
+  // Since the card focuses on itself, the editor will report the card
+  // as the active selection after mouseup, triggering a bug in the
+  // cursorDidChange handler of the content-kit-editor component
+  simulateMouseup();
+
+  setTimeout(() => {
+    assert.ok(this.$('#not-p').length, 'is not p');
+    done();
+  });
 });

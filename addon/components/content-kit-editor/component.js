@@ -88,10 +88,13 @@ export default Component.extend({
       editor.selectSections([listItem]);
     },
 
-    addCard(cardName, data) {
-      let editor = this.get('editor');
-      let card = editor.builder.createCardSection(cardName, { data });
-      editor.run(postEditor => postEditor.insertSectionAtEnd(card));
+    addCard(cardName, data={}) {
+      this._addCard(cardName, data);
+    },
+
+    addCardInEditMode(cardName, data={}) {
+      let editMode = true;
+      this._addCard(cardName, data, editMode);
     },
 
     toggleLink() {
@@ -149,13 +152,12 @@ export default Component.extend({
           element.id = destinationElementId;
 
           // The data must be copied to avoid sharing the reference
-          // to the `defaultListicleItem` between new listicle items.
-          let data = Ember.copy(payload.data, true);
+          payload = Ember.copy(payload, true);
 
           let card = Ember.Object.create({
             destinationElementId,
             cardName,
-            data,
+            data: payload,
             callbacks: env,
             editor,
             section: env.section
@@ -208,6 +210,17 @@ export default Component.extend({
   willDestroyElement() {
     let editor = this.get('editor');
     editor.destroy();
+  },
+
+  _addCard(cardName, data, editMode=false) {
+    let editor = this.get('editor');
+    editor.run(postEditor => {
+      let card = editor.builder.createCardSection(cardName, data);
+      if (editMode) {
+        editor.editCard(card);
+      }
+      postEditor.insertSectionAtEnd(card);
+    });
   }
 
 });
