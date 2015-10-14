@@ -73,6 +73,28 @@ test('it renders a yielded toolbar content-kit', function(assert) {
   );
 });
 
+test('it displays a custom placeholder', function(assert) {
+  assert.expect(1);
+  this.render(hbs`
+    {{content-kit-editor placeholder="Write something in me"}}
+  `);
+  assert.equal(
+    this.$('[data-placeholder]').data("placeholder"),
+    'Write something in me'
+  );
+});
+
+test('passes through spellcheck option', function(assert) {
+  assert.expect(1);
+  this.render(hbs`
+    {{content-kit-editor spellcheck=false}}
+  `);
+  assert.equal(
+    this.$('[spellcheck]').attr('spellcheck'),
+    "false"
+  );
+});
+
 
 test('it bolds the text and fires `on-change`', function(assert) {
   assert.expect(2);
