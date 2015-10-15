@@ -5,6 +5,7 @@
   toggleMarkup=(action 'toggleMarkup')
   toggleLink=(action 'toggleLink')
   addCard=(action 'addCard')
+  addCardInEditMode=(action 'addCardInEditMode')
   toggleSectionTagName=(action 'toggleSectionTagName')
   createListSection=(action 'createListSection')
 )}}
@@ -23,7 +24,7 @@
 
 {{#each componentCards as |card|}}
   {{#ember-wormhole to=card.destinationElementId}}
-    {{content-kit-component-card
+    {{component card.cardName
         editor=editor
         cardSection=card.section
         cardName=card.cardName

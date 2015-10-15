@@ -84,7 +84,8 @@ Additionally `contentKit` provides the following actions:
 * `toggleLink`, toggling the linking of a selection. The user will be prompted
    for a URL if required.
 * `addCard`, passed a card name and payload will add that card at the end of
-  a post.
+* `addCardInEditMode`, passed a card name and payload will add that card at the end of
+  a post and render it in "edit" mode initially.
 * `createListSection`, changing selected content into list items.
 
 The `contentKit` object is often used indirectly by passing it to other
@@ -221,18 +222,18 @@ will be used:
 * For display, the `demo-card` component will be called
 * For edit, the `demo-card-editor` component will be called
 
-In display mode, the following attrs will be provided:
+The component will be provided with the following `attrs`:
 
-* `data`, the data payload for this card
-* `editAction`, an action for toggling this card into edit mode
-
-In edit mode, the following attrs will be provided:
-
-* `data`, the data payload for this card
-* `saveAction`, an action accepting new data for the card payload, then saving
-  that data and toggling this card into display mode
-* `cancelAction`, an action toggling this card to display mode without saving
-  any changes.
+  * `data`, the data payload for this card
+  * `editCard`, an action for toggling this card into edit mode (this action is a no-op if the card is already in edit mode)
+  * `removeCard`, an action for removing this card
+  * `saveCard`, an action accepting new data for the card payload, then saving
+    that data and toggling this card into display mode
+  * `cancelCard`, an action toggling this card to display mode without saving (this action is a no-op if the card is already in display mode)
+  * `removeCard`, an action for removing this card
+  * `cardName` the name of this card
+  * `editor` A reference to the content-kit-editor
+  * `cardSection` A reference to this card's `cardSection` model in the editor's abstract tree. This may be necessary to do programmatic editing (such as moving the card via the `postEditor#moveSection` API that content-kit-editor provides)
 
 ### Developing ember-content-kit
 
