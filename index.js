@@ -8,7 +8,8 @@ module.exports = {
     var files = new Funnel(__dirname + '/node_modules/content-kit-editor/dist/', {
       files: [
         'css/content-kit-editor.css',
-        'global/content-kit-editor.js'
+        'global/content-kit-editor.js',
+        'global/content-kit-editor.map'
       ],
       destDir: 'content-kit-editor'
     });
