@@ -162,10 +162,15 @@ export default Component.extend({
             editor,
             section: env.section
           });
-          return this.get('componentCards').pushObject(card);
+          Ember.run.schedule('afterRender', () => {
+            this.get('componentCards').pushObject(card);
+          });
+          return card;
         },
         onRemoveComponentCard: (card) => {
-          this.get('componentCards').removeObject(card);
+          Ember.run.join(() => {
+            this.get('componentCards').removeObject(card);
+          });
         }
       }
     });
