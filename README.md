@@ -224,15 +224,14 @@ will be used:
 
 The component will be provided with the following `attrs`:
 
-  * `data`, the data payload for this card
+  * `data`, the data payload for this card. *Note* the data is disconnected from the card's payload in the serialized mobiledoc. To update the mobiledoc payload, use the `saveCard` or `mutData` actions.
   * `editCard`, an action for toggling this card into edit mode (this action is a no-op if the card is already in edit mode)
-  * `removeCard`, an action for removing this card
+  * `removeCard`, an action for removing this card (see the ["remove" content-kit card action](https://github.com/bustlelabs/content-kit-editor/blob/master/CARDS.md#available-hooks))
   * `saveCard`, an action accepting new data for the card payload, then saving
-    that data and toggling this card into display mode
-  * `cancelCard`, an action toggling this card to display mode without saving (this action is a no-op if the card is already in display mode)
-  * `removeCard`, an action for removing this card
+    that data and toggling this card into display mode can optionally be passed an extra `false` argument to avoid toggling to display mode (see the ["save content-kit card action](https://github.com/bustlelabs/content-kit-editor/blob/master/CARDS.md#available-hooks))
+  * `cancelCard`, an action toggling this card to display mode without saving (this action is a no-op if the card is already in display mode) (see the ["cancel content-kit card action](https://github.com/bustlelabs/content-kit-editor/blob/master/CARDS.md#available-hooks))
   * `cardName` the name of this card
-  * `editor` A reference to the content-kit-editor
+  * `editor` A reference to the [content-kit-editor](https://github.com/bustlelabs/content-kit-editor)
   * `cardSection` A reference to this card's `cardSection` model in the editor's abstract tree. This may be necessary to do programmatic editing (such as moving the card via the `postEditor#moveSection` API that content-kit-editor provides)
 
 ### Developing ember-content-kit

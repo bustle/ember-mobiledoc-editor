@@ -98,7 +98,6 @@ test('passes through spellcheck option', function(assert) {
   );
 });
 
-
 test('it bolds the text and fires `on-change`', function(assert) {
   assert.expect(2);
   let text = 'Howdy';
@@ -120,7 +119,7 @@ test('it bolds the text and fires `on-change`', function(assert) {
   );
 });
 
-test('it toggle the section type and fires `on-change`', function(assert) {
+test('it toggles the section type and fires `on-change`', function(assert) {
   assert.expect(6);
 
   let onChangeCount = 0;
@@ -337,7 +336,7 @@ test('`addCard` passes `data`, breaks reference to original payload', function(a
   this.$('button#mutate-payload').click();
 
   assert.equal(passedPayload.foo, 'baz', 'mutates its payload');
-  assert.equal(payload.foo, 'bar', 'payload remains unchanged');
+  assert.equal(payload.foo, 'bar', 'originalpayload remains unchanged');
 });
 
 test('#activeSectionTagNames is correct', function(assert) {
