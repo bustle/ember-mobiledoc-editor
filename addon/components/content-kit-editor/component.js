@@ -219,12 +219,16 @@ export default Component.extend({
 
   _addCard(cardName, data, editMode=false) {
     let editor = this.get('editor');
+    let section = editor.activeSection;
     editor.run(postEditor => {
       let card = editor.builder.createCardSection(cardName, data);
       if (editMode) {
         editor.editCard(card);
       }
-      postEditor.insertSectionAtEnd(card);
+      postEditor.insertSectionBefore(editor.post.sections, card, section);
+      if (section && section.isBlank) {
+        postEditor.removeSection(section);
+      }
     });
   }
 
