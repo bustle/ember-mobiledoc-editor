@@ -264,6 +264,29 @@ test('it adds a component in display mode to the content-kit editor', function(a
   assert.ok(this.$(`#demo-card-editor`).length, 'Card changed to edit mode');
 });
 
+test('it adds a card and removes an active blank section', function(assert) {
+  assert.expect(4);
+  this.registry.register('template:components/demo-card', hbs`
+    <div id="demo-card"><button id='edit-card' {{action editCard}}></button></div>
+   `);
+  this.set('cards', [
+    createComponentCard('demo-card')
+  ]);
+  this.set('mobiledoc', simpleMobileDoc(''));
+  this.render(hbs`
+    {{#content-kit-editor mobiledoc=mobiledoc cards=cards as |contentKit|}}
+      <button id='add-card' {{action contentKit.addCard 'demo-card'}}></button>
+    {{/content-kit-editor}}
+  `);
+
+  assert.equal(this.$('.content-kit-editor p').length, 1, 'blank section exists');
+  assert.equal(this.$('#demo-card').length, 0, 'no card section exists');
+  moveCursorTo(this, '.content-kit-editor p');
+  this.$('button#add-card').click();
+  assert.equal(this.$('.content-kit-editor p').length, 0, 'no blank section');
+  assert.equal(this.$('#demo-card').length, 1, 'card section exists');
+});
+
 test('it has `addCardInEditMode` action to add card in edit mode', function(assert) {
   assert.expect(2);
   this.registry.register('template:components/demo-card',
