@@ -225,7 +225,8 @@ export default Component.extend({
       if (editMode) {
         editor.editCard(card);
       }
-      postEditor.insertSectionBefore(editor.post.sections, card, section);
+      let nextSection = section && section.next;
+      postEditor.insertSectionBefore(editor.post.sections, card, nextSection);
       if (section && section.isBlank) {
         postEditor.removeSection(section);
       }
