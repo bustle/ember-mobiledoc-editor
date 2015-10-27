@@ -1,7 +1,16 @@
+<a name="0.1.13"></a>
+## 0.1.13 (2015-10-27)
+
+
+* bump content-kit-editor to ^0.5.0-beta.1 ([67a2200](https://github.com/bustlelabs/ember-content-kit/commit/67a2200))
+
+
+
 <a name="0.1.12"></a>
 ## 0.1.12 (2015-10-27)
 
 
+* 0.1.12 ([ddbfc5d](https://github.com/bustlelabs/ember-content-kit/commit/ddbfc5d))
 * Add "options" property to `{{content-kit-editor}}` ([8aa91f4](https://github.com/bustlelabs/ember-content-kit/commit/8aa91f4))
 * Include previous versions in changelog ([ea9c44e](https://github.com/bustlelabs/ember-content-kit/commit/ea9c44e))
 * Merge pull request #27 from bustlelabs/add-options-to-content-kit-editor ([53ef0cf](https://github.com/bustlelabs/ember-content-kit/commit/53ef0cf))
