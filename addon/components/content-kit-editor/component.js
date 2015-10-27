@@ -24,6 +24,20 @@ export default Component.extend({
   spellcheck: true,
   autofocus: true,
 
+  options: {},
+
+  // merge in named options with the `options` property data bag
+  editorOptions: computed(function() {
+    let options = this.get('options');
+
+    return Ember.merge({
+      placeholder: this.get('placeholder'),
+      spellcheck: this.get('spellcheck'),
+      autofocus: this.get('autofocus'),
+      cards: this.get('cards') || []
+    }, options);
+  }),
+
   init() {
     this._super(...arguments);
     let mobiledoc = this.get('mobiledoc');
@@ -138,42 +152,40 @@ export default Component.extend({
       this._lastEditor.destroy();
       this._lastEditor = null;
     }
+    let editor;
     let mobiledoc = this.get('mobiledoc');
-    let editor = new window.ContentKit.Editor({
-      mobiledoc,
-      cards: this.get('cards') || [],
-      placeholder: this.get('placeholder'),
-      autofocus: this.get('autofocus'),
-      spellcheck: this.get('spellcheck'),
-      cardOptions: {
-        onAddComponentCard: (element, cardName, env, payload) => {
-          let cardId = Ember.uuid();
-          let destinationElementId = `content-kit-editor-card-${cardId}`;
-          element.id = destinationElementId;
+    let editorOptions = this.get('editorOptions');
 
-          // The data must be copied to avoid sharing the reference
-          payload = Ember.copy(payload, true);
+    editorOptions.mobiledoc = mobiledoc;
+    editorOptions.cardOptions = {
+      onAddComponentCard: (element, cardName, env, payload) => {
+        let cardId = Ember.uuid();
+        let destinationElementId = `content-kit-editor-card-${cardId}`;
+        element.id = destinationElementId;
 
-          let card = Ember.Object.create({
-            destinationElementId,
-            cardName,
-            data: payload,
-            callbacks: env,
-            editor,
-            section: env.section
-          });
-          Ember.run.schedule('afterRender', () => {
-            this.get('componentCards').pushObject(card);
-          });
-          return card;
-        },
-        onRemoveComponentCard: (card) => {
-          Ember.run.join(() => {
-            this.get('componentCards').removeObject(card);
-          });
-        }
+        // The data must be copied to avoid sharing the reference
+        payload = Ember.copy(payload, true);
+
+        let card = Ember.Object.create({
+          destinationElementId,
+          cardName,
+          data: payload,
+          callbacks: env,
+          editor,
+          section: env.section
+        });
+        Ember.run.schedule('afterRender', () => {
+          this.get('componentCards').pushObject(card);
+        });
+        return card;
+      },
+      onRemoveComponentCard: (card) => {
+        Ember.run.join(() => {
+          this.get('componentCards').removeObject(card);
+        });
       }
-    });
+    };
+    editor = new window.ContentKit.Editor(editorOptions);
     editor.on('update', () => {
       let updatedMobileDoc = editor.serialize();
       this.sendAction('on-change', updatedMobileDoc);
