@@ -1,3 +1,13 @@
+<a name="0.1.12"></a>
+## 0.1.12 (2015-10-27)
+
+
+* Add "options" property to `{{content-kit-editor}}` ([8aa91f4](https://github.com/bustlelabs/ember-content-kit/commit/8aa91f4))
+* Include previous versions in changelog ([ea9c44e](https://github.com/bustlelabs/ember-content-kit/commit/ea9c44e))
+* Merge pull request #27 from bustlelabs/add-options-to-content-kit-editor ([53ef0cf](https://github.com/bustlelabs/ember-content-kit/commit/53ef0cf))
+
+
+
 <a name="0.1.11"></a>
 ## 0.1.11 (2015-10-25)
 
@@ -146,3 +156,6 @@
 * 0.0.1 ([7f2e40f](https://github.com/bustlelabs/ember-content-kit/commit/7f2e40f))
 * Initial Commit from Ember CLI v1.13.8 ([6cc2331](https://github.com/bustlelabs/ember-content-kit/commit/6cc2331))
 * Initial implementation ([cd789cb](https://github.com/bustlelabs/ember-content-kit/commit/cd789cb))
+
+
+
