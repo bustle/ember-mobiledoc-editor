@@ -50,12 +50,17 @@ Will render a blank Mobiledoc into the following DOM:
 </article>
 ```
 
-The components accepts two arguments:
+The components accepts these arguments:
 
 * `mobiledoc`, a Mobiledoc for editing by the Content-Kit editor
 * `cards`, an array of available cards for use by the editor. Jump to
   the section on [Component-based cards](#component-based-cards) for more detail on how
   to use cards with Ember components.
+* `spellcheck` boolean
+* `autofocus` boolean
+* `placeholder` string -- the placeholder text to display when the mobiledoc is blank
+* `options` hash -- any properties in the `options` hash will be passed to the ContentKitEditor constructor
+
 
 Of course often you want to provide a user interface to bold text, create
 headlines, or otherwise reflect the state of the editor.
