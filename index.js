@@ -1,11 +1,15 @@
 /* jshint node: true */
 'use strict';
 var Funnel = require('broccoli-funnel');
+var resolve = require('resolve');
+var path = require('path');
 
 module.exports = {
   name: 'ember-content-kit',
   treeForVendor: function() {
-    var files = new Funnel(__dirname + '/node_modules/content-kit-editor/dist/', {
+    var mainPath = resolve.sync('content-kit-editor');
+    var mainDir = path.dirname(mainPath);
+    var files = new Funnel(mainDir + '/../../', {
       files: [
         'css/content-kit-editor.css',
         'global/content-kit-editor.js',
