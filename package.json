@@ -1,6 +1,6 @@
 {
   "name": "ember-content-kit",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
