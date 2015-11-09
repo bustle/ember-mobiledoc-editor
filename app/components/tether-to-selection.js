@@ -1,1 +1,1 @@
-export { default } from 'ember-content-kit/components/tether-to-selection/component';
+export { default } from 'ember-mobiledoc-editor/components/tether-to-selection/component';

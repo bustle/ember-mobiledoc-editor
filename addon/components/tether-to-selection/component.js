@@ -2,7 +2,9 @@ import jQuery from 'jquery';
 import Ember from 'ember';
 import layout from './template';
 
-export default Ember.Component.extend({
+let { Component } = Ember;
+
+export default Component.extend({
   layout,
   didInsertElement() {
     Ember.run.schedule('afterRender', () => {
@@ -11,7 +13,7 @@ export default Ember.Component.extend({
 
       if (range) {
         var rect = range.getBoundingClientRect();
-        let wrapperOffset = jQuery('.content-kit-editor').offset();
+        let wrapperOffset = jQuery('.mobiledoc-editor').offset();
         let myHeight = this.$().height();
         this.$().css({
           position: 'absolute',

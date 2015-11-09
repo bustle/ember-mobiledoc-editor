@@ -1,4 +1,4 @@
-import { hash } from 'ember-content-kit/helpers/hash';
+import { hash } from 'ember-mobiledoc-editor/helpers/hash';
 import { module, test } from 'qunit';
 
 module('Unit | Helper | hash');

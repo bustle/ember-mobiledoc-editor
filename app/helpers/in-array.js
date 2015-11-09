@@ -1,1 +1,1 @@
-export { default, inArray } from 'ember-content-kit/helpers/in-array';
+export { default, inArray } from 'ember-mobiledoc-editor/helpers/in-array';

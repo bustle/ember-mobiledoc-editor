@@ -1,0 +1,74 @@
+<li class="mobiledoc-toolbar__control">
+  <button
+    title="Bold"
+    class="mobiledoc-toolbar__button {{if editor.activeMarkupTagNames.isStrong 'active'}}"
+    {{action editor.toggleMarkup 'strong'}}>
+    Bold
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    title="Italic"
+    class="mobiledoc-toolbar__button {{if editor.activeMarkupTagNames.isEm 'active'}}"
+    {{action editor.toggleMarkup 'em'}}>
+    Italic
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    title="Link"
+    class="mobiledoc-toolbar__button" {{action editor.toggleLink}}>
+    Link
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    title="Heading"
+    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isH1 'active'}}"
+    {{action editor.toggleSectionTagName 'h1'}}>
+    Headline
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    title="Subheading"
+    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isH2 'active'}}"
+    {{action editor.toggleSectionTagName 'h2'}}>
+    Subheadline
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    title="Block Quote"
+    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isBlockquote 'active'}}"
+    {{action editor.toggleSectionTagName 'blockquote'}}>
+    <i class="icon-quote-block"></i>
+    Blockquote
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    title="Pull Quote"
+    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isPullQuote 'active'}}"
+    {{action editor.toggleSectionTagName 'pull-quote'}}>
+    Pull-quote
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    title="List"
+    class="mobiledoc-toolbar__button"
+    {{action editor.createListSection 'ul'}}>
+    Unordered List
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    title="Numbered List"
+    class="mobiledoc-toolbar__button"
+    {{action editor.createListSection 'ol'}}>
+    Ordered List
+  </button>
+</li>
+
+{{yield}}

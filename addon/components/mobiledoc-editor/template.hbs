@@ -1,0 +1,37 @@
+{{yield (hash
+  editor=editor
+  activeSectionTagNames=activeSectionTagNames
+  activeMarkupTagNames=activeMarkupTagNames
+  toggleMarkup=(action 'toggleMarkup')
+  toggleLink=(action 'toggleLink')
+  addCard=(action 'addCard')
+  addCardInEditMode=(action 'addCardInEditMode')
+  toggleSectionTagName=(action 'toggleSectionTagName')
+  createListSection=(action 'createListSection')
+)}}
+
+<div class="mobiledoc-editor__editor-wrapper">
+  <div class="mobiledoc-editor__editor"></div>
+</div>
+
+{{#if linkOffsets}}
+  {{#tether-to-selection}}
+    {{mobiledoc-link-prompt
+        on-submit=(action "completeLink")
+        on-cancel=(action "cancelLink")}}
+  {{/tether-to-selection}}
+{{/if}}
+
+{{#each componentCards as |card|}}
+  {{#ember-wormhole to=card.destinationElementId}}
+    {{component card.cardName
+        editor=editor
+        cardSection=card.section
+        cardName=card.cardName
+        data=card.data
+        editCard=(action card.callbacks.edit)
+        saveCard=(action card.callbacks.save)
+        cancelCard=(action card.callbacks.cancel)
+        removeCard=(action card.callbacks.remove)}}
+  {{/ember-wormhole}}
+{{/each}}
