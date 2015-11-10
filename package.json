@@ -1,7 +1,7 @@
 {
-  "name": "ember-content-kit",
-  "version": "0.1.15",
-  "description": "The default blueprint for ember-cli addons.",
+  "name": "ember-mobiledoc-editor",
+  "version": "0.2.0",
+  "description": "A Mobiledoc editor for Ember.js apps",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -11,7 +11,7 @@
     "start": "ember server",
     "test": "ember try:testall"
   },
-  "repository": "bustlelabs/ember-content-kit",
+  "repository": "bustlelabs/ember-mobiledoc-editor",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -41,7 +41,7 @@
   ],
   "dependencies": {
     "broccoli-funnel": "^0.2.8",
-    "content-kit-editor": "^0.5.1",
+    "mobiledoc-kit": "0.6.0-beta4",
     "ember-cli-babel": "^5.1.3",
     "ember-cli-htmlbars": "^1.0.0",
     "ember-wormhole": "^0.3.4",

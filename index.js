@@ -5,23 +5,23 @@ var resolve = require('resolve');
 var path = require('path');
 
 module.exports = {
-  name: 'ember-content-kit',
+  name: 'ember-mobiledoc-editor',
   treeForVendor: function() {
-    var mainPath = resolve.sync('content-kit-editor');
+    var mainPath = resolve.sync('mobiledoc-kit');
     var mainDir = path.dirname(mainPath);
     var files = new Funnel(mainDir + '/../../', {
       files: [
-        'css/content-kit-editor.css',
-        'global/content-kit-editor.js',
-        'global/content-kit-editor.map'
+        'css/mobiledoc-kit.css',
+        'global/mobiledoc-kit.js',
+        'global/mobiledoc-kit.map'
       ],
-      destDir: 'content-kit-editor'
+      destDir: 'mobiledoc-kit'
     });
     return files;
   },
   included: function(app) {
-    app.import('vendor/content-kit-editor/css/content-kit-editor.css');
-    app.import('vendor/content-kit-editor/global/content-kit-editor.js');
+    app.import('vendor/mobiledoc-kit/css/mobiledoc-kit.css');
+    app.import('vendor/mobiledoc-kit/global/mobiledoc-kit.js');
   }
 
 };

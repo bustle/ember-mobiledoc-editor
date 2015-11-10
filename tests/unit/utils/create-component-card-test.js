@@ -1,4 +1,4 @@
-import createComponentCard from 'ember-content-kit/utils/create-component-card';
+import createComponentCard from 'ember-mobiledoc-editor/utils/create-component-card';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | create component card');

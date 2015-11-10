@@ -1,1 +1,1 @@
-export { default, hash } from 'ember-content-kit/helpers/hash';
+export { default, hash } from 'ember-mobiledoc-editor/helpers/hash';
