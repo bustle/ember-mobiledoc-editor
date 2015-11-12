@@ -1,7 +1,7 @@
 {
   "name": "ember-mobiledoc-dom-renderer",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.1.0",
+  "description": "provides mobiledoc-dom-renderer to ember apps",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -11,11 +11,11 @@
     "start": "ember server",
     "test": "ember try:testall"
   },
-  "repository": "",
+  "repository": "https://github.com/bustlelabs/ember-mobiledoc-dom-renderer",
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "",
+  "author": "Bustlelabs",
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.1.2",
@@ -32,16 +32,17 @@
     "ember-cli-sri": "^1.0.3",
     "ember-cli-uglify": "^1.2.0",
     "ember-data": "1.13.8",
+    "ember-disable-prototype-extensions": "^1.0.0",
     "ember-disable-proxy-controllers": "^1.0.0",
     "ember-export-application-global": "^1.0.3",
-    "ember-disable-prototype-extensions": "^1.0.0",
     "ember-try": "0.0.6"
   },
   "keywords": [
     "ember-addon"
   ],
   "dependencies": {
-    "ember-cli-babel": "^5.1.3"
+    "ember-cli-babel": "^5.1.3",
+    "mobiledoc-dom-renderer": "^0.1.16"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
