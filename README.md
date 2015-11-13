@@ -5,4 +5,4 @@ Provides [mobiledoc-dom-renderer](https://github.com/bustlelabs/mobiledoc-dom-re
 ## Installation
 
 * `ember install ember-mobiledoc-dom-renderer`
-* In your code: `import Renderer from 'ember-mobiledoc-dom-renderer`
+* In your code: `import Renderer from 'ember-mobiledoc-dom-renderer'`
