@@ -10,9 +10,9 @@ cache:
     - node_modules
 
 env:
+  - EMBER_TRY_SCENARIO=1.13
   - EMBER_TRY_SCENARIO=default
-  - EMBER_TRY_SCENARIO=ember-release
-  - EMBER_TRY_SCENARIO=ember-beta
+  - EMBER_TRY_SCENARIO=2.3
   - EMBER_TRY_SCENARIO=ember-canary
 
 matrix:
