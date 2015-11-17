@@ -1,0 +1,6 @@
+<div class='__rendered-mobiledoc'></div>
+{{#each _componentCards as |card|}}
+  {{#ember-wormhole to=card.destinationElementId}}
+    {{component card.componentName payload=card.payload}}
+  {{/ember-wormhole}}
+{{/each}}
