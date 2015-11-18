@@ -2,7 +2,7 @@ import Ember from 'ember';
 import Renderer from 'ember-mobiledoc-dom-renderer';
 import layout from '../templates/components/render-mobiledoc';
 
-let { computed, assert } = Ember;
+let { $, computed, assert } = Ember;
 let { run: { schedule, join } } = Ember;
 
 const ADD_HOOK      = 'addComponentCard';
@@ -10,6 +10,7 @@ const REMOVE_HOOK   = 'removeComponentCard';
 const NAME          = 'render-mobiledoc';
 const ELEMENT_CLASS = '__rendered-mobiledoc';
 const UUID_PREFIX   = '__rendered-mobiledoc-card-';
+export const CARD_ELEMENT_CLASS = '__rendered-mobiledoc-card';
 
 function createComponentCard(name) {
   return {
@@ -47,7 +48,9 @@ export default Ember.Component.extend({
       cardOptions: {
         [ADD_HOOK]: (element, options, {name:cardName}, payload) => {
           let uuid = this.generateUuid();
-          element.id = uuid;
+          $(element).attr('id', uuid)
+                    .addClass(CARD_ELEMENT_CLASS)
+                    .addClass(CARD_ELEMENT_CLASS + '-' + cardName);
           let componentName = this.cardNameToComponentName(cardName);
 
           let card = {

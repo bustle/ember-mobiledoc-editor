@@ -30,6 +30,7 @@ To learn more about mobiledoc see [mobiledoc-kit](https://github.com/bustlelabs/
 
 The ember components with names matching the mobiledoc card names will be rendered
 and passed a `payload` property.
+The ember components will be in a wrapper div with the class '__rendered-mobiledoc-card' and '__rendered-mobiledoc-card-${cardName}'.
 
 #### Customizing card lookup
 

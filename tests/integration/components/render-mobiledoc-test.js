@@ -1,5 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { CARD_ELEMENT_CLASS } from 'ember-mobiledoc-dom-renderer/components/render-mobiledoc';
 
 moduleForComponent('render-mobiledoc', 'Integration | Component | render-mobiledoc', {
   integration: true
@@ -29,7 +30,7 @@ let mobiledocWithCard = {
   ]
 };
 
-test('it renders mobiledoc with card', function(assert) {
+test('it renders mobiledoc', function(assert) {
   this.set('mobiledoc', mobiledoc);
   this.render(hbs`{{render-mobiledoc mobiledoc=mobiledoc}}`);
 
@@ -44,6 +45,10 @@ test('it renders mobiledoc with cards', function(assert) {
   assert.ok(this.$('#sample-test-card').length, 'renders card template');
   assert.ok(this.$('#sample-test-card:contains(foo: bar)').length,
             'renders card payload');
+  assert.ok(this.$('.' + CARD_ELEMENT_CLASS).length,
+            `renders card with class ${CARD_ELEMENT_CLASS}`);
+  assert.ok(this.$('.' + CARD_ELEMENT_CLASS + '-' + cardName).length,
+            `renders card with class ${CARD_ELEMENT_CLASS}-${cardName}`);
 });
 
 test('it uses `cardNameToComponentName` to allow selecting components', function(assert) {
