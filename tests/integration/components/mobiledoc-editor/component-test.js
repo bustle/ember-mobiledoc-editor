@@ -6,9 +6,11 @@ import moveCursorTo from '../../../helpers/move-cursor-to';
 import simulateMouseup from '../../../helpers/simulate-mouse-up';
 import Ember from 'ember';
 
+const MOBILEDOC_VERSION = '0.2.0';
+
 function simpleMobileDoc(text) {
   return {
-    version: '0.2.0',
+    version: MOBILEDOC_VERSION,
     sections: [
       [],
       [
@@ -22,7 +24,7 @@ function simpleMobileDoc(text) {
 
 function linkMobileDoc(text) {
   return {
-    version: '0.2.0',
+    version: MOBILEDOC_VERSION,
     sections: [
       [
         ['a', ['href', 'http://example.com']]
@@ -362,11 +364,63 @@ test('`addCard` passes `data`, breaks reference to original payload', function(a
   assert.equal(payload.foo, 'bar', 'originalpayload remains unchanged');
 });
 
+test('throws on unknown card when `unknownCardHandler` is not passed', function(assert) {
+  this.set('mobiledoc', {
+    version: MOBILEDOC_VERSION,
+    sections: [
+      [],
+      [
+        [10, 'missing-card']
+      ]
+    ]
+  });
+  this.set('unknownCardHandler', undefined);
+
+  assert.throws(() => {
+    this.render(hbs`
+      {{#mobiledoc-editor mobiledoc=mobiledoc
+                options=(hash unknownCardHandler=unknownCardHandler) as |editor|}}
+      {{/mobiledoc-editor}}
+    `);
+  }, /Unknown card "missing-card" found.*no unknownCardHandler/);
+});
+
+test('calls `unknownCardHandler` when it renders an unknown card', function(assert) {
+  assert.expect(5);
+  let expectedPayload = {};
+
+  this.set('unknownCardHandler', ({env, payload}) => {
+    assert.equal(env.name, 'missing-card', 'correct env.name');
+    assert.ok(env.isInEditor, 'isInEditor is correct');
+    assert.ok(!!env.onTeardown, 'has onTeardown hook');
+
+    assert.ok(env.save && env.remove && env.edit && env.cancel,
+              'has save, remove, edit, cancel hooks');
+    assert.deepEqual(payload, expectedPayload, 'has payload');
+  });
+
+  this.set('mobiledoc', {
+    version: MOBILEDOC_VERSION,
+    sections: [
+      [],
+      [
+        [10, 'missing-card', expectedPayload]
+      ]
+    ]
+  });
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc
+              options=(hash unknownCardHandler=unknownCardHandler) as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+});
+
 test('#activeSectionTagNames is correct', function(assert) {
   let done = assert.async();
 
   this.set('mobiledoc', {
-    version: '0.2.0',
+    version: MOBILEDOC_VERSION,
     sections: [
       [],
       [
@@ -406,7 +460,7 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
   let done = assert.async();
 
   this.set('mobiledoc', {
-    version: '0.2.0',
+    version: MOBILEDOC_VERSION,
     sections: [
       [],
       [
