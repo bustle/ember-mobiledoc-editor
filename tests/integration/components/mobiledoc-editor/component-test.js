@@ -418,14 +418,13 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
 
   this.set('cards', [{
     name: 'test-card',
-    display: {
-      setup(element) {
-        let input = $('<input id="test-card-inner">');
-        $(element).append(input);
-        setTimeout(() => {
-          input.focus();
-        });
-      }
+    type: 'dom',
+    render() {
+      let input = $('<input id="test-card-inner">')[0];
+      setTimeout(() => {
+        $(input).focus();
+      });
+      return input;
     }
   }]);
 

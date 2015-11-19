@@ -6,6 +6,10 @@ module('Unit | Utility | create component card');
 // Replace this with your real tests.
 test('it works', function(assert) {
   var result = createComponentCard('foo-card');
-  assert.ok(result.name === 'foo-card' && typeof result.display.setup === 'function' && typeof result.display.teardown === 'function',
-    'created a named card');
+  assert.ok(result.name === 'foo-card' &&
+            result.type === 'dom' &&
+            typeof result.render === 'function' &&
+            typeof result.edit === 'function',
+    'created a named card'
+  );
 });
