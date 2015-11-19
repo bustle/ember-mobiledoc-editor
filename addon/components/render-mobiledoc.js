@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Renderer from 'ember-mobiledoc-dom-renderer';
+import { RENDER_TYPE } from 'ember-mobiledoc-dom-renderer';
 import layout from '../templates/components/render-mobiledoc';
 
 let { $, computed, assert } = Ember;
@@ -7,7 +8,7 @@ let { run: { schedule, join } } = Ember;
 
 const ADD_HOOK      = 'addComponentCard';
 const REMOVE_HOOK   = 'removeComponentCard';
-const NAME          = 'render-mobiledoc';
+const COMPONENT_NAME          = 'render-mobiledoc';
 const ELEMENT_CLASS = '__rendered-mobiledoc';
 const UUID_PREFIX   = '__rendered-mobiledoc-card-';
 export const CARD_ELEMENT_CLASS = '__rendered-mobiledoc-card';
@@ -15,14 +16,16 @@ export const CARD_ELEMENT_CLASS = '__rendered-mobiledoc-card';
 function createComponentCard(name) {
   return {
     name,
-    display: {
-      setup(element, options /*, env, payload */) {
-        let card = options[ADD_HOOK](...arguments);
-        return () => options[REMOVE_HOOK](card);
-      },
-      teardown(teardownFn) {
-        teardownFn();
-      }
+    type: RENDER_TYPE,
+    render({env, options}) {
+      let addHook = options[ADD_HOOK];
+      let removeHook = options[REMOVE_HOOK];
+      let { onTeardown } = env;
+
+      let { card, element } = addHook(...arguments);
+      onTeardown(() => removeHook(card));
+
+      return element;
     }
   };
 }
@@ -35,43 +38,50 @@ export default Ember.Component.extend({
   cardNames: [],
 
   _mdcCards: computed('cardNames', function() {
-    return this.get('cardNames').reduce((acc, cardName) => {
-      acc[cardName] = createComponentCard(cardName);
-      return acc;
-    }, {});
+    return this.get('cardNames').map(name => createComponentCard(name));
   }),
 
   didInsertElement() {
     this._super(...arguments);
 
-    let rendererOptions = {
-      cardOptions: {
-        [ADD_HOOK]: (element, options, {name:cardName}, payload) => {
-          let uuid = this.generateUuid();
-          $(element).attr('id', uuid)
-                    .addClass(CARD_ELEMENT_CLASS)
-                    .addClass(CARD_ELEMENT_CLASS + '-' + cardName);
-          let componentName = this.cardNameToComponentName(cardName);
+    let cardOptions = {
+      [ADD_HOOK]: ({env, options, payload}) => {
+        let { name: cardName } = env;
+        let uuid = this.generateUuid();
+        let element = $("<div></div>")
+          .attr('id', uuid)
+          .addClass(CARD_ELEMENT_CLASS)
+          .addClass(CARD_ELEMENT_CLASS + '-' + cardName)[0];
 
-          let card = {
-            componentName,
-            destinationElementId: uuid,
-            payload
-          };
-          this.addCard(card);
-          return card;
-        },
-        [REMOVE_HOOK]: (card) => this.removeCard(card)
-      }
+        let componentName = this.cardNameToComponentName(cardName);
+
+        let card = {
+          componentName,
+          destinationElementId: uuid,
+          payload
+        };
+        this.addCard(card);
+        return { card, element };
+      },
+      [REMOVE_HOOK]: (card) => this.removeCard(card)
     };
 
-    let element = this.getRenderElement();
     let cards = this.get('_mdcCards');
     let mobiledoc = this.get('mobiledoc');
-    assert(`Must pass mobiledoc to "${NAME}" component`, !!mobiledoc);
+    assert(`Must pass mobiledoc to "${COMPONENT_NAME}" component`, !!mobiledoc);
 
-    let renderer = new Renderer();
-    renderer.render(mobiledoc, element, cards, rendererOptions);
+    let renderer = new Renderer({cards, cardOptions});
+    let { result, teardown } = renderer.render(mobiledoc);
+    this.getRenderElement().appendChild(result);
+
+    this._teardownRender = teardown;
+  },
+
+  willDestroyElement() {
+    if (this._teardownRender) {
+      this._teardownRender();
+    }
+    return this._super(...arguments);
   },
 
   // override in subclass to change the mapping of card name -> component name
