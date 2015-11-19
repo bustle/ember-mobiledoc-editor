@@ -1,6 +1,12 @@
 module.exports = {
   scenarios: [
     {
+      name: '1.13',
+      dependencies: {
+        'ember': '^1.13'
+      }
+    },
+    {
       name: 'default',
       dependencies: { }
     },
