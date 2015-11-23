@@ -4,6 +4,10 @@ import layout from './template';
 let { computed, Component } = Ember;
 let { capitalize, camelize } = Ember.String;
 
+export const ADD_HOOK = 'addComponent';
+export const REMOVE_HOOK = 'removeComponent';
+const EDITOR_CARD_SUFFIX = '-editor';
+
 function arrayToMap(array, propertyName) {
   let map = Object.create(null);
   array.forEach(item => {
@@ -158,9 +162,14 @@ export default Component.extend({
 
     editorOptions.mobiledoc = mobiledoc;
     editorOptions.cardOptions = {
-      onAddComponentCard: (element, cardName, env, payload) => {
+      [ADD_HOOK]: ({env, options, payload}, isEditing=false) => {
         let cardId = Ember.uuid();
+        let cardName = env.name;
+        if (isEditing) {
+          cardName = cardName + EDITOR_CARD_SUFFIX;
+        }
         let destinationElementId = `mobiledoc-editor-card-${cardId}`;
+        let element = document.createElement('div');
         element.id = destinationElementId;
 
         // The data must be copied to avoid sharing the reference
@@ -177,9 +186,9 @@ export default Component.extend({
         Ember.run.schedule('afterRender', () => {
           this.get('componentCards').pushObject(card);
         });
-        return card;
+        return { card, element };
       },
-      onRemoveComponentCard: (card) => {
+      [REMOVE_HOOK]: (card) => {
         Ember.run.join(() => {
           this.get('componentCards').removeObject(card);
         });
