@@ -181,7 +181,7 @@ export default Component.extend({
           data: payload,
           callbacks: env,
           editor,
-          section: env.section
+          postModel: env.postModel
         });
         Ember.run.schedule('afterRender', () => {
           this.get('componentCards').pushObject(card);

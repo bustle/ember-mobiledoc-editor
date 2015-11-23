@@ -266,6 +266,27 @@ test('it adds a component in display mode to the mobiledoc editor', function(ass
   assert.ok(this.$(`#demo-card-editor`).length, 'Card changed to edit mode');
 });
 
+test('exposes the `postModel` on the card component', function(assert) {
+  assert.expect(2);
+  this.registry.register('component:demo-card', Ember.Component.extend({
+    init() {
+      this._super(...arguments);
+      assert.ok(!!this.get('postModel'), 'card is passed postModel');
+    }
+  }));
+  this.registry.register('template:components/demo-card',
+                         hbs`<div id="demo-card"></div>`);
+  this.set('cards', [createComponentCard('demo-card')]);
+  this.render(hbs`
+    {{#mobiledoc-editor cards=cards as |editor|}}
+      <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
+    {{/mobiledoc-editor}}
+  `);
+
+  this.$('button#add-card').click();
+  assert.ok(this.$(`#demo-card`).length, 'Card added in display mode');
+});
+
 test('it adds a card and removes an active blank section', function(assert) {
   assert.expect(4);
   this.registry.register('template:components/demo-card', hbs`

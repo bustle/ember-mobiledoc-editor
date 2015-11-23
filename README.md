@@ -237,7 +237,7 @@ The component will be provided with the following `attrs`:
   * `cancelCard`, an action toggling this card to display mode without saving (this action is a no-op if the card is already in display mode) (see the ["cancel Mobiledoc card action](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
   * `cardName` the name of this card
   * `editor` A reference to the [mobiledoc-kit](https://github.com/bustlelabs/mobiledoc-kit)
-  * `cardSection` A reference to this card's `cardSection` model in the editor's abstract tree. This may be necessary to do programmatic editing (such as moving the card via the `postEditor#moveSection` API that Mobiledoc editor provides)
+  * `postModel` A reference to this card's model in the editor's abstract tree. This may be necessary to do programmatic editing (such as moving the card via the `postEditor#moveSection` API that Mobiledoc editor provides)
 
 ### Developing ember-mobiledoc-editor
 

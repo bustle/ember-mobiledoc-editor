@@ -26,7 +26,7 @@
   {{#ember-wormhole to=card.destinationElementId}}
     {{component card.cardName
         editor=editor
-        cardSection=card.section
+        postModel=card.postModel
         cardName=card.cardName
         data=card.data
         editCard=(action card.callbacks.edit)
