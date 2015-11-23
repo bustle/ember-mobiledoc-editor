@@ -1,6 +1,6 @@
 {
   "name": "ember-mobiledoc-editor",
-  "version": "0.2.1",
+  "version": "0.2.2-beta1",
   "description": "A Mobiledoc editor for Ember.js apps",
   "directories": {
     "doc": "doc",
