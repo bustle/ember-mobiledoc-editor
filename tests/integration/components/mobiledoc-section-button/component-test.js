@@ -10,7 +10,7 @@ moduleForComponent('mobiledoc-section-button', 'Integration | Component | mobile
 
 test('it displays button', function(assert) {
   let editor = EObject.create({
-    toggleSectionTagName() {},
+    toggleSection() {},
     activeSectionTagNames: {}
   });
   this.set('editor', editor);
@@ -35,7 +35,7 @@ test('it displays button', function(assert) {
 
 test('it yields for html', function(assert) {
   this.set('editor', {
-    toggleSectionTagName() {},
+    toggleSection() {},
     activeSectionTagNames: {}
   });
   this.render(hbs`
@@ -50,12 +50,12 @@ test('it yields for html', function(assert) {
     'text is yielded');
 });
 
-test('it calls toggleSectionTagName on click', function(assert) {
+test('it calls toggleSection on click', function(assert) {
   assert.expect(2);
   this.set('editor', {
-    toggleSectionTagName(tag) {
-      assert.ok(true, 'toggleSectionTagName called');
-      assert.equal(tag, 'h1', 'toggleSectionTagName called with "for" value');
+    toggleSection(tag) {
+      assert.ok(true, 'toggleSection called');
+      assert.equal(tag, 'h1', 'toggleSection called with "for" value');
     },
     activeSectionTagNames: {}
   });

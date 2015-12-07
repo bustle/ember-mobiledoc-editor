@@ -13,7 +13,7 @@ test('it displays buttons', function(assert) {
 
   this.set('editor', {
     toggleMarkup() {},
-    toggleSectionTagName() {},
+    toggleSection() {},
     createListSection() {},
     toggleLink() {}
   });

@@ -7,6 +7,10 @@ let { capitalize, camelize } = Ember.String;
 export const ADD_HOOK = 'addComponent';
 export const REMOVE_HOOK = 'removeComponent';
 const EDITOR_CARD_SUFFIX = '-editor';
+const EMPTY_MOBILEDOC = {
+  version: '0.2.0',
+  sections: [[], []]
+};
 
 function arrayToMap(array, propertyName) {
   let map = Object.create(null);
@@ -47,10 +51,7 @@ export default Component.extend({
     this._super(...arguments);
     let mobiledoc = this.get('mobiledoc');
     if (!mobiledoc) {
-      mobiledoc = {
-        version: '0.2.0',
-        sections: [[], []]
-      };
+      mobiledoc = EMPTY_MOBILEDOC;
       this.set('mobiledoc', mobiledoc);
     }
     this.set('componentCards', Ember.A([]));
@@ -66,24 +67,17 @@ export default Component.extend({
       editor.run(postEditor => postEditor.toggleMarkup(markupTagName));
     },
 
+    toggleSection(newTagName) {
+      let editor = this.get('editor');
+      editor.run(postEditor => postEditor.toggleSection(newTagName));
+    },
+
+    // Deprecated
     toggleSectionTagName(newTagName) {
-      const editor = this.get('editor');
-      const sections = editor.activeSections;
-      let hasSectionsOfTagName = false;
-
-      editor.run(postEditor => {
-        hasSectionsOfTagName = Ember.A(sections).any(
-          s => s.tagName === newTagName);
-
-        if (hasSectionsOfTagName) {
-          sections.forEach(s => postEditor.resetSectionTagName(s));
-        } else {
-          sections.forEach(s => postEditor.changeSectionTagName(s, newTagName));
-        }
-        postEditor.scheduleAfterRender(() => {
-          editor.selectSections(sections);
-        });
-      });
+      Ember.warn('toggleSectionTagName is deprecated. Use toggleSection instead',
+                 false,
+                 {id: 'mobiledoc-editor-toggleSectionTagName'});
+      this.send('toggleSection', newTagName);
     },
 
     createListSection(tagName) {
