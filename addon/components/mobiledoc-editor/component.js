@@ -38,7 +38,8 @@ export default Component.extend({
       placeholder: this.get('placeholder'),
       spellcheck: this.get('spellcheck'),
       autofocus: this.get('autofocus'),
-      cards: this.get('cards') || []
+      cards: this.get('cards') || [],
+      atoms: this.get('atoms') || []
     }, options);
   }),
 
