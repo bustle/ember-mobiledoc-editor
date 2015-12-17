@@ -25,7 +25,7 @@
   <button
     title="Heading"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isH1 'active'}}"
-    {{action editor.toggleSectionTagName 'h1'}}>
+    {{action editor.toggleSection 'h1'}}>
     Headline
   </button>
 </li>
@@ -33,7 +33,7 @@
   <button
     title="Subheading"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isH2 'active'}}"
-    {{action editor.toggleSectionTagName 'h2'}}>
+    {{action editor.toggleSection 'h2'}}>
     Subheadline
   </button>
 </li>
@@ -41,7 +41,7 @@
   <button
     title="Block Quote"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isBlockquote 'active'}}"
-    {{action editor.toggleSectionTagName 'blockquote'}}>
+    {{action editor.toggleSection 'blockquote'}}>
     <i class="icon-quote-block"></i>
     Blockquote
   </button>
@@ -50,7 +50,7 @@
   <button
     title="Pull Quote"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isPullQuote 'active'}}"
-    {{action editor.toggleSectionTagName 'pull-quote'}}>
+    {{action editor.toggleSection 'pull-quote'}}>
     Pull-quote
   </button>
 </li>
@@ -58,7 +58,7 @@
   <button
     title="List"
     class="mobiledoc-toolbar__button"
-    {{action editor.createListSection 'ul'}}>
+    {{action editor.toggleSection 'ul'}}>
     Unordered List
   </button>
 </li>
@@ -66,7 +66,7 @@
   <button
     title="Numbered List"
     class="mobiledoc-toolbar__button"
-    {{action editor.createListSection 'ol'}}>
+    {{action editor.toggleSection 'ol'}}>
     Ordered List
   </button>
 </li>

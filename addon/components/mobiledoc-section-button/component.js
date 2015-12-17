@@ -26,6 +26,6 @@ export default Component.extend({
   click() {
     let editor = this.get('editor');
     let forProperty = this.get('for');
-    editor.toggleSectionTagName(forProperty);
+    editor.toggleSection(forProperty);
   }
 });

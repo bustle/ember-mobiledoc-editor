@@ -50,6 +50,7 @@ test('it boots the mobiledoc editor', function(assert) {
     'Mobiledoc editor is booted'
   );
 });
+
 test('it boots mobiledoc editor with mobiledoc', function(assert) {
   assert.expect(2);
   let mobiledoc = simpleMobileDoc('Howdy');
@@ -121,7 +122,37 @@ test('it bolds the text and fires `on-change`', function(assert) {
   );
 });
 
-test('it toggles the section type and fires `on-change`', function(assert) {
+test('it exposes "toggleSection" which toggles the section type and fires `on-change`', function(assert) {
+  assert.expect(6);
+
+  let onChangeCount = 0;
+
+  let text = 'Howdy';
+  this.set('mobiledoc', simpleMobileDoc(text));
+  this.on('on-change', () => onChangeCount++);
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |editor|}}
+      <button {{action editor.toggleSection 'h2'}}>H2</button>
+    {{/mobiledoc-editor}}
+  `);
+  const textNode = this.$(`p:contains(${text})`)[0].firstChild;
+  selectRange(textNode, 0, textNode, text.length);
+
+  assert.ok(!this.$('h2').length, 'precond - no h2');
+  assert.equal(onChangeCount, 0, 'precond - no on-change');
+
+  this.$('button').click();
+
+  assert.equal(onChangeCount, 1, 'fires on-change');
+  assert.ok(!!this.$('h2:contains(Howdy)').length, 'Changes to h2 tag');
+
+  onChangeCount = 0;
+  this.$('button').click();
+  assert.equal(onChangeCount, 1, 'fires on-change again');
+  assert.ok(!this.$('h2').length, 'toggles h2 tag off again');
+});
+
+test('it exposes "toggleSectionTagName" (deprecated) which toggles the section type and fires `on-change`', function(assert) {
   assert.expect(6);
 
   let onChangeCount = 0;

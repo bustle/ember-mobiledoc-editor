@@ -84,7 +84,7 @@ state of the editor:
 Additionally `editor` provides the following actions:
 
 * `toggleMarkup`, toggling the passed markup tag name in the current selection.
-* `toggleSectionTagName`, toggling the passed section tag name in the current
+* `toggleSection`, toggling the passed section tag name in the current
   selection.
 * `toggleLink`, toggling the linking of a selection. The user will be prompted
    for a URL if required.
