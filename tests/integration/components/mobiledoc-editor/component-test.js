@@ -66,6 +66,27 @@ test('it boots mobiledoc editor with mobiledoc', function(assert) {
   );
 });
 
+test('it updates the editor when the mobiledoc changes', function(assert) {
+  assert.expect(2);
+  let mobiledoc1 = simpleMobileDoc('Howdy');
+  let mobiledoc2 = simpleMobileDoc('Doody');
+
+  this.set('mobiledoc', mobiledoc1);
+  this.render(hbs`{{mobiledoc-editor mobiledoc=mobiledoc}}`);
+
+  assert.ok(
+    !!this.$('.mobiledoc-editor__editor:contains(Howdy)').length,
+    'Mobiledoc editor is booted with text'
+  );
+
+  this.set('mobiledoc', mobiledoc2);
+
+  assert.ok(
+    !!this.$('.mobiledoc-editor__editor:contains(Doody)').length,
+    'Mobiledoc editor is updated'
+  );
+});
+
 test('it renders a yielded toolbar', function(assert) {
   assert.expect(1);
   this.render(hbs`
