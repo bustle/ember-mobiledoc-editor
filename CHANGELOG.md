@@ -1,6 +1,24 @@
-<a name="0.3.0"></a>
-# 0.3.0 (2015-11-24)
+<a name="0.3.1"></a>
+## 0.3.1 (2015-12-17)
 
+
+
+
+<a name="0.3.1"></a>
+## 0.3.1 (2015-12-17)
+
+
+* Add before_install to travis.yml to install phantom 2 ([a9edd14](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/a9edd14))
+* add changelog ([4cc051d](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/4cc051d))
+* add test for changing editor content ([2e235df](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2e235df))
+* Expose `toggleSection` action, deprecate `toggleSectionTagName` ([20391e7](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/20391e7))
+* Merge pull request #38 from rlivsey/atoms ([5589793](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/5589793))
+* Merge pull request #40 from bustlelabs/use-toggle-section ([ba0eb55](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/ba0eb55))
+* Merge pull request #41 from bustlelabs/bug-changing-document-v2 ([2ffefcc](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2ffefcc))
+* Pass atoms through to the editor ([feddc0c](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/feddc0c))
+* Released v0.3.1 ([d73a7af](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/d73a7af))
+* Update changelog ([a16d21a](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/a16d21a))
+* update mobiledoc-kit dep to ^0.7.3 ([abe4cb7](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/abe4cb7))
 
 
 
