@@ -146,15 +146,31 @@ export default Component.extend({
     return Ember.A([]);
   }),
 
-  editor: computed('mobiledoc', 'isEditingDisabled', function() {
-    if (this._lastEditor) {
-      this._lastEditor.destroy();
-      this._lastEditor = null;
+  willRender() {
+    // Use a default mobiledoc. If there are no changes, then return
+    // early.
+    let mobiledoc = this.get('mobiledoc') || EMPTY_MOBILEDOC;
+    if (
+      (
+        (this._localMobiledoc && this._localMobiledoc === mobiledoc) ||
+        (this._upstreamMobiledoc && this._upstreamMobiledoc === mobiledoc)
+      ) && (this._lastIsEditingDisabled === this.get('isEditingDisabled'))
+    ) {
+      // No change to mobiledoc, no need to recreate the editor
+      return;
     }
-    let editor;
-    let mobiledoc = this.get('mobiledoc');
-    let editorOptions = this.get('editorOptions');
+    this._lastIsEditingDisabled = this.get('isEditingDisabled');
+    this._upstreamMobiledoc = mobiledoc;
+    this._localMobiledoc = null;
 
+    // Teardown any old editor that might be around.
+    let editor = this.get('editor');
+    if (editor) {
+      editor.destroy();
+    }
+
+    // Create a new editor.
+    let editorOptions = this.get('editorOptions');
     editorOptions.mobiledoc = mobiledoc;
     editorOptions.cardOptions = {
       [ADD_HOOK]: ({env, options, payload}, isEditing=false) => {
@@ -178,8 +194,10 @@ export default Component.extend({
           editor,
           postModel: env.postModel
         });
-        Ember.run.schedule('afterRender', () => {
-          this.get('componentCards').pushObject(card);
+        Ember.run.join(() => {
+          Ember.run.schedule('afterRender', () => {
+            this.get('componentCards').pushObject(card);
+          });
         });
         return { card, element };
       },
@@ -192,7 +210,10 @@ export default Component.extend({
     editor = new window.Mobiledoc.Editor(editorOptions);
     editor.on('update', () => {
       let updatedMobileDoc = editor.serialize();
-      this.sendAction('on-change', updatedMobileDoc);
+      this._localMobiledoc = updatedMobileDoc;
+      Ember.run.join(() => {
+        this.sendAction('on-change', updatedMobileDoc);
+      });
     });
     editor.cursorDidChange(() => {
       if (this.isDestroyed) { return; }
@@ -200,7 +221,7 @@ export default Component.extend({
       const markupTags = arrayToMap(editor.markupsInSelection, 'tagName');
       const sectionTags = arrayToMap(editor.activeSections, 'tagName');
 
-      Ember.run(() => {
+      Ember.run.join(() => {
         this.set('activeMarkupTagNames', markupTags);
         this.set('activeSectionTagNames', sectionTags);
       });
@@ -215,15 +236,13 @@ export default Component.extend({
     if (this.get('isEditingDisabled')) {
       editor.disableEditing();
     }
-    this._lastEditor = editor;
-    return editor;
-  }),
+    this.set('editor', editor);
+  },
 
   didRender() {
     let editor = this.get('editor');
-    let editorElement = this.$('.mobiledoc-editor__editor')[0];
-    if (this._renderedEditor !== editor) {
-      this._renderedEditor = editor;
+    if (!editor.hasRendered) {
+      let editorElement = this.$('.mobiledoc-editor__editor')[0];
       editor.render(editorElement);
     }
   },
