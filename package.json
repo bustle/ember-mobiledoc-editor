@@ -44,7 +44,7 @@
   ],
   "dependencies": {
     "broccoli-funnel": "^0.2.8",
-    "mobiledoc-kit": "^0.8.0-beta.2",
+    "mobiledoc-kit": "^0.8.0-beta.3",
     "ember-cli-babel": "^5.1.3",
     "ember-cli-htmlbars": "^1.0.0",
     "ember-wormhole": "^0.3.4"
