@@ -1,3 +1,4 @@
+/* global Mobiledoc */
 import Ember from 'ember';
 import layout from './template';
 
@@ -11,6 +12,9 @@ const EMPTY_MOBILEDOC = {
   version: '0.2.0',
   sections: [[], []]
 };
+
+const MobiledocEditor = Mobiledoc.Editor;
+const MobiledocRange  = Mobiledoc.Range;
 
 function arrayToMap(array, propertyName) {
   let map = Object.create(null);
@@ -112,15 +116,20 @@ export default Component.extend({
 
     toggleLink() {
       let editor = this.get('editor');
-      let offsets = editor.cursor.offsets;
-      let hasMarkup = editor.detectMarkupInRange(offsets, 'a');
+      let range = editor.range;
+      let headSection = range.head.section,
+          tailSection = range.tail.section;
+      if (!(headSection.isMarkerable && tailSection.isMarkerable)) {
+        return;
+      }
+      let hasMarkup = editor.detectMarkupInRange(range, 'a');
       if (hasMarkup) {
         editor.run(postEditor => {
-          postEditor.removeMarkupFromRange(offsets, hasMarkup);
+          postEditor.removeMarkupFromRange(range, hasMarkup);
         });
       } else {
         this._ignoreCursorDidChange = true;
-        this.set('linkOffsets', offsets);
+        this.set('linkOffsets', range);
       }
     },
 
@@ -207,7 +216,7 @@ export default Component.extend({
         });
       }
     };
-    editor = new window.Mobiledoc.Editor(editorOptions);
+    editor = new MobiledocEditor(editorOptions);
     editor.on('update', () => {
       let updatedMobileDoc = editor.serialize();
       this._localMobiledoc = updatedMobileDoc;
@@ -265,6 +274,13 @@ export default Component.extend({
       if (section && section.isBlank) {
         postEditor.removeSection(section);
       }
+
+      // Explicitly put the cursor at the end of the card
+      // This prevents problems with the editor element being out-of-focus
+      // but the window's selection still in the editor element.
+      // See https://github.com/bustlelabs/mobiledoc-kit/issues/286
+      let range = new MobiledocRange(card.tailPosition());
+      postEditor.setRange(range);
     });
   }
 

@@ -260,7 +260,6 @@ test('toolbar buttons can be active', function(assert) {
   assert.ok(!button.hasClass('active'), 'heading button is no longer active');
 });
 
-
 test('toolbar has list insertion button', function(assert) {
   let text = 'abc';
   this.set('mobiledoc', simpleMobileDoc(text));
@@ -392,6 +391,42 @@ test('it adds a card and removes an active blank section', function(assert) {
   this.$('button#add-card').click();
   assert.equal(this.$('.mobiledoc-editor p').length, 0, 'no blank section');
   assert.equal(this.$('#demo-card').length, 1, 'card section exists');
+});
+
+test('it adds a card and focuses the cursor at the end of the card', function(assert) {
+  assert.expect(6);
+  this.registry.register('template:components/demo-card', hbs`
+    <div id="demo-card"><button id='edit-card' {{action editCard}}></button></div>
+   `);
+  this.set('cards', [
+    createComponentCard('demo-card')
+  ]);
+  let editor;
+  this.on('expose-editor', (hash) => {
+    editor = hash.editor;
+  });
+  this.set('mobiledoc', simpleMobileDoc(''));
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
+      <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
+      <button id='get-editor' {{action 'expose-editor' editor}}></button>
+    {{/mobiledoc-editor}}
+  `);
+
+  moveCursorTo(this, '.mobiledoc-editor p');
+  this.$('button#get-editor').click();
+  this.$('button#add-card').click();
+  assert.equal(this.$('#demo-card').length, 1, 'card section exists');
+
+  let cardWrapper = this.$('#demo-card').parents('.__mobiledoc-card');
+  assert.ok(!!cardWrapper.length, 'precond - card wrapper is found');
+  let cursorElement = cardWrapper[0].nextSibling;
+  assert.ok(!!cursorElement, 'precond - cursor element is found');
+
+  assert.ok(window.getSelection().focusNode === cursorElement, 'selection focus is on cursor element');
+  assert.ok(window.getSelection().anchorNode === cursorElement, 'selection anchor is on cursor element');
+  assert.ok(document.activeElement === $('.__mobiledoc-editor')[0],
+               'document.activeElement is correct');
 });
 
 test('it has `addCardInEditMode` action to add card in edit mode', function(assert) {
