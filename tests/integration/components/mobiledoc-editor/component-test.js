@@ -66,17 +66,19 @@ test('it boots mobiledoc editor with mobiledoc', function(assert) {
   );
 });
 
-test('it does not update the editor when the same mobiledoc is set', function(assert) {
+test('it does not create a new editor when the same mobiledoc is set', function(assert) {
   assert.expect(2);
   let mobiledoc = simpleMobileDoc('Howdy');
   let editor;
-  let createdEditors = 0;
+  let editors = [];
 
   this.set('mobiledoc', mobiledoc);
   this.register('component:gather-editor', Ember.Component.extend({
     didRender() {
-      createdEditors++;
+      // Will be rendered 2x: once initially, again after `|editor|` hash
+      // changes. Save each editor reference into `editors` for later comparison
       editor = this.get('editor');
+      editors.push(editor);
     }
   }));
   this.render(hbs`
@@ -86,13 +88,14 @@ test('it does not update the editor when the same mobiledoc is set', function(as
     {{/mobiledoc-editor}}
   `);
 
-  assert.equal(createdEditors, 1, 'initial editor created');
+  assert.equal(editors.length, 1, 'initial editor created');
 
   editor.run((postEditor) => {
     postEditor.insertText(editor.range.tail, 'Friend');
   });
 
-  assert.equal(createdEditors, 1, 'editor maintained');
+  assert.ok(editors.length === 2 && editors[0] === editors[1],
+            'editor is same reference');
 });
 
 test('it updates the editor when the mobiledoc changes', function(assert) {
