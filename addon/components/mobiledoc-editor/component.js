@@ -44,10 +44,10 @@ export default Component.extend({
 
     return Ember.merge({
       placeholder: this.get('placeholder'),
-      spellcheck: this.get('spellcheck'),
-      autofocus: this.get('autofocus'),
-      cards: this.get('cards') || [],
-      atoms: this.get('atoms') || []
+      spellcheck:  this.get('spellcheck'),
+      autofocus:   this.get('autofocus'),
+      cards:       this.get('cards') || [],
+      atoms:       this.get('atoms') || []
     }, options);
   }),
 
@@ -63,6 +63,7 @@ export default Component.extend({
     this.set('activeMarkupTagNames', {});
     this.set('activeSectionTagNames', {});
     this._ignoreCursorDidChange = false;
+    this._startedRunLoop  = false;
   },
 
   actions: {
@@ -148,7 +149,6 @@ export default Component.extend({
     cancelLink() {
       this.set('linkOffsets', null);
     }
-
   },
 
   editingContexts: computed(function() {
@@ -203,44 +203,60 @@ export default Component.extend({
           editor,
           postModel: env.postModel
         });
-        Ember.run.join(() => {
-          Ember.run.schedule('afterRender', () => {
-            this.get('componentCards').pushObject(card);
-          });
+        Ember.run.schedule('afterRender', () => {
+          this.get('componentCards').pushObject(card);
         });
         return { card, element };
       },
       [REMOVE_HOOK]: (card) => {
-        Ember.run.join(() => {
-          this.get('componentCards').removeObject(card);
-        });
+        this.get('componentCards').removeObject(card);
       }
     };
     editor = new MobiledocEditor(editorOptions);
+    editor.willRender(() => {
+      // The editor's render/rerender will happen after this `editor.willRender`,
+      // so we explicitly start a runloop here if there is none, so that the
+      // add/remove card hooks happen inside a runloop.
+      // When pasting text that gets turned into a card, for example,
+      // the add card hook would run outside the runloop if we didn't begin a new
+      // one now.
+      if (!Ember.run.currentRunLoop) {
+        this._startedRunLoop = true;
+        Ember.run.begin();
+      }
+    });
+    editor.didRender(() => {
+      // If we had explicitly started a run loop in `editor.willRender`,
+      // we must explicitly end it here.
+      if (this._startedRunLoop) {
+        this._startedRunLoop = false;
+        Ember.run.end();
+      }
+    });
     editor.on('update', () => {
-      let updatedMobileDoc = editor.serialize();
-      this._localMobiledoc = updatedMobileDoc;
       Ember.run.join(() => {
+        let updatedMobileDoc = editor.serialize();
+        this._localMobiledoc = updatedMobileDoc;
         this.sendAction('on-change', updatedMobileDoc);
       });
     });
     editor.cursorDidChange(() => {
       if (this.isDestroyed) { return; }
 
-      const markupTags = arrayToMap(editor.markupsInSelection, 'tagName');
-      const sectionTags = arrayToMap(editor.activeSections, 'tagName');
-
       Ember.run.join(() => {
+        const markupTags = arrayToMap(editor.markupsInSelection, 'tagName');
+        const sectionTags = arrayToMap(editor.activeSections, 'tagName');
+
         this.set('activeMarkupTagNames', markupTags);
         this.set('activeSectionTagNames', sectionTags);
-      });
 
-      let isCursorOffEditor = !this.get('editor').cursor.offsets.head.section;
-      if (!isCursorOffEditor && !this._ignoreCursorDidChange) {
-        this.set('linkOffsets', null);
-      } else {
-        this._ignoreCursorDidChange = false;
-      }
+        let isCursorOffEditor = !this.get('editor').cursor.offsets.head.section;
+        if (!isCursorOffEditor && !this._ignoreCursorDidChange) {
+          this.set('linkOffsets', null);
+        } else {
+          this._ignoreCursorDidChange = false;
+        }
+      });
     });
     if (this.get('isEditingDisabled')) {
       editor.disableEditing();
@@ -283,5 +299,4 @@ export default Component.extend({
       postEditor.setRange(range);
     });
   }
-
 });
