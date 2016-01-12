@@ -98,6 +98,39 @@ test('it does not create a new editor when the same mobiledoc is set', function(
             'editor is same reference');
 });
 
+test('wraps component-card adding in runloop correctly', function(assert) {
+  assert.expect(3);
+  let mobiledoc = simpleMobileDoc('Howdy');
+  let editor;
+
+  this.set('mobiledoc', mobiledoc);
+  this.register('component:gather-editor', Ember.Component.extend({
+    didRender() {
+      editor = this.get('editor');
+    }
+  }));
+  this.registry.register('template:components/demo-card', hbs`
+    <div id="demo-card">demo-card</div>
+   `);
+  this.set('cards', [createComponentCard('demo-card')]);
+  this.set('mobiledoc', simpleMobileDoc(''));
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
+      {{gather-editor editor=editor.editor}}
+    {{/mobiledoc-editor}}
+  `);
+
+  // Add a card without being in a runloop
+  assert.ok(!Ember.run.currentRunLoop, 'precond - no run loop');
+  editor.run((postEditor) => {
+    let card = postEditor.builder.createCardSection('demo-card');
+    postEditor.insertSection(card);
+  });
+  assert.ok(!Ember.run.currentRunLoop, 'postcond - no run loop after editor.run');
+
+  assert.ok(this.$('#demo-card').length, 'demo card is added');
+});
+
 test('it updates the editor when the mobiledoc changes', function(assert) {
   assert.expect(2);
   let mobiledoc1 = simpleMobileDoc('Howdy');
