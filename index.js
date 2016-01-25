@@ -5,10 +5,10 @@ var Funnel = require('broccoli-funnel');
 var path = require('path');
 
 function distDirFor(packageName) {
-  var resolved = require.resolve(packageName + '/package.json');
-  if (resolved) {
+  try {
+    var resolved = require.resolve(packageName + '/package.json');
     return path.join(path.dirname(resolved), 'dist');
-  } else {
+  } catch (e) {
     return null;
   }
 }
