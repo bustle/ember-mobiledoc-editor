@@ -1,6 +1,6 @@
-/* global MobiledocDOMRenderer */
 import createComponentCard from 'ember-mobiledoc-editor/utils/create-component-card';
 import { module, test } from 'qunit';
+import MobiledocDOMRenderer from 'mobiledoc-dom-renderer';
 
 module('Unit | Utility | create component card');
 

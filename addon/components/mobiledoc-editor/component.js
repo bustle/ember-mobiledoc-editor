@@ -1,7 +1,7 @@
-/* global Mobiledoc */
 import Ember from 'ember';
 import layout from './template';
-
+import Editor from 'mobiledoc-kit/editor/editor';
+import Range from 'mobiledoc-kit/utils/cursor/range';
 let { computed, Component } = Ember;
 let { capitalize, camelize } = Ember.String;
 
@@ -12,9 +12,6 @@ const EMPTY_MOBILEDOC = {
   version: '0.2.0',
   sections: [[], []]
 };
-
-const MobiledocEditor = Mobiledoc.Editor;
-const MobiledocRange  = Mobiledoc.Range;
 
 function arrayToMap(array, propertyName) {
   let map = Object.create(null);
@@ -212,7 +209,7 @@ export default Component.extend({
         this.get('componentCards').removeObject(card);
       }
     };
-    editor = new MobiledocEditor(editorOptions);
+    editor = new Editor(editorOptions);
     editor.willRender(() => {
       // The editor's render/rerender will happen after this `editor.willRender`,
       // so we explicitly start a runloop here if there is none, so that the
@@ -295,7 +292,7 @@ export default Component.extend({
       // This prevents problems with the editor element being out-of-focus
       // but the window's selection still in the editor element.
       // See https://github.com/bustlelabs/mobiledoc-kit/issues/286
-      let range = new MobiledocRange(card.tailPosition());
+      let range = new Range(card.tailPosition());
       postEditor.setRange(range);
     });
   }
