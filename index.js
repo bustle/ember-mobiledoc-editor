@@ -22,8 +22,8 @@ module.exports = {
     files.push(new Funnel(distDirFor('mobiledoc-kit'), {
       files: [
         'css/mobiledoc-kit.css',
-        'global/mobiledoc-kit.js',
-        'global/mobiledoc-kit.map'
+        'amd/mobiledoc-kit.js',
+        'amd/mobiledoc-kit.map'
       ],
       destDir: 'mobiledoc-kit'
     }));
@@ -32,7 +32,7 @@ module.exports = {
     if (rendererDir) {
       files.push(new Funnel(rendererDir, {
         files: [
-          'global/mobiledoc-dom-renderer.js'
+          'amd/mobiledoc-dom-renderer.js'
         ],
         destDir: 'mobiledoc-dom-renderer'
       }));
@@ -43,10 +43,10 @@ module.exports = {
 
   included: function(app) {
     app.import('vendor/mobiledoc-kit/css/mobiledoc-kit.css');
-    app.import('vendor/mobiledoc-kit/global/mobiledoc-kit.js');
+    app.import('vendor/mobiledoc-kit/amd/mobiledoc-kit.js');
     var rendererDir = distDirFor('mobiledoc-dom-renderer');
     if (rendererDir) {
-      app.import('vendor/mobiledoc-dom-renderer/global/mobiledoc-dom-renderer.js');
+      app.import('vendor/mobiledoc-dom-renderer/amd/mobiledoc-dom-renderer.js');
     }
   }
 };
