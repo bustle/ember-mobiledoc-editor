@@ -2,6 +2,7 @@ import Ember from 'ember';
 import layout from './template';
 import Editor from 'mobiledoc-kit/editor/editor';
 import Range from 'mobiledoc-kit/utils/cursor/range';
+import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
 let { computed, Component } = Ember;
 let { capitalize, camelize } = Ember.String;
 
@@ -9,8 +10,11 @@ export const ADD_HOOK = 'addComponent';
 export const REMOVE_HOOK = 'removeComponent';
 const EDITOR_CARD_SUFFIX = '-editor';
 const EMPTY_MOBILEDOC = {
-  version: '0.2.0',
-  sections: [[], []]
+  version: MOBILEDOC_VERSION,
+  markups: [],
+  atoms: [],
+  cards: [],
+  sections: []
 };
 
 function arrayToMap(array, propertyName) {
@@ -32,6 +36,7 @@ export default Component.extend({
   placeholder: 'Write here...',
   spellcheck: true,
   autofocus: true,
+  serializeVersion: MOBILEDOC_VERSION,
 
   options: {},
 
@@ -232,7 +237,8 @@ export default Component.extend({
     });
     editor.on('update', () => {
       Ember.run.join(() => {
-        let updatedMobileDoc = editor.serialize();
+        let serializeVersion = this.get('serializeVersion');
+        let updatedMobileDoc = editor.serialize(serializeVersion);
         this._localMobiledoc = updatedMobileDoc;
         this.sendAction('on-change', updatedMobileDoc);
       });
