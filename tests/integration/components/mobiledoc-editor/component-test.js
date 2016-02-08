@@ -5,19 +5,18 @@ import createComponentCard from 'ember-mobiledoc-editor/utils/create-component-c
 import moveCursorTo from '../../../helpers/move-cursor-to';
 import simulateMouseup from '../../../helpers/simulate-mouse-up';
 import Ember from 'ember';
-
-const MOBILEDOC_VERSION = '0.2.0';
+import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
 
 function simpleMobileDoc(text) {
   return {
     version: MOBILEDOC_VERSION,
+    markups: [],
+    atoms: [],
+    cards: [],
     sections: [
-      [],
-      [
-        [1, 'p', [
-          [[], 0, text]
-        ]]
-      ]
+      [1, 'p', [
+        [0, [], 0, text]
+      ]]
     ]
   };
 }
@@ -25,15 +24,15 @@ function simpleMobileDoc(text) {
 function linkMobileDoc(text) {
   return {
     version: MOBILEDOC_VERSION,
+    markups: [
+      ['a', ['href', 'http://example.com']]
+    ],
+    atoms: [],
+    cards: [],
     sections: [
-      [
-        ['a', ['href', 'http://example.com']]
-      ],
-      [
-        [1, 'p', [
-          [[0], 1, text]
-        ]]
-      ]
+      [1, 'p', [
+        [0, [0], 1, text]
+      ]]
     ]
   };
 }
@@ -206,6 +205,38 @@ test('it bolds the text and fires `on-change`', function(assert) {
     !!this.$('strong:contains(Howdy)').length,
     'Bold tag contains text'
   );
+});
+
+test('serializes mobiledoc to `mobiledocVersion`', function(assert) {
+  assert.expect(2);
+  let text = 'Howdy';
+  this.set('mobiledoc', simpleMobileDoc(text));
+  this.set('serializeVersion', '0.2.0');
+
+  let version;
+
+  this.on('on-change', (mobiledoc) => {
+    version = mobiledoc.version;
+  });
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc serializeVersion=serializeVersion on-change=(action 'on-change') as |editor|}}
+      <button {{action editor.toggleMarkup 'strong'}}>Bold</button>
+    {{/mobiledoc-editor}}
+  `);
+  let textNode = this.$(`p:contains(${text})`)[0].firstChild;
+  selectRange(textNode, 0, textNode, text.length);
+  this.$('button').click();
+
+  assert.equal(version, '0.2.0', 'serializes to the passed serializeVersion (0.2.0)');
+
+  this.set('serializeVersion', '0.3.0');
+  version = null;
+
+  textNode = this.$(`p strong:contains(${text})`)[0].firstChild;
+  selectRange(textNode, 0, textNode, text.length);
+  this.$('button').click();
+
+  assert.equal(version, '0.3.0', 'serializes to the passed serializeVersion (0.3.0)');
 });
 
 test('it exposes "toggleSection" which toggles the section type and fires `on-change`', function(assert) {
@@ -540,11 +571,13 @@ test('`addCard` passes `data`, breaks reference to original payload', function(a
 test('throws on unknown card when `unknownCardHandler` is not passed', function(assert) {
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
+    cards: [
+      ['missing-card', {}]
+    ],
+    markups: [],
+    atoms: [],
     sections: [
-      [],
-      [
-        [10, 'missing-card']
-      ]
+      [10, 0]
     ]
   });
   this.set('unknownCardHandler', undefined);
@@ -574,11 +607,13 @@ test('calls `unknownCardHandler` when it renders an unknown card', function(asse
 
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
+    cards: [
+      ['missing-card', expectedPayload]
+    ],
+    markups: [],
+    atoms: [],
     sections: [
-      [],
-      [
-        [10, 'missing-card', expectedPayload]
-      ]
+      [10, 0]
     ]
   });
 
@@ -594,12 +629,12 @@ test('#activeSectionTagNames is correct', function(assert) {
 
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
+    markups: [],
+    cards: [],
+    atoms: [],
     sections: [
-      [],
-      [
-        [1, 'p', [[[], 0, "first paragraph"]]],
-        [1, 'blockquote', [[[], 0, "blockquote section"]]]
-      ]
+      [1, 'p', [[0, [], 0, "first paragraph"]]],
+      [1, 'blockquote', [[0, [], 0, "blockquote section"]]]
     ]
   });
   this.render(hbs`
@@ -634,12 +669,14 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
 
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
+    markups: [],
+    cards: [
+      ['test-card', {}]
+    ],
+    atoms: [],
     sections: [
-      [],
-      [
-        [1, 'p', [[[], 0, "first paragraph"]]],
-        [10, 'test-card', {}]
-      ]
+      [1, 'p', [[0, [], 0, "first paragraph"]]],
+      [10, 0]
     ]
   });
 

@@ -60,6 +60,7 @@ The components accepts these arguments:
 * `autofocus` boolean
 * `placeholder` string -- the placeholder text to display when the mobiledoc is blank
 * `options` hash -- any properties in the `options` hash will be passed to the ContentKitEditor constructor
+* `serializeVersion` string -- The mobiledoc version to serialize to when firing the on-change action. Default: 0.3.0
 
 
 Of course often you want to provide a user interface to bold text, create
