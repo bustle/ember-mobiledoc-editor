@@ -247,6 +247,7 @@ Releasing a new version:
 * update version in `package.json` and `addon/version.js`
 * `git commit -m "v<versionNumber>"`
 * `git tag v<versionNumber>`
+* `git push origin --tags`
 * `npm publish`
 
 To get started:
