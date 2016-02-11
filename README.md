@@ -242,6 +242,13 @@ The component will be provided with the following `attrs`:
 
 ### Developing ember-mobiledoc-editor
 
+Releasing a new version:
+
+* update version in `package.json` and `addon/version.js`
+* `git commit -m "v<versionNumber>"`
+* `git tag v<versionNumber>`
+* `npm publish`
+
 To get started:
 
 * `git clone` this repository
