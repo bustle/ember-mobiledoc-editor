@@ -41,8 +41,11 @@ export default Ember.Component.extend({
     return this.get('cardNames').map(name => createComponentCard(name));
   }),
 
-  didInsertElement() {
-    this._super(...arguments);
+  _renderMobiledoc: Ember.observer('mobiledoc', '_mdcCards', Ember.on('didInsertElement', function() {
+    if (this._teardownRender) {
+      this._teardownRender();
+      this._teardownRender = null;
+    }
 
     let cardOptions = {
       [ADD_HOOK]: ({env, options, payload}) => {
@@ -75,7 +78,7 @@ export default Ember.Component.extend({
     this.getRenderElement().appendChild(result);
 
     this._teardownRender = teardown;
-  },
+  })),
 
   willDestroyElement() {
     if (this._teardownRender) {

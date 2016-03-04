@@ -18,6 +18,18 @@ let mobiledoc = {
   ]
 };
 
+let mobiledoc2 = {
+  version: '0.2.0',
+  sections: [
+    [],
+    [
+      [1, 'P', [
+        [[], 0, 'Goodbye, world!']
+      ]]
+    ]
+  ]
+};
+
 let cardName = 'sample-test-card';
 
 let mobiledocWithCard = {
@@ -72,4 +84,12 @@ test('it uses `cardNameToComponentName` to allow selecting components', function
             'renders card payload');
   assert.equal(passedCardName, 'sample-test-card',
                'calls `cardNameToComponentName` with correct card');
+});
+
+
+test('it updates when its input changes', function(assert) {
+  this.set('mobiledoc', mobiledoc);
+  this.render(hbs`{{render-mobiledoc mobiledoc=mobiledoc}}`);
+  this.set('mobiledoc', mobiledoc2);
+  assert.equal(this.$().text().trim(), 'Goodbye, world!');
 });
