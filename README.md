@@ -230,11 +230,11 @@ will be used:
 
 The component will be provided with the following `attrs`:
 
-  * `data`, the data payload for this card. *Note* the data is disconnected from the card's payload in the serialized mobiledoc. To update the mobiledoc payload, use the `saveCard` or `mutData` actions.
+  * `payload`, the payload for this card. *Note* the payload object is disconnected from the card's payload in the serialized mobiledoc. To update the mobiledoc payload, use the `saveCard` action.
   * `editCard`, an action for toggling this card into edit mode (this action is a no-op if the card is already in edit mode)
   * `removeCard`, an action for removing this card (see the ["remove" Mobiledoc card action](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
-  * `saveCard`, an action accepting new data for the card payload, then saving
-    that data and toggling this card into display mode can optionally be passed an extra `false` argument to avoid toggling to display mode (see the ["save Mobiledoc card action](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
+  * `saveCard`, an action accepting new payload for the card, then saving
+    that payload and toggling this card into display mode can optionally be passed an extra `false` argument to avoid toggling to display mode (see the ["save Mobiledoc card action](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
   * `cancelCard`, an action toggling this card to display mode without saving (this action is a no-op if the card is already in display mode) (see the ["cancel Mobiledoc card action](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
   * `cardName` the name of this card
   * `editor` A reference to the [mobiledoc-kit](https://github.com/bustlelabs/mobiledoc-kit)

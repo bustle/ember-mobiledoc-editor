@@ -40,7 +40,7 @@ export default Component.extend({
 
   options: {},
 
-  // merge in named options with the `options` property data bag
+  // merge in named options with the `options` property data-bag
   editorOptions: computed(function() {
     let options = this.get('options');
 
@@ -108,13 +108,13 @@ export default Component.extend({
       editor.selectSections([listItem]);
     },
 
-    addCard(cardName, data={}) {
-      this._addCard(cardName, data);
+    addCard(cardName, payload={}) {
+      this._addCard(cardName, payload);
     },
 
-    addCardInEditMode(cardName, data={}) {
+    addCardInEditMode(cardName, payload={}) {
       let editMode = true;
-      this._addCard(cardName, data, editMode);
+      this._addCard(cardName, payload, editMode);
     },
 
     toggleLink() {
@@ -200,7 +200,7 @@ export default Component.extend({
         let card = Ember.Object.create({
           destinationElementId,
           cardName,
-          data: payload,
+          payload,
           callbacks: env,
           editor,
           postModel: env.postModel
@@ -280,11 +280,11 @@ export default Component.extend({
     editor.destroy();
   },
 
-  _addCard(cardName, data, editMode=false) {
+  _addCard(cardName, payload, editMode=false) {
     let editor = this.get('editor');
     let section = editor.activeSection;
     editor.run(postEditor => {
-      let card = editor.builder.createCardSection(cardName, data);
+      let card = editor.builder.createCardSection(cardName, payload);
       if (editMode) {
         editor.editCard(card);
       }

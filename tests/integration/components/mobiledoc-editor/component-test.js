@@ -515,7 +515,7 @@ test('it has `addCardInEditMode` action to add card in edit mode', function(asse
   assert.ok(this.$(`#demo-card-editor`).length, 'Card not in display mode');
 });
 
-test('`addCard` passes `data`, breaks reference to original payload', function(assert) {
+test('LEGACY `addCard` passes `data`, breaks reference to original payload', function(assert) {
   assert.expect(6);
 
   let passedPayload;
@@ -562,6 +562,59 @@ test('`addCard` passes `data`, breaks reference to original payload', function(a
             'has mutate-payload button');
   assert.ok(this.$(`#demo-card:contains(${payload.foo})`).length,
             'displays passed `data`');
+  this.$('button#mutate-payload').click();
+
+  assert.equal(passedPayload.foo, 'baz', 'mutates its payload');
+  assert.equal(payload.foo, 'bar', 'originalpayload remains unchanged');
+});
+
+test('`addCard` passes `payload`, breaks reference to original payload', function(assert) {
+  assert.expect(6);
+
+  let passedPayload;
+
+  const DemoCardComponent = Ember.Component.extend({
+    init() {
+      this._super(...arguments);
+      passedPayload = this.get('payload');
+    },
+    actions: {
+      mutatePayload() {
+        this.set('payload.foo', 'baz');
+      }
+    }
+  });
+
+  this.registry.register('component:demo-card', DemoCardComponent);
+  this.registry.register('template:components/demo-card', hbs`
+    <div id="demo-card">
+      {{payload.foo}}
+      <button id='mutate-payload' {{action 'mutatePayload'}}></button>
+    </div>
+  `);
+
+  this.set('cards', [createComponentCard('demo-card')]);
+  let payload = {foo: 'bar'};
+  this.set('payload', payload);
+
+  this.render(hbs`
+    {{#mobiledoc-editor cards=cards as |editor|}}
+      <button id='add-card' {{action editor.addCard 'demo-card' payload}}>
+      </button>
+    {{/mobiledoc-editor}}
+  `);
+
+  this.$('button#add-card').click();
+
+  assert.ok(!!passedPayload && passedPayload.foo === 'bar',
+            'payload is passed to card');
+  assert.ok(passedPayload !== payload,
+            'card receives data payload that is not the same object');
+
+  assert.ok(this.$('button#mutate-payload').length,
+            'has mutate-payload button');
+  assert.ok(this.$(`#demo-card:contains(${payload.foo})`).length,
+            'displays passed `payload`');
   this.$('button#mutate-payload').click();
 
   assert.equal(passedPayload.foo, 'baz', 'mutates its payload');
