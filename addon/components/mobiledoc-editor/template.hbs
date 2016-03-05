@@ -25,11 +25,14 @@
 
 {{#each componentCards as |card|}}
   {{#ember-wormhole to=card.destinationElementId}}
+    {{! LEGACY: Payload is passed as the legacy "data" attr below. This
+        should be removed before 1.0 }}
     {{component card.cardName
         editor=editor
         postModel=card.postModel
         cardName=card.cardName
-        data=card.data
+        payload=card.payload
+        data=card.payload
         editCard=(action card.callbacks.edit)
         saveCard=(action card.callbacks.save)
         cancelCard=(action card.callbacks.cancel)
