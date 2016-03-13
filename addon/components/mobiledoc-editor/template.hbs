@@ -39,3 +39,14 @@
         removeCard=(action card.env.remove)}}
   {{/ember-wormhole}}
 {{/each}}
+
+{{#each componentAtoms as |atom|}}
+  {{#ember-wormhole to=atom.destinationElementId}}
+    {{component atom.atomName
+        editor=editor
+        postModel=atom.postModel
+        atomName=atom.atomName
+        payload=atom.payload
+        value=atom.value}}
+  {{/ember-wormhole}}
+{{/each}}
