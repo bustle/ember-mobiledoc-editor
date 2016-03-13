@@ -6,8 +6,11 @@ import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
 let { computed, Component } = Ember;
 let { capitalize, camelize } = Ember.String;
 
-export const ADD_HOOK = 'addComponent';
-export const REMOVE_HOOK = 'removeComponent';
+export const ADD_CARD_HOOK = 'addComponent';
+export const REMOVE_CARD_HOOK = 'removeComponent';
+export const ADD_ATOM_HOOK = 'addAtomComponent';
+export const REMOVE_ATOM_HOOK = 'removeAtomComponent';
+
 const EDITOR_CARD_SUFFIX = '-editor';
 const EMPTY_MOBILEDOC = {
   version: MOBILEDOC_VERSION,
@@ -61,6 +64,7 @@ export default Component.extend({
       this.set('mobiledoc', mobiledoc);
     }
     this.set('componentCards', Ember.A([]));
+    this.set('componentAtoms', Ember.A([]));
     this.set('linkOffsets', null);
     this.set('activeMarkupTagNames', {});
     this.set('activeSectionTagNames', {});
@@ -184,7 +188,7 @@ export default Component.extend({
     let editorOptions = this.get('editorOptions');
     editorOptions.mobiledoc = mobiledoc;
     editorOptions.cardOptions = {
-      [ADD_HOOK]: ({env, options, payload}, isEditing=false) => {
+      [ADD_CARD_HOOK]: ({env, options, payload}, isEditing=false) => {
         let cardId = Ember.uuid();
         let cardName = env.name;
         if (isEditing) {
@@ -210,8 +214,35 @@ export default Component.extend({
         });
         return { card, element };
       },
-      [REMOVE_HOOK]: (card) => {
+      [ADD_ATOM_HOOK]: ({env, options, payload, value}) => {
+        let atomId = Ember.uuid();
+        let atomName = env.name;
+        let destinationElementId = `mobiledoc-editor-atom-${atomId}`;
+        let element = document.createElement('span');
+        element.id = destinationElementId;
+
+        // The data must be copied to avoid sharing the reference
+        payload = Ember.copy(payload, true);
+
+        let atom = Ember.Object.create({
+          destinationElementId,
+          atomName,
+          payload,
+          value,
+          callbacks: env,
+          editor,
+          postModel: env.postModel
+        });
+        Ember.run.schedule('afterRender', () => {
+          this.get('componentAtoms').pushObject(atom);
+        });
+        return { atom, element };
+      },
+      [REMOVE_CARD_HOOK]: (card) => {
         this.get('componentCards').removeObject(card);
+      },
+      [REMOVE_ATOM_HOOK]: (atom) => {
+        this.get('componentAtoms').removeObject(atom);
       }
     };
     editor = new Editor(editorOptions);
@@ -277,7 +308,9 @@ export default Component.extend({
 
   willDestroyElement() {
     let editor = this.get('editor');
-    editor.destroy();
+    try {
+      editor.destroy();
+    } catch(e) {}
   },
 
   _addCard(cardName, payload, editMode=false) {
