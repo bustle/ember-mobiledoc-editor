@@ -174,6 +174,8 @@ export default Component.extend({
     this._upstreamMobiledoc = mobiledoc;
     this._localMobiledoc = null;
 
+    this.willCreateEditor();
+
     // Teardown any old editor that might be around.
     let editor = this.get('editor');
     if (editor) {
@@ -237,34 +239,20 @@ export default Component.extend({
     });
     editor.on('update', () => {
       Ember.run.join(() => {
-        let serializeVersion = this.get('serializeVersion');
-        let updatedMobileDoc = editor.serialize(serializeVersion);
-        this._localMobiledoc = updatedMobileDoc;
-        this.sendAction('on-change', updatedMobileDoc);
+        this.editorUpdated(editor);
       });
     });
     editor.cursorDidChange(() => {
       if (this.isDestroyed) { return; }
-
       Ember.run.join(() => {
-        const markupTags = arrayToMap(editor.markupsInSelection, 'tagName');
-        const sectionTags = arrayToMap(editor.activeSections, 'tagName');
-
-        this.set('activeMarkupTagNames', markupTags);
-        this.set('activeSectionTagNames', sectionTags);
-
-        let isCursorOffEditor = !this.get('editor').cursor.offsets.head.section;
-        if (!isCursorOffEditor && !this._ignoreCursorDidChange) {
-          this.set('linkOffsets', null);
-        } else {
-          this._ignoreCursorDidChange = false;
-        }
+        this.cursorDidChange(editor);
       });
     });
     if (this.get('isEditingDisabled')) {
       editor.disableEditing();
     }
     this.set('editor', editor);
+    this.didCreateEditor();
   },
 
   didRender() {
@@ -279,6 +267,31 @@ export default Component.extend({
     let editor = this.get('editor');
     editor.destroy();
   },
+
+  editorUpdated(editor) {
+    let serializeVersion = this.get('serializeVersion');
+    let updatedMobileDoc = editor.serialize(serializeVersion);
+    this._localMobiledoc = updatedMobileDoc;
+    this.sendAction('on-change', updatedMobileDoc);
+  },
+
+  cursorDidChange(editor) {
+    const markupTags = arrayToMap(editor.markupsInSelection, 'tagName');
+    const sectionTags = arrayToMap(editor.activeSections, 'tagName');
+
+    this.set('activeMarkupTagNames', markupTags);
+    this.set('activeSectionTagNames', sectionTags);
+
+    let isCursorOffEditor = !this.get('editor').cursor.offsets.head.section;
+    if (!isCursorOffEditor && !this._ignoreCursorDidChange) {
+      this.set('linkOffsets', null);
+    } else {
+      this._ignoreCursorDidChange = false;
+    }
+  },
+
+  willCreateEditor: Ember.K,
+  didCreateEditor: Ember.K,
 
   _addCard(cardName, payload, editMode=false) {
     let editor = this.get('editor');
