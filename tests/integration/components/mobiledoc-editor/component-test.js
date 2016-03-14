@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import { selectRange } from 'dummy/tests/helpers/selection';
 import hbs from 'htmlbars-inline-precompile';
 import createComponentCard from 'ember-mobiledoc-editor/utils/create-component-card';
+import createComponentAtom from 'ember-mobiledoc-editor/utils/create-component-atom';
 import moveCursorTo from '../../../helpers/move-cursor-to';
 import simulateMouseup from '../../../helpers/simulate-mouse-up';
 import Ember from 'ember';
@@ -764,4 +765,96 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
     assert.ok(this.$('#not-p').length, 'is not p');
     done();
   });
+});
+
+test('wraps component-atom adding in runloop correctly', function(assert) {
+  assert.expect(3);
+  let mobiledoc = simpleMobileDoc('Howdy');
+  let editor;
+
+  this.set('mobiledoc', mobiledoc);
+  this.register('component:gather-editor', Ember.Component.extend({
+    didRender() {
+      editor = this.get('editor');
+    }
+  }));
+  this.registry.register('template:components/demo-atom', hbs`
+    <span id="demo-atom">demo-atom</span>
+   `);
+  this.set('atoms', [createComponentAtom('demo-atom')]);
+  this.set('mobiledoc', simpleMobileDoc(''));
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc atoms=atoms as |editor|}}
+      {{gather-editor editor=editor.editor}}
+    {{/mobiledoc-editor}}
+  `);
+
+  // Add an atom without being in a runloop
+  assert.ok(!Ember.run.currentRunLoop, 'precond - no run loop');
+  editor.run((postEditor) => {
+    moveCursorTo(this, 'p:first');
+    let position = editor.cursor.offsets.head;
+    let atom = postEditor.builder.createAtom('demo-atom', 'value', {});
+    postEditor.insertMarkers(position, [atom]);
+  });
+  assert.ok(!Ember.run.currentRunLoop, 'postcond - no run loop after editor.run');
+
+  assert.ok(this.$('#demo-atom').length, 'demo atom is added');
+});
+
+test('throws on unknown atom when `unknownAtomHandler` is not passed', function(assert) {
+  this.set('mobiledoc', {
+    version: MOBILEDOC_VERSION,
+    atoms: [
+      ['missing-atom', 'value', {}]
+    ],
+    markups: [],
+    cards: [],
+    sections: [
+      [1, 'P', [
+        [1, [], 0, 0]]
+      ]
+    ]
+  });
+  this.set('unknownAtomHandler', undefined);
+
+  assert.throws(() => {
+    this.render(hbs`
+      {{#mobiledoc-editor mobiledoc=mobiledoc
+                options=(hash unknownAtomHandler=unknownAtomHandler) as |editor|}}
+      {{/mobiledoc-editor}}
+    `);
+  }, /Unknown atom "missing-atom" found.*no unknownAtomHandler/);
+});
+
+test('calls `unknownAtomHandler` when it renders an unknown atom', function(assert) {
+  assert.expect(4);
+  let expectedPayload = {};
+
+  this.set('unknownAtomHandler', ({env, value, payload}) => {
+    assert.equal(env.name, 'missing-atom', 'correct env.name');
+    assert.equal(value, 'value', 'correct name');
+    assert.ok(!!env.onTeardown, 'has onTeardown hook');
+    assert.deepEqual(payload, expectedPayload, 'has payload');
+  });
+
+  this.set('mobiledoc', {
+    version: MOBILEDOC_VERSION,
+    atoms: [
+      ['missing-atom', 'value', expectedPayload]
+    ],
+    markups: [],
+    cards: [],
+    sections: [
+      [1, 'P', [
+        [1, [], 0, 0]]
+      ]
+    ]
+  });
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc
+              options=(hash unknownAtomHandler=unknownAtomHandler) as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
 });
