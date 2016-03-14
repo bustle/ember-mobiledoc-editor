@@ -212,7 +212,7 @@ export default Ember.Component.extend({
     return [
       createComponentCard('demo-card')
     ];
-  });
+  })
 });
 ```
 
