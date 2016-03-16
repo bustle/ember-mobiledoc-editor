@@ -8,6 +8,8 @@ let { capitalize, camelize } = Ember.String;
 
 export const ADD_HOOK = 'addComponent';
 export const REMOVE_HOOK = 'removeComponent';
+export const WILL_CREATE_EDITOR_ACTION = 'will-create-editor';
+export const DID_CREATE_EDITOR_ACTION = 'did-create-editor';
 const EDITOR_CARD_SUFFIX = '-editor';
 const EMPTY_MOBILEDOC = {
   version: MOBILEDOC_VERSION,
@@ -252,7 +254,7 @@ export default Component.extend({
       editor.disableEditing();
     }
     this.set('editor', editor);
-    this.didCreateEditor();
+    this.didCreateEditor(editor);
   },
 
   didRender() {
@@ -290,8 +292,13 @@ export default Component.extend({
     }
   },
 
-  willCreateEditor: Ember.K,
-  didCreateEditor: Ember.K,
+  willCreateEditor() {
+    this.sendAction(WILL_CREATE_EDITOR_ACTION);
+  },
+
+  didCreateEditor(editor) {
+    this.sendAction(DID_CREATE_EDITOR_ACTION, editor);
+  },
 
   _addCard(cardName, payload, editMode=false) {
     let editor = this.get('editor');

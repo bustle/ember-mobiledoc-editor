@@ -6,6 +6,10 @@ import moveCursorTo from '../../../helpers/move-cursor-to';
 import simulateMouseup from '../../../helpers/simulate-mouse-up';
 import Ember from 'ember';
 import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
+import { Editor } from 'mobiledoc-kit';
+import {
+  WILL_CREATE_EDITOR_ACTION, DID_CREATE_EDITOR_ACTION
+} from 'ember-mobiledoc-editor/components/mobiledoc-editor/component';
 
 function simpleMobileDoc(text) {
   return {
@@ -65,36 +69,67 @@ test('it boots mobiledoc editor with mobiledoc', function(assert) {
   );
 });
 
+test(`fires ${WILL_CREATE_EDITOR_ACTION} and ${DID_CREATE_EDITOR_ACTION} actions`, function(assert) {
+  assert.expect(5);
+  let willCreateCalls = 0;
+  let editor;
+
+  assert.equal(WILL_CREATE_EDITOR_ACTION, 'will-create-editor',
+               'precond - correct will-create action name');
+  assert.equal(DID_CREATE_EDITOR_ACTION, 'did-create-editor',
+               'precond - correct did-create action name');
+
+  this.set('mobiledoc', simpleMobileDoc('hello'));
+
+  this.on('willCreateEditor', () => {
+    willCreateCalls++;
+    assert.ok(!editor, 'calls willCreateEditor before didCreateEditor');
+  });
+
+  this.on('didCreateEditor', (editor) => {
+    assert.equal(willCreateCalls, 1, 'calls didCreateEditor after willCreateEditor');
+    assert.ok(editor && (editor instanceof Editor),
+              `passes Editor instance to ${DID_CREATE_EDITOR_ACTION}`);
+  });
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc
+                        will-create-editor=(action "willCreateEditor")
+                        did-create-editor=(action "didCreateEditor") as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+});
+
 test('it does not create a new editor when the same mobiledoc is set', function(assert) {
-  assert.expect(2);
+  assert.expect(4);
   let mobiledoc = simpleMobileDoc('Howdy');
   let editor;
-  let editors = [];
+  let willCreateCalls = 0;
+  let didCreateCalls = 0;
 
   this.set('mobiledoc', mobiledoc);
-  this.register('component:gather-editor', Ember.Component.extend({
-    didRender() {
-      // Will be rendered 2x: once initially, again after `|editor|` hash
-      // changes. Save each editor reference into `editors` for later comparison
-      editor = this.get('editor');
-      editors.push(editor);
-    }
-  }));
+  this.on('willCreateEditor', () => willCreateCalls++);
+  this.on('didCreateEditor', (_editor) => {
+    editor = _editor;
+    didCreateCalls++;
+  });
   this.render(hbs`
     {{#mobiledoc-editor mobiledoc=(readonly mobiledoc)
+                        will-create-editor=(action "willCreateEditor")
+                        did-create-editor=(action "didCreateEditor")
                         on-change=(action (mut mobiledoc)) as |editor|}}
-      {{gather-editor editor=editor.editor}}
     {{/mobiledoc-editor}}
   `);
 
-  assert.equal(editors.length, 1, 'initial editor created');
+  assert.equal(willCreateCalls, 1, 'called willCreateEditor 1x');
+  assert.equal(didCreateCalls, 1, 'called didCreateEditor 1x');
 
   editor.run((postEditor) => {
     postEditor.insertText(editor.range.tail, 'Friend');
   });
 
-  assert.ok(editors.length === 2 && editors[0] === editors[1],
-            'editor is same reference');
+  assert.equal(willCreateCalls, 1, 'still only called willCreateEditor 1x');
+  assert.equal(didCreateCalls, 1, 'still only called didCreateEditor 1x');
 });
 
 test('wraps component-card adding in runloop correctly', function(assert) {
@@ -103,19 +138,17 @@ test('wraps component-card adding in runloop correctly', function(assert) {
   let editor;
 
   this.set('mobiledoc', mobiledoc);
-  this.register('component:gather-editor', Ember.Component.extend({
-    didRender() {
-      editor = this.get('editor');
-    }
-  }));
+  this.on('didCreateEditor', (_editor) => editor = _editor);
   this.registry.register('template:components/demo-card', hbs`
     <div id="demo-card">demo-card</div>
    `);
   this.set('cards', [createComponentCard('demo-card')]);
   this.set('mobiledoc', simpleMobileDoc(''));
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
-      {{gather-editor editor=editor.editor}}
+    {{#mobiledoc-editor
+              did-create-editor=(action "didCreateEditor")
+              mobiledoc=mobiledoc
+              cards=cards as |editor|}}
     {{/mobiledoc-editor}}
   `);
 
@@ -515,7 +548,7 @@ test('it has `addCardInEditMode` action to add card in edit mode', function(asse
   assert.ok(this.$(`#demo-card-editor`).length, 'Card not in display mode');
 });
 
-test('LEGACY `addCard` passes `data`, breaks reference to original payload', function(assert) {
+test('(deprecated) `addCard` passes `data`, breaks reference to original payload', function(assert) {
   assert.expect(6);
 
   let passedPayload;
