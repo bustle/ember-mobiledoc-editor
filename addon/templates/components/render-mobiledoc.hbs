@@ -4,3 +4,8 @@
     {{component card.componentName payload=card.payload}}
   {{/ember-wormhole}}
 {{/each}}
+{{#each _componentAtoms as |atom|}}
+  {{#ember-wormhole to=atom.destinationElementId}}
+    {{component atom.componentName payload=atom.payload value=atom.value}}
+  {{/ember-wormhole}}
+{{/each}}
