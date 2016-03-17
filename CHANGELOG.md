@@ -1,3 +1,12 @@
+<a name="0.4.0-beta.1"></a>
+# 0.4.0-beta.1 (2016-03-17)
+
+
+* Merge pull request #63 from bustlelabs/upgrade-mobiledoc-kit ([adc80a7](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/adc80a7))
+* upgrade mobiledoc-kit to 0.9.0-beta.1 ([cb6d0b9](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/cb6d0b9))
+
+
+
 <a name="0.3.8"></a>
 ## 0.3.8 (2016-03-17)
 
@@ -8,6 +17,7 @@
 * Merge pull request #58 from ef4/cursor-action ([97861ef](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/97861ef))
 * Merge pull request #60 from t4t5/patch-1 ([f24e5d3](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/f24e5d3))
 * Merge pull request #61 from bustlelabs/test-editor-hooks ([2004748](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2004748))
+* v0.3.8 ([9236303](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/9236303))
 
 
 
