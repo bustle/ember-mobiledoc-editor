@@ -21,10 +21,10 @@ dependency and load its assets.
 
 ### Usage
 
-This addon is primarily composed of components used building an editor
+This addon is primarily composed of components used for building an editor
 UI.
 
-* [`{{mobiledoc-editor}}`](#mobiledoc-editor-editor)
+* [`{{mobiledoc-editor}}`](#mobiledoc-editor)
 * [`{{mobiledoc-section-button}}`](#mobiledoc-section-button)
 * [`{{mobiledoc-markup-button}}`](#mobiledoc-markup-button)
 * [`{{mobiledoc-link-button}}`](#mobiledoc-link-button)
@@ -59,9 +59,50 @@ The components accepts these arguments:
 * `spellcheck` boolean
 * `autofocus` boolean
 * `placeholder` string -- the placeholder text to display when the mobiledoc is blank
-* `options` hash -- any properties in the `options` hash will be passed to the ContentKitEditor constructor
+* `options` hash -- any properties in the `options` hash will be passed to the MobiledocKitEditor constructor
 * `serializeVersion` string -- The mobiledoc version to serialize to when firing the on-change action. Default: 0.3.0
+* `on-change` -- Accepts an action that the component will send every time the mobiledoc is updated
+* `will-create-editor` -- Accepts an action that will be sent when the instance of the MobiledocKitEditor is about to be created
+  This action may be fired more than once if the component's `mobiledoc` property is set to a new value.
+* `did-create-editor` -- Accepts an action that will be sent after the instance of the MobiledocKitEditor is created.
+  The action is passed the created editor instance.
+  This action may be fired more than once if the component's `mobiledoc` property is set to a new value.
 
+For example, the following index route and template would log before and
+after creating the MobiledocKitEditor, and every time the user modified the
+mobiledoc (by typing some text, e.g.).
+
+```javascript
+// routes/index.js
+
+export default Ember.Route.extend({
+ ...,
+ actions: {
+   mobiledocWasUpdated(updatedMobiledoc) {
+     console.log('New mobiledoc:',updatedMobiledoc);
+     // note that this action will be fired for every changed character,
+     // so you may want to debounce API calls if you are using it for
+     // an "autosave" feature.
+   },
+   willCreateEditor() {
+     console.log('about to create the editor');
+   },
+   didCreateEditor(editor) {
+     console.log('created the editor:', editor);
+   }
+ }
+});
+```
+
+```hbs
+{{! index.hbs }}
+
+{{mobiledoc-editor
+    on-change=(action 'mobiledocWasUpdated')
+    will-create-editor=(action 'willCreateEditor')
+    did-create-editor=(action 'didCreateEditor')
+}}
+```
 
 Of course often you want to provide a user interface to bold text, create
 headlines, or otherwise reflect the state of the editor.
