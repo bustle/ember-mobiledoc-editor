@@ -1,6 +1,64 @@
-<a name="0.3.2"></a>
-## 0.3.2 (2016-02-04)
+<a name="0.3.8"></a>
+## 0.3.8 (2016-03-17)
 
+
+* Document and test on-change, will-create-editor, did-create-editor hooks ([08fc08e](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/08fc08e))
+* Extensibility hooks ([8c67d33](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/8c67d33)), closes [#24](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/24)
+* Fix SyntaxError ([ca7f020](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/ca7f020))
+* Merge pull request #58 from ef4/cursor-action ([97861ef](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/97861ef))
+* Merge pull request #60 from t4t5/patch-1 ([f24e5d3](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/f24e5d3))
+* Merge pull request #61 from bustlelabs/test-editor-hooks ([2004748](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2004748))
+
+
+
+<a name="0.3.7"></a>
+## 0.3.7 (2016-03-06)
+
+
+* 0.3.7 ([0086ed7](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/0086ed7))
+* Merge pull request #56 from bustlelabs/update-broccoli-funnel ([9e06086](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/9e06086))
+* upgrade broccoli-funnel to ^1.0.1 ([c2c59ea](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/c2c59ea)), closes [#55](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/55)
+
+
+
+<a name="0.3.6"></a>
+## 0.3.6 (2016-03-05)
+
+
+* Merge pull request #54 from bustlelabs/payload-please ([62a4918](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/62a4918))
+* Pass `payload` to card components, replaces `data` ([be336c1](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/be336c1))
+* update release instructions ([f0397d2](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/f0397d2))
+* v0.3.6 ([9edf43d](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/9edf43d))
+
+
+
+<a name="0.3.5"></a>
+## 0.3.5 (2016-02-11)
+
+
+* Expose version ([56b2899](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/56b2899))
+* Merge pull request #53 from bustlelabs/expose-version ([6f7d0e9](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/6f7d0e9))
+* v0.3.5 ([20340e2](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/20340e2))
+
+
+
+<a name="0.3.4"></a>
+## 0.3.4 (2016-02-10)
+
+
+* 0.3.4 ([c190934](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/c190934))
+* bump mobiledoc-kit to 0.8.3 ([a53d3ad](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/a53d3ad))
+
+
+
+<a name="0.3.3"></a>
+## 0.3.3 (2016-02-08)
+
+
+* 0.3.3 ([3927578](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/3927578))
+* Exposes `serializeVersion` property on `{{mobiledoc-editor}}` ([3ad2695](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/3ad2695))
+* Merge pull request #52 from bustlelabs/expose-serialize-version ([eb613a6](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/eb613a6))
+* Update changelog ([98e749b](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/98e749b))
 
 
 

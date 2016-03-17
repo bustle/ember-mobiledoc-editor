@@ -286,6 +286,7 @@ The component will be provided with the following `attrs`:
 Releasing a new version:
 
 * update version in `package.json` and `addon/version.js`
+* `npm run update-changelog`
 * `git commit -m "v<versionNumber>"`
 * `git tag v<versionNumber>`
 * `git push origin --tags`
