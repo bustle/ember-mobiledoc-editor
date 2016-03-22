@@ -1,9 +1,23 @@
+<a name="0.4.0"></a>
+# 0.4.0 (2016-03-22)
+
+
+* Expose card env to ember component cards ([44a6cd8](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/44a6cd8))
+* Merge pull request #64 from ef4/card-env ([55f01da](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/55f01da))
+* Merge pull request #65 from bustlelabs/test-component-card-properties ([5ac1190](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/5ac1190))
+* Merge pull request #66 from bustlelabs/update-mobiledoc-kit ([33794a5](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/33794a5))
+* Test that component cards are passed env and other properties ([a2dff20](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/a2dff20))
+* update mobiledoc-kit dep to ^0.9.0 ([2c2c0f2](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2c2c0f2))
+
+
+
 <a name="0.4.0-beta.1"></a>
 # 0.4.0-beta.1 (2016-03-17)
 
 
 * Merge pull request #63 from bustlelabs/upgrade-mobiledoc-kit ([adc80a7](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/adc80a7))
 * upgrade mobiledoc-kit to 0.9.0-beta.1 ([cb6d0b9](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/cb6d0b9))
+* v0.4.0-beta.1 ([b8fcb1a](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/b8fcb1a))
 
 
 
