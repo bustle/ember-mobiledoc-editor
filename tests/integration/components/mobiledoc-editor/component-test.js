@@ -11,6 +11,8 @@ import {
   WILL_CREATE_EDITOR_ACTION, DID_CREATE_EDITOR_ACTION
 } from 'ember-mobiledoc-editor/components/mobiledoc-editor/component';
 
+const COMPONENT_CARD_EXPECTED_PROPS = ['env', 'editCard', 'saveCard', 'cancelCard', 'removeCard'];
+
 function simpleMobileDoc(text) {
   return {
     version: MOBILEDOC_VERSION,
@@ -21,6 +23,20 @@ function simpleMobileDoc(text) {
       [1, 'p', [
         [0, [], 0, text]
       ]]
+    ]
+  };
+}
+
+function mobiledocWithCard(cardName, cardPayload={}) {
+  return {
+    version: MOBILEDOC_VERSION,
+    markups: [],
+    atoms: [],
+    cards: [
+      [cardName, cardPayload]
+    ],
+    sections: [
+      [10, 0]
     ]
   };
 }
@@ -546,6 +562,49 @@ test('it has `addCardInEditMode` action to add card in edit mode', function(asse
 
   assert.ok(!this.$(`#demo-card`).length, 'Card added in edit mode');
   assert.ok(this.$(`#demo-card-editor`).length, 'Card not in display mode');
+});
+
+test(`sets ${COMPONENT_CARD_EXPECTED_PROPS.join(',')} properties on card components`, function(assert) {
+  assert.expect(COMPONENT_CARD_EXPECTED_PROPS.length);
+
+  let Component = Ember.Component.extend({
+    didInsertElement() {
+      COMPONENT_CARD_EXPECTED_PROPS.forEach(propName => {
+        assert.ok(!!this.get(propName), `has ${propName} property`);
+      });
+    }
+  });
+  this.registry.register('component:demo-card', Component);
+  this.registry.register('template:components/demo-card', hbs`<div id="demo-card"></div>`);
+  this.set('cards', [createComponentCard('demo-card')]);
+  this.set('mobiledoc', mobiledocWithCard('demo-card'));
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+});
+
+test('component card `env` property exposes `isInEditor`', function(assert) {
+  assert.expect(1);
+
+  let env;
+  let Component = Ember.Component.extend({
+    didInsertElement() {
+      env = this.get('env');
+    }
+  });
+  this.registry.register('component:demo-card', Component);
+  this.registry.register('template:components/demo-card', hbs`<div id="demo-card"></div>`);
+  this.set('cards', [createComponentCard('demo-card')]);
+  this.set('mobiledoc', mobiledocWithCard('demo-card'));
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+
+  assert.ok(env && env.isInEditor, 'env.isInEditor is true');
 });
 
 test('(deprecated) `addCard` passes `data`, breaks reference to original payload', function(assert) {
