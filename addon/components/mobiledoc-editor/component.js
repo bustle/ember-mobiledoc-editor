@@ -205,7 +205,7 @@ export default Component.extend({
           destinationElementId,
           cardName,
           payload,
-          callbacks: env,
+          env,
           editor,
           postModel: env.postModel
         });

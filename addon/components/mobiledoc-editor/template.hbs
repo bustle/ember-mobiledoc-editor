@@ -33,9 +33,10 @@
         cardName=card.cardName
         payload=card.payload
         data=card.payload
-        editCard=(action card.callbacks.edit)
-        saveCard=(action card.callbacks.save)
-        cancelCard=(action card.callbacks.cancel)
-        removeCard=(action card.callbacks.remove)}}
+        env=card.env
+        editCard=(action card.env.edit)
+        saveCard=(action card.env.save)
+        cancelCard=(action card.env.cancel)
+        removeCard=(action card.env.remove)}}
   {{/ember-wormhole}}
 {{/each}}
