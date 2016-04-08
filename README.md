@@ -130,7 +130,7 @@ Additionally `editor` provides the following actions:
   selection.
 * `toggleLink`, toggling the linking of a selection. The user will be prompted
    for a URL if required.
-* `addCard`, passed a card name and payload will add that card at the end of
+* `addCard`, passed a card name and payload will add that card at the end of the post.
 * `addCardInEditMode`, passed a card name and payload will add that card at the end of
   a post and render it in "edit" mode initially.
 * `createListSection`, changing selected content into list items.
