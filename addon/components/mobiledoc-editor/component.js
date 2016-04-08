@@ -81,14 +81,6 @@ export default Component.extend({
       editor.run(postEditor => postEditor.toggleSection(newTagName));
     },
 
-    // Deprecated
-    toggleSectionTagName(newTagName) {
-      Ember.warn('toggleSectionTagName is deprecated. Use toggleSection instead',
-                 false,
-                 {id: 'mobiledoc-editor-toggleSectionTagName'});
-      this.send('toggleSection', newTagName);
-    },
-
     createListSection(tagName) {
       const editor = this.get('editor');
       const section = editor.activeSections[0];
