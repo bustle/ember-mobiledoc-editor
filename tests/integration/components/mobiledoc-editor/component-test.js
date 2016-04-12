@@ -6,7 +6,7 @@ import moveCursorTo from '../../../helpers/move-cursor-to';
 import simulateMouseup from '../../../helpers/simulate-mouse-up';
 import Ember from 'ember';
 import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
-import { Editor } from 'mobiledoc-kit';
+import MobiledocKit from 'mobiledoc-kit';
 import {
   WILL_CREATE_EDITOR_ACTION, DID_CREATE_EDITOR_ACTION
 } from 'ember-mobiledoc-editor/components/mobiledoc-editor/component';
@@ -104,7 +104,7 @@ test(`fires ${WILL_CREATE_EDITOR_ACTION} and ${DID_CREATE_EDITOR_ACTION} actions
 
   this.on('didCreateEditor', (editor) => {
     assert.equal(willCreateCalls, 1, 'calls didCreateEditor after willCreateEditor');
-    assert.ok(editor && (editor instanceof Editor),
+    assert.ok(editor && (editor instanceof MobiledocKit.Editor),
               `passes Editor instance to ${DID_CREATE_EDITOR_ACTION}`);
   });
 
@@ -455,23 +455,24 @@ test('exposes the `postModel` on the card component', function(assert) {
 
 test('it adds a card and removes an active blank section', function(assert) {
   assert.expect(4);
+
   this.registry.register('template:components/demo-card', hbs`
     <div id="demo-card"><button id='edit-card' {{action editCard}}></button></div>
    `);
-  this.set('cards', [
-    createComponentCard('demo-card')
-  ]);
+  this.set('cards', [ createComponentCard('demo-card') ]);
   this.set('mobiledoc', simpleMobileDoc(''));
+  this.on('didCreateEditor', (editor) => { this.editor = editor; });
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards did-create-editor=(action "didCreateEditor") as |editor|}}
       <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
     {{/mobiledoc-editor}}
   `);
 
   assert.equal(this.$('.mobiledoc-editor p').length, 1, 'blank section exists');
   assert.equal(this.$('#demo-card').length, 0, 'no card section exists');
-  moveCursorTo(this, '.mobiledoc-editor p');
+  this.editor.selectRange(new MobiledocKit.Range(this.editor.post.headPosition()));
   this.$('button#add-card').click();
+
   assert.equal(this.$('.mobiledoc-editor p').length, 0, 'no blank section');
   assert.equal(this.$('#demo-card').length, 1, 'card section exists');
 });

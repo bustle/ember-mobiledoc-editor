@@ -1,3 +1,8 @@
+/**
+ * Move the cursor to the given selector.
+ * This does *not* inform the editor that the cursor has changed.
+ * `Editor#selectRange` should be preferred.
+ */
 export default function moveCursorTo(context, selector) {
   let element = context.$(selector);
   if (!element.length) {
