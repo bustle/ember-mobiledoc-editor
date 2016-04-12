@@ -44,24 +44,23 @@ test('it yields for html', function(assert) {
     {{~/mobiledoc-link-button~}}
   `);
 
-  let button = this.$('button');
   assert.equal(
-    button.html(), 'Fuerte',
+    this.$('button').html(), 'Fuerte',
     'text is yielded');
 });
 
 test('it calls toggleLink on click', function(assert) {
   assert.expect(1);
-  this.set('editor', {
+  let mockEditor = {
     toggleLink() {
       assert.ok(true, 'toggleLink called');
     },
     activeMarkupTagNames: {}
-  });
+  };
+  this.set('editor', mockEditor);
   this.render(hbs`
     {{~mobiledoc-link-button editor=editor~}}
   `);
 
-  let button = this.$('button');
-  button.click();
+  this.$('button').click();
 });

@@ -10,52 +10,11 @@ import MobiledocKit from 'mobiledoc-kit';
 import {
   WILL_CREATE_EDITOR_ACTION, DID_CREATE_EDITOR_ACTION
 } from 'ember-mobiledoc-editor/components/mobiledoc-editor/component';
+import {
+  simpleMobileDoc, linkMobileDoc, mobiledocWithCard
+} from '../../../helpers/create-mobiledoc';
 
 const COMPONENT_CARD_EXPECTED_PROPS = ['env', 'editCard', 'saveCard', 'cancelCard', 'removeCard'];
-
-function simpleMobileDoc(text) {
-  return {
-    version: MOBILEDOC_VERSION,
-    markups: [],
-    atoms: [],
-    cards: [],
-    sections: [
-      [1, 'p', [
-        [0, [], 0, text]
-      ]]
-    ]
-  };
-}
-
-function mobiledocWithCard(cardName, cardPayload={}) {
-  return {
-    version: MOBILEDOC_VERSION,
-    markups: [],
-    atoms: [],
-    cards: [
-      [cardName, cardPayload]
-    ],
-    sections: [
-      [10, 0]
-    ]
-  };
-}
-
-function linkMobileDoc(text) {
-  return {
-    version: MOBILEDOC_VERSION,
-    markups: [
-      ['a', ['href', 'http://example.com']]
-    ],
-    atoms: [],
-    cards: [],
-    sections: [
-      [1, 'p', [
-        [0, [0], 1, text]
-      ]]
-    ]
-  };
-}
 
 moduleForComponent('mobiledoc-editor', 'Integration | Component | mobiledoc editor', {
   integration: true
@@ -362,20 +321,35 @@ test('toolbar has list insertion button', function(assert) {
   assert.ok(this.$(`ul li:contains(${text})`).length, 'list-ifies text');
 });
 
+test('toggleLink action is no-op when nothing is selected', function(assert) {
+  assert.expect(2);
+  this.set('mobiledoc', simpleMobileDoc(''));
+  this.on('didCreateEditor', (editor) => this._editor = editor);
+  this.render(hbs`
+    {{#mobiledoc-editor autofocus=false mobiledoc=mobiledoc did-create-editor=(action 'didCreateEditor') as |editor|}}
+      <button {{action editor.toggleLink}}>Link</button>
+    {{/mobiledoc-editor}}
+  `);
+
+  assert.ok(!this._editor.hasCursor(), 'precond - no cursor');
+  this.$('button').click();
+  assert.ok(this.$('input').length === 0, 'no link input shown');
+});
+
 test('it links selected text and fires `on-change`', function(assert) {
   assert.expect(2);
   let text = 'Howdy';
   this.set('mobiledoc', simpleMobileDoc(text));
-  this.on('on-change', (mobiledoc) => {
-    assert.ok(!!mobiledoc, 'change event fired with mobiledoc');
-  });
+  this.on('on-change', (mobiledoc) => this._mobiledoc = mobiledoc);
+  this.on('didCreateEditor', (editor) => this._editor = editor);
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |editor|}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc on-change=(action 'on-change') did-create-editor=(action 'didCreateEditor') as |editor|}}
       <button {{action editor.toggleLink}}>Link</button>
     {{/mobiledoc-editor}}
   `);
-  let textNode = this.$(`p:contains(${text})`)[0].firstChild;
-  selectRange(textNode, 0, textNode, text.length);
+  let { _editor: editor } = this;
+  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
+
   this.$('button:contains(Link)').click();
   this.$('input').val('http://example.com');
   this.$('input').change();
@@ -384,27 +358,32 @@ test('it links selected text and fires `on-change`', function(assert) {
     !!this.$('a[href="http://example.com"]:contains(Howdy)').length,
     'a tag contains text'
   );
+  let markup = this._mobiledoc.markups[0];
+  assert.deepEqual(markup, ['a', ['href', 'http://example.com']],
+                   'mobiledoc contains link markup');
 });
 
 test('it de-links selected text and fires `on-change`', function(assert) {
   assert.expect(2);
   let text = 'Howdy';
   this.set('mobiledoc', linkMobileDoc(text));
-  this.on('on-change', (mobiledoc) => {
-    assert.ok(!!mobiledoc, 'change event fired with mobiledoc');
-  });
+  this.on('on-change', (mobiledoc) => this._mobiledoc = mobiledoc);
+  this.on('did-create-editor', (editor) => this._editor = editor);
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |editor|}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc on-change=(action 'on-change') did-create-editor=(action 'did-create-editor') as |editor|}}
       <button {{action editor.toggleLink}}>Link</button>
     {{/mobiledoc-editor}}
   `);
-  let textNode = this.$(`p:contains(${text})`)[0].firstChild.firstChild;
-  selectRange(textNode, 0, textNode, text.length);
+
+  let { _editor: editor } = this;
+  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
   this.$('button').click();
+
   assert.ok(
     !this.$('a[href="http://example.com"]:contains(Howdy)').length,
     'a tag removed'
   );
+  assert.equal(this._mobiledoc.markups.length, 0, 'no markups');
 });
 
 test('it adds a component in display mode to the mobiledoc editor', function(assert) {
