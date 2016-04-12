@@ -231,15 +231,15 @@ export default Component.extend({
         Ember.run.end();
       }
     });
-    editor.on('update', () => {
+    editor.postDidChange(() => {
       Ember.run.join(() => {
-        this.editorUpdated(editor);
+        this.postDidChange(editor);
       });
     });
-    editor.cursorDidChange(() => {
+    editor.inputModeDidChange(() => {
       if (this.isDestroyed) { return; }
       Ember.run.join(() => {
-        this.cursorDidChange(editor);
+        this.inputModeDidChange(editor);
       });
     });
     if (this.get('isEditingDisabled')) {
@@ -262,21 +262,21 @@ export default Component.extend({
     editor.destroy();
   },
 
-  editorUpdated(editor) {
+  postDidChange(editor) {
     let serializeVersion = this.get('serializeVersion');
     let updatedMobileDoc = editor.serialize(serializeVersion);
     this._localMobiledoc = updatedMobileDoc;
     this.sendAction('on-change', updatedMobileDoc);
   },
 
-  cursorDidChange(editor) {
-    const markupTags = arrayToMap(editor.markupsInSelection, 'tagName');
+  inputModeDidChange(editor) {
+    const markupTags = arrayToMap(editor.activeMarkups, 'tagName');
     const sectionTags = arrayToMap(editor.activeSections, 'tagName');
 
     this.set('activeMarkupTagNames', markupTags);
     this.set('activeSectionTagNames', sectionTags);
 
-    let isCursorOffEditor = !this.get('editor').cursor.offsets.head.section;
+    let isCursorOffEditor = !this.get('editor').hasCursor();
     if (!isCursorOffEditor && !this._ignoreCursorDidChange) {
       this.set('linkOffsets', null);
     } else {
