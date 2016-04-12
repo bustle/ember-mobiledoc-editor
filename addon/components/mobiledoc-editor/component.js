@@ -66,7 +66,6 @@ export default Component.extend({
     this.set('linkOffsets', null);
     this.set('activeMarkupTagNames', {});
     this.set('activeSectionTagNames', {});
-    this._ignoreCursorDidChange = false;
     this._startedRunLoop  = false;
   },
 
@@ -113,20 +112,13 @@ export default Component.extend({
 
     toggleLink() {
       let editor = this.get('editor');
-      let range = editor.range;
-      let headSection = range.head.section,
-          tailSection = range.tail.section;
-      if (!(headSection.isMarkerable && tailSection.isMarkerable)) {
+      if (!editor.hasCursor()) {
         return;
       }
-      let hasMarkup = editor.detectMarkupInRange(range, 'a');
-      if (hasMarkup) {
-        editor.run(postEditor => {
-          postEditor.removeMarkupFromRange(range, hasMarkup);
-        });
+      if (editor.hasActiveMarkup('a')) {
+        editor.toggleMarkup('a');
       } else {
-        this._ignoreCursorDidChange = true;
-        this.set('linkOffsets', range);
+        this.set('linkOffsets', editor.range);
       }
     },
 
@@ -135,9 +127,7 @@ export default Component.extend({
       this.set('linkOffsets', null);
       let editor = this.get('editor');
       editor.run(postEditor => {
-        let markup = postEditor.builder.createMarkup('a', {
-          href: href
-        });
+        let markup = postEditor.builder.createMarkup('a', {href});
         postEditor.addMarkupToRange(offsets, markup);
       });
     },
@@ -275,13 +265,6 @@ export default Component.extend({
 
     this.set('activeMarkupTagNames', markupTags);
     this.set('activeSectionTagNames', sectionTags);
-
-    let isCursorOffEditor = !this.get('editor').hasCursor();
-    if (!isCursorOffEditor && !this._ignoreCursorDidChange) {
-      this.set('linkOffsets', null);
-    } else {
-      this._ignoreCursorDidChange = false;
-    }
   },
 
   willCreateEditor() {

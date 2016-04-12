@@ -17,7 +17,8 @@
 <li class="mobiledoc-toolbar__control">
   <button
     title="Link"
-    class="mobiledoc-toolbar__button" {{action editor.toggleLink}}>
+    class="mobiledoc-toolbar__button {{if editor.activeMarkupTagNames.isA 'active'}}"
+    {{action editor.toggleLink}}>
     Link
   </button>
 </li>

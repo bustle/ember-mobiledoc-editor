@@ -4,5 +4,9 @@ import layout from './template';
 let { Component } = Ember;
 
 export default Component.extend({
-  layout
+  layout,
+
+  didInsertElement() {
+    this.$('input').focus();
+  }
 });
