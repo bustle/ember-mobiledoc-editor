@@ -14,6 +14,22 @@ export function simpleMobileDoc(text) {
   };
 }
 
+export function mobiledocWithList(text, listTagName='ol') {
+  return {
+    version: MOBILEDOC_VERSION,
+    markups: [],
+    atoms: [],
+    cards: [],
+    sections: [
+      [3, listTagName, [
+        [
+          [0, [], 0, text]
+        ]
+      ]]
+    ]
+  };
+}
+
 export function mobiledocWithCard(cardName, cardPayload={}) {
   return {
     version: MOBILEDOC_VERSION,

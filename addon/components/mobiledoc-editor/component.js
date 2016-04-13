@@ -19,12 +19,12 @@ const EMPTY_MOBILEDOC = {
   sections: []
 };
 
-function arrayToMap(array, propertyName) {
+function arrayToMap(array) {
   let map = Object.create(null);
-  array.forEach(item => {
-    if (item[propertyName]) {
-      item = `is${capitalize(camelize(item[propertyName]))}`;
-      map[item] = true;
+  array.forEach(key => {
+    if (key) { // skip undefined/falsy key values
+      key = `is${capitalize(camelize(key))}`;
+      map[key] = true;
     }
   });
   return map;
@@ -244,8 +244,14 @@ export default Component.extend({
   },
 
   inputModeDidChange(editor) {
-    const markupTags = arrayToMap(editor.activeMarkups, 'tagName');
-    const sectionTags = arrayToMap(editor.activeSections, 'tagName');
+    const markupTags = arrayToMap(editor.activeMarkups.map(m => m.tagName));
+    // editor.activeSections are leaf sections.
+    // Map parent section tag names (e.g. 'p', 'ul', 'ol') so that list buttons
+    // are updated.
+    let sectionParentTagNames = editor.activeSections.map(s => {
+      return s.isNested ? s.parent.tagName : s.tagName;
+    });
+    const sectionTags = arrayToMap(sectionParentTagNames);
 
     this.set('activeMarkupTagNames', markupTags);
     this.set('activeSectionTagNames', sectionTags);

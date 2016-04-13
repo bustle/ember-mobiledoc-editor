@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import {
-  linkMobileDoc
+  linkMobileDoc, mobiledocWithList
 } from '../../../helpers/create-mobiledoc';
 import MobiledocKit from 'mobiledoc-kit';
 
@@ -18,7 +18,6 @@ test('it displays buttons', function(assert) {
   let mockEditor = {
     toggleMarkup() {},
     toggleSection() {},
-    createListSection() {},
     toggleLink() {}
   };
   this.set('editor', mockEditor);
@@ -47,4 +46,38 @@ test('Link button is active when text is linked', function(assert) {
   editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
 
   assert.ok(button.hasClass('active'), 'button is active after selecting link text');
+});
+
+test('List button is action when text is in list', function(assert) {
+  let text = 'Hello';
+  this.set('mobiledoc', mobiledocWithList(text, 'ul'));
+  this.on('did-create-editor', (editor) => this._editor = editor);
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc did-create-editor=(action 'did-create-editor') as |editor|}}
+      {{mobiledoc-toolbar editor=editor}}
+    {{/mobiledoc-editor}}
+  `);
+
+  let ulButton = this.$('button[title="List"]');
+  let olButton = this.$('button[title="Numbered List"]');
+  assert.ok(!ulButton.hasClass('active'), 'precond - ul not active');
+  assert.ok(!olButton.hasClass('active'), 'precond - ol not active');
+
+  let { _editor: editor } = this;
+  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
+
+  assert.ok(ulButton.hasClass('active'), 'ul button is active after selecting ul list text');
+  assert.ok(!olButton.hasClass('active'), 'ol button is not active after selecting ul list text');
+
+  // toggle ul->ol
+  olButton.click();
+
+  assert.ok(!ulButton.hasClass('active'), 'ul button is inactive after toggle');
+  assert.ok(olButton.hasClass('active'), 'ol button is active after toggle');
+
+  // toggle ol->p
+  olButton.click();
+
+  assert.ok(!ulButton.hasClass('active') && !olButton.hasClass('active'),
+            'ul and ol button are inactive after toggle off list');
 });
