@@ -72,33 +72,17 @@ export default Component.extend({
   actions: {
     toggleMarkup(markupTagName) {
       let editor = this.get('editor');
-      editor.run(postEditor => postEditor.toggleMarkup(markupTagName));
+      editor.toggleMarkup(markupTagName);
     },
 
-    toggleSection(newTagName) {
+    toggleSection(sectionTagName) {
       let editor = this.get('editor');
-      editor.run(postEditor => postEditor.toggleSection(newTagName));
+      editor.toggleSection(sectionTagName);
     },
 
     createListSection(tagName) {
-      const editor = this.get('editor');
-      const section = editor.activeSections[0];
-      if (!section) { return; }
-
-      // can only convert a section *into* an li, do nothing to
-      // sections that are already li sections
-      if (section.tagName === 'li') { return; }
-
-      const listItem = editor.run(postEditor => {
-        const { builder } = postEditor;
-        const listItem = builder.createListItem();
-        const listSection = builder.createListSection(tagName, [listItem]);
-        section.markers.forEach(m => listItem.markers.append(m.clone()));
-        postEditor.replaceSection(section, listSection);
-        return listItem;
-      });
-
-      editor.selectSections([listItem]);
+      Ember.deprecate('[ember-mobiledoc-editor] `createListSection` is deprecated. Use `toggleSection` with "ul" or "ol" instead', false);
+      this.send('toggleSection', tagName);
     },
 
     addCard(cardName, payload={}) {
