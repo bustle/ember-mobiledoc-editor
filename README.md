@@ -127,13 +127,14 @@ Additionally `editor` provides the following actions:
 
 * `toggleMarkup`, toggling the passed markup tag name in the current selection.
 * `toggleSection`, toggling the passed section tag name in the current
-  selection.
+  selection. Pass a string tagName as an argument. Possible valid values: "h1", "h2",
+   "p", "blockquote". To toggle to-from a list section pass "ul" or "ol".
 * `toggleLink`, toggling the linking of a selection. The user will be prompted
    for a URL if required.
 * `addCard`, passed a card name and payload will add that card at the end of the post.
 * `addCardInEditMode`, passed a card name and payload will add that card at the end of
   a post and render it in "edit" mode initially.
-* `createListSection`, changing selected content into list items.
+* [Deprecated] `createListSection`, changing selected content into list items.
 
 The `editor` object is often used indirectly by passing it to other
 components. For example:
