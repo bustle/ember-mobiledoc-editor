@@ -288,7 +288,7 @@ Releasing a new version:
 
 * update version in `package.json` and `addon/version.js`
 * `npm run update-changelog`
-* `git commit -m "v<versionNumber>"`
+* `git commit -am "v<versionNumber>"`
 * `git tag v<versionNumber>`
 * `git push origin --tags`
 * `npm publish`
