@@ -5,6 +5,7 @@
   toggleMarkup=(action 'toggleMarkup')
   toggleLink=(action 'toggleLink')
   addCard=(action 'addCard')
+  addAtom=(action 'addAtom')
   addCardInEditMode=(action 'addCardInEditMode')
   toggleSection=(action 'toggleSection')
   createListSection=(action 'createListSection')
@@ -25,7 +26,7 @@
 {{#each componentCards as |card|}}
   {{#ember-wormhole to=card.destinationElementId}}
     {{! LEGACY: Payload is passed as the legacy "data" attr below. This
-        should be removed before 1.0 }}
+        is deprecated and should be removed before 1.0 }}
     {{component card.cardName
         editor=editor
         postModel=card.postModel
@@ -37,5 +38,16 @@
         saveCard=(action card.env.save)
         cancelCard=(action card.env.cancel)
         removeCard=(action card.env.remove)}}
+  {{/ember-wormhole}}
+{{/each}}
+
+{{#each componentAtoms as |atom|}}
+  {{#ember-wormhole to=atom.destinationElementId}}
+    {{component atom.atomName
+        editor=editor
+        postModel=atom.postModel
+        atomName=atom.atomName
+        payload=atom.payload
+        value=atom.value}}
   {{/ember-wormhole}}
 {{/each}}

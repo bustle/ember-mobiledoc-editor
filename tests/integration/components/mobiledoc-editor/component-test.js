@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import { selectRange } from 'dummy/tests/helpers/selection';
 import hbs from 'htmlbars-inline-precompile';
 import createComponentCard from 'ember-mobiledoc-editor/utils/create-component-card';
+import createComponentAtom from 'ember-mobiledoc-editor/utils/create-component-atom';
 import moveCursorTo from '../../../helpers/move-cursor-to';
 import simulateMouseup from '../../../helpers/simulate-mouse-up';
 import Ember from 'ember';
@@ -14,10 +15,30 @@ import {
   simpleMobileDoc, linkMobileDoc, mobiledocWithCard
 } from '../../../helpers/create-mobiledoc';
 
-const COMPONENT_CARD_EXPECTED_PROPS = ['env', 'editCard', 'saveCard', 'cancelCard', 'removeCard'];
+let { Component } = Ember;
+
+const COMPONENT_CARD_EXPECTED_PROPS = ['env', 'editCard', 'saveCard', 'cancelCard', 'removeCard', 'postModel'];
 
 moduleForComponent('mobiledoc-editor', 'Integration | Component | mobiledoc editor', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    this.registerAtomComponent = (atomName, template, componentClass=Component.extend({tagName: 'span'})) => {
+      this.registry.register(`component:${atomName}`, componentClass);
+      this.registry.register(`template:components/${atomName}`, template);
+      return createComponentAtom(atomName);
+    };
+    this.registerCardComponent = (cardName, template, componentClass=Component.extend()) => {
+      this.registry.register(`component:${cardName}`, componentClass);
+      this.registry.register(`template:components/${cardName}`, template);
+      return createComponentCard(cardName);
+    };
+    this.registerCardComponentWithEditor = (cardName, template, componentClass, editorTemplate, editorClass=Component.extend()) => {
+      let card = this.registerCardComponent(cardName, template, componentClass);
+      this.registry.register(`component:${cardName}-editor`, editorClass);
+      this.registry.register(`template:components/${cardName}-editor`, editorTemplate);
+      return card;
+    };
+  }
 });
 
 test('it boots the mobiledoc editor', function(assert) {
@@ -114,16 +135,13 @@ test('wraps component-card adding in runloop correctly', function(assert) {
 
   this.set('mobiledoc', mobiledoc);
   this.on('didCreateEditor', (_editor) => editor = _editor);
-  this.registry.register('template:components/demo-card', hbs`
+  let card = this.registerCardComponent('demo-card', hbs`
     <div id="demo-card">demo-card</div>
-   `);
-  this.set('cards', [createComponentCard('demo-card')]);
-  this.set('mobiledoc', simpleMobileDoc(''));
+  `);
+  this.set('cards', [card]);
+  this.set('mobiledoc', simpleMobileDoc());
   this.render(hbs`
-    {{#mobiledoc-editor
-              did-create-editor=(action "didCreateEditor")
-              mobiledoc=mobiledoc
-              cards=cards as |editor|}}
+    {{#mobiledoc-editor did-create-editor=(action 'didCreateEditor') mobiledoc=mobiledoc cards=cards as |editor|}}
     {{/mobiledoc-editor}}
   `);
 
@@ -411,36 +429,16 @@ test('it adds a component in display mode to the mobiledoc editor', function(ass
   assert.ok(this.$(`#demo-card-editor`).length, 'Card changed to edit mode');
 });
 
-test('exposes the `postModel` on the card component', function(assert) {
-  assert.expect(2);
-  this.registry.register('component:demo-card', Ember.Component.extend({
-    init() {
-      this._super(...arguments);
-      assert.ok(!!this.get('postModel'), 'card is passed postModel');
-    }
-  }));
-  this.registry.register('template:components/demo-card',
-                         hbs`<div id="demo-card"></div>`);
-  this.set('cards', [createComponentCard('demo-card')]);
-  this.render(hbs`
-    {{#mobiledoc-editor cards=cards as |editor|}}
-      <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
-    {{/mobiledoc-editor}}
-  `);
-
-  this.$('button#add-card').click();
-  assert.ok(this.$(`#demo-card`).length, 'Card added in display mode');
-});
-
 test('it adds a card and removes an active blank section', function(assert) {
   assert.expect(4);
 
-  this.registry.register('template:components/demo-card', hbs`
+  let editor;
+  let card = this.registerCardComponent('demo-card', hbs`
     <div id="demo-card"><button id='edit-card' {{action editCard}}></button></div>
    `);
-  this.set('cards', [ createComponentCard('demo-card') ]);
-  this.set('mobiledoc', simpleMobileDoc(''));
-  this.on('didCreateEditor', (editor) => { this.editor = editor; });
+  this.set('cards', [card]);
+  this.set('mobiledoc', simpleMobileDoc());
+  this.on('didCreateEditor', (_editor) => editor = _editor);
   this.render(hbs`
     {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards did-create-editor=(action "didCreateEditor") as |editor|}}
       <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
@@ -449,7 +447,7 @@ test('it adds a card and removes an active blank section', function(assert) {
 
   assert.equal(this.$('.mobiledoc-editor p').length, 1, 'blank section exists');
   assert.equal(this.$('#demo-card').length, 0, 'no card section exists');
-  this.editor.selectRange(new MobiledocKit.Range(this.editor.post.headPosition()));
+  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition()));
   this.$('button#add-card').click();
 
   assert.equal(this.$('.mobiledoc-editor p').length, 0, 'no blank section');
@@ -458,26 +456,21 @@ test('it adds a card and removes an active blank section', function(assert) {
 
 test('it adds a card and focuses the cursor at the end of the card', function(assert) {
   assert.expect(6);
-  this.registry.register('template:components/demo-card', hbs`
+
+  let card = this.registerCardComponent('demo-card', hbs`
     <div id="demo-card"><button id='edit-card' {{action editCard}}></button></div>
    `);
-  this.set('cards', [
-    createComponentCard('demo-card')
-  ]);
+  this.set('cards', [card]);
   let editor;
-  this.on('expose-editor', (hash) => {
-    editor = hash.editor;
-  });
-  this.set('mobiledoc', simpleMobileDoc(''));
+  this.on('didCreateEditor', (_editor) => editor = _editor);
+  this.set('mobiledoc', simpleMobileDoc());
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
+    {{#mobiledoc-editor did-create-editor=(action 'didCreateEditor') mobiledoc=mobiledoc cards=cards as |editor|}}
       <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
-      <button id='get-editor' {{action 'expose-editor' editor}}></button>
     {{/mobiledoc-editor}}
   `);
 
   moveCursorTo(this, '.mobiledoc-editor p');
-  this.$('button#get-editor').click();
   this.$('button#add-card').click();
   assert.equal(this.$('#demo-card').length, 1, 'card section exists');
 
@@ -502,9 +495,7 @@ test('it has `addCardInEditMode` action to add card in edit mode', function(asse
 
   this.render(hbs`
     {{#mobiledoc-editor cards=cards as |editor|}}
-      <button id='add-card'
-              {{action editor.addCardInEditMode 'demo-card'}}>
-      </button>
+      <button id='add-card' {{action editor.addCardInEditMode 'demo-card'}}>Add Card</button>
     {{/mobiledoc-editor}}
   `);
 
@@ -524,9 +515,8 @@ test(`sets ${COMPONENT_CARD_EXPECTED_PROPS.join(',')} properties on card compone
       });
     }
   });
-  this.registry.register('component:demo-card', Component);
-  this.registry.register('template:components/demo-card', hbs`<div id="demo-card"></div>`);
-  this.set('cards', [createComponentCard('demo-card')]);
+  let card = this.registerCardComponent('demo-card', hbs`<div id='demo-card'></div>`, Component);
+  this.set('cards', [card]);
   this.set('mobiledoc', mobiledocWithCard('demo-card'));
 
   this.render(hbs`
@@ -544,9 +534,8 @@ test('component card `env` property exposes `isInEditor`', function(assert) {
       env = this.get('env');
     }
   });
-  this.registry.register('component:demo-card', Component);
-  this.registry.register('template:components/demo-card', hbs`<div id="demo-card"></div>`);
-  this.set('cards', [createComponentCard('demo-card')]);
+  let card = this.registerCardComponent('demo-card', hbs`<div id='demo-card'></div>`, Component);
+  this.set('cards', [card]);
   this.set('mobiledoc', mobiledocWithCard('demo-card'));
 
   this.render(hbs`
@@ -574,15 +563,14 @@ test('(deprecated) `addCard` passes `data`, breaks reference to original payload
     }
   });
 
-  this.registry.register('component:demo-card', DemoCardComponent);
-  this.registry.register('template:components/demo-card', hbs`
+  let card = this.registerCardComponent('demo-card', hbs`
     <div id="demo-card">
       {{data.foo}}
       <button id='mutate-payload' {{action 'mutatePayload'}}></button>
     </div>
-  `);
+  `, DemoCardComponent);
 
-  this.set('cards', [createComponentCard('demo-card')]);
+  this.set('cards', [card]);
   let payload = {foo: 'bar'};
   this.set('payload', payload);
 
@@ -627,15 +615,14 @@ test('`addCard` passes `payload`, breaks reference to original payload', functio
     }
   });
 
-  this.registry.register('component:demo-card', DemoCardComponent);
-  this.registry.register('template:components/demo-card', hbs`
+  let card = this.registerCardComponent('demo-card', hbs`
     <div id="demo-card">
       {{payload.foo}}
       <button id='mutate-payload' {{action 'mutatePayload'}}></button>
     </div>
-  `);
+  `, DemoCardComponent);
 
-  this.set('cards', [createComponentCard('demo-card')]);
+  this.set('cards', [card]);
   let payload = {foo: 'bar'};
   this.set('payload', payload);
 
@@ -806,4 +793,116 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
     assert.ok(this.$('#not-p').length, 'is not p');
     done();
   });
+});
+
+test('exposes `addAtom` action to add an atom', function(assert) {
+  let mobiledoc = simpleMobileDoc('howdy');
+  this.set('mobiledoc', mobiledoc);
+
+  this.registerAtomComponent('ember-atom', hbs`I AM AN ATOM`);
+  this.set('atoms', [createComponentAtom('ember-atom')]);
+  this.set('atomText', 'atom text');
+  this.set('atomPayload', {foo: 'bar'});
+  this.on('onChange', (_mobiledoc) => mobiledoc = _mobiledoc);
+  this.render(hbs`
+    {{#mobiledoc-editor on-change=(action 'onChange') mobiledoc=mobiledoc atoms=atoms as |editor|}}
+      <button id='add-atom' {{action editor.addAtom 'ember-atom' atomText atomPayload}}>Add Ember Atom</button>
+    {{/mobiledoc-editor}}
+  `);
+
+  let button = this.$('button#add-atom');
+  assert.ok(button.length, 'precond - has button');
+  assert.ok(!this.$('span:contains(I AM AN ATOM)').length, 'precond - no atom');
+  button.click();
+
+  assert.ok(this.$('span:contains(I AM AN ATOM)').length, 'atom is added after clicking');
+
+  let atom = mobiledoc.atoms[0];
+  let [ name, text, payload ] = atom;
+  assert.equal(name, 'ember-atom', 'correct atom name in mobiledoc');
+  assert.equal(text, 'atom text', 'correct atom text in mobiledoc');
+  assert.deepEqual(payload, {foo: 'bar'}, 'correct atom payload in mobiledoc');
+});
+
+test('wraps component-atom adding in runloop correctly', function(assert) {
+  assert.expect(3);
+  let editor;
+
+  this.on('didCreateEditor', (_editor) => editor = _editor);
+  let atom = this.registerAtomComponent('demo-atom', hbs`<span id='demo-atom'>demo-atom</span>`);
+  this.set('atoms', [atom]);
+  this.set('mobiledoc', simpleMobileDoc());
+  this.render(hbs`
+    {{#mobiledoc-editor did-create-editor=(action 'didCreateEditor') mobiledoc=mobiledoc atoms=atoms as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+
+  assert.ok(!Ember.run.currentRunLoop, 'precond - no run loop');
+  editor.run((postEditor) => {
+    let position = editor.range.head;
+    let atom = postEditor.builder.createAtom('demo-atom', 'value', {});
+    postEditor.insertMarkers(position, [atom]);
+  });
+  assert.ok(!Ember.run.currentRunLoop, 'postcond - no run loop after editor.run');
+
+  assert.ok(this.$('#demo-atom').length, 'demo atom is added');
+});
+
+test('throws on unknown atom when `unknownAtomHandler` is not passed', function(assert) {
+  this.set('mobiledoc', {
+    version: MOBILEDOC_VERSION,
+    atoms: [
+      ['missing-atom', 'value', {}]
+    ],
+    markups: [],
+    cards: [],
+    sections: [
+      [1, 'P', [
+        [1, [], 0, 0]]
+      ]
+    ]
+  });
+  this.set('unknownAtomHandler', undefined);
+  this.set('atoms', []);
+
+  assert.throws(() => {
+    this.render(hbs`
+      {{#mobiledoc-editor mobiledoc=mobiledoc atoms=atoms
+                options=(hash unknownAtomHandler=unknownAtomHandler) as |editor|}}
+      {{/mobiledoc-editor}}
+    `);
+  }, /Unknown atom "missing-atom" found.*no unknownAtomHandler/);
+});
+
+test('calls `unknownAtomHandler` when it renders an unknown atom', function(assert) {
+  assert.expect(4);
+  let expectedPayload = {};
+
+  this.set('unknownAtomHandler', ({env, value, payload}) => {
+    assert.equal(env.name, 'missing-atom', 'correct env.name');
+    assert.equal(value, 'value', 'correct name');
+    assert.ok(!!env.onTeardown, 'has onTeardown hook');
+    assert.deepEqual(payload, expectedPayload, 'has payload');
+  });
+
+  this.set('mobiledoc', {
+    version: MOBILEDOC_VERSION,
+    atoms: [
+      ['missing-atom', 'value', expectedPayload]
+    ],
+    markups: [],
+    cards: [],
+    sections: [
+      [1, 'P', [
+        [1, [], 0, 0]]
+      ]
+    ]
+  });
+
+  this.set('atoms', []);
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc atoms=atoms
+              options=(hash unknownAtomHandler=unknownAtomHandler) as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
 });
