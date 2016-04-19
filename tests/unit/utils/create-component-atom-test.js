@@ -5,7 +5,7 @@ import MobiledocDOMRenderer from 'mobiledoc-dom-renderer';
 module('Unit | Utility | create component atom');
 
 test('it creates an atom', function(assert) {
-  var result = createComponentAtom('foo-atom');
+  let result = createComponentAtom('foo-atom');
   assert.ok(result.name === 'foo-atom' &&
             result.type === 'dom' &&
             typeof result.render === 'function',
@@ -14,7 +14,7 @@ test('it creates an atom', function(assert) {
 });
 
 test('it creates a renderable atom', function(assert) {
-  var atom = createComponentAtom('foo-atom');
+  let atom = createComponentAtom('foo-atom');
   let renderer = new MobiledocDOMRenderer({atoms: [atom]});
 
   let {result} = renderer.render({

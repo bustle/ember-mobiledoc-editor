@@ -5,6 +5,7 @@
   toggleMarkup=(action 'toggleMarkup')
   toggleLink=(action 'toggleLink')
   addCard=(action 'addCard')
+  addAtom=(action 'addAtom')
   addCardInEditMode=(action 'addCardInEditMode')
   toggleSection=(action 'toggleSection')
   createListSection=(action 'createListSection')
@@ -25,7 +26,7 @@
 {{#each componentCards as |card|}}
   {{#ember-wormhole to=card.destinationElementId}}
     {{! LEGACY: Payload is passed as the legacy "data" attr below. This
-        should be removed before 1.0 }}
+        is deprecated and should be removed before 1.0 }}
     {{component card.cardName
         editor=editor
         postModel=card.postModel

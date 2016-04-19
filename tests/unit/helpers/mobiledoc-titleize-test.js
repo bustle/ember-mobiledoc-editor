@@ -5,6 +5,6 @@ module('Unit | Helper | mobiledoc titleize');
 
 // Replace this with your real tests.
 test('it works', function(assert) {
-  var result = mobiledocTitleize(['foo-bar']);
+  let result = mobiledocTitleize(['foo-bar']);
   assert.equal(result, 'FooBar');
 });

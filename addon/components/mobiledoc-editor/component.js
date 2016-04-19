@@ -93,6 +93,10 @@ export default Component.extend({
       this._addCard(cardName, payload);
     },
 
+    addAtom(atomName, text='', payload={}) {
+      this._addAtom(atomName, text, payload);
+    },
+
     addCardInEditMode(cardName, payload={}) {
       let editMode = true;
       this._addCard(cardName, payload, editMode);
@@ -264,9 +268,7 @@ export default Component.extend({
 
   willDestroyElement() {
     let editor = this.get('editor');
-    try {
-      editor.destroy();
-    } catch(e) {}
+    editor.destroy();
   },
 
   postDidChange(editor) {
@@ -296,6 +298,21 @@ export default Component.extend({
 
   didCreateEditor(editor) {
     this.sendAction(DID_CREATE_EDITOR_ACTION, editor);
+  },
+
+  _addAtom(atomName, text, payload) {
+    let editor = this.get('editor');
+    if (!editor.hasCursor()) { return; }
+
+    let { range } = editor;
+    editor.run(postEditor => {
+      let atom = editor.builder.createAtom(atomName, text, payload);
+      let position = editor.range.head;
+      if (!range.isCollapsed) {
+        position = postEditor.deleteRange(range);
+      }
+      postEditor.insertMarkers(position, [atom]);
+    });
   },
 
   _addCard(cardName, payload, editMode=false) {
