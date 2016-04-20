@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import layout from './template';
 import Editor from 'mobiledoc-kit/editor/editor';
-import Range from 'mobiledoc-kit/utils/cursor/range';
 import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
 let { computed, Component } = Ember;
 let { capitalize, camelize } = Ember.String;
@@ -302,39 +301,11 @@ export default Component.extend({
 
   _addAtom(atomName, text, payload) {
     let editor = this.get('editor');
-    if (!editor.hasCursor()) { return; }
-
-    let { range } = editor;
-    editor.run(postEditor => {
-      let atom = editor.builder.createAtom(atomName, text, payload);
-      let position = editor.range.head;
-      if (!range.isCollapsed) {
-        position = postEditor.deleteRange(range);
-      }
-      postEditor.insertMarkers(position, [atom]);
-    });
+    editor.insertAtom(atomName, text, payload);
   },
 
   _addCard(cardName, payload, editMode=false) {
     let editor = this.get('editor');
-    let section = editor.activeSection;
-    editor.run(postEditor => {
-      let card = editor.builder.createCardSection(cardName, payload);
-      if (editMode) {
-        editor.editCard(card);
-      }
-      let nextSection = section && section.next;
-      postEditor.insertSectionBefore(editor.post.sections, card, nextSection);
-      if (section && section.isBlank) {
-        postEditor.removeSection(section);
-      }
-
-      // Explicitly put the cursor at the end of the card
-      // This prevents problems with the editor element being out-of-focus
-      // but the window's selection still in the editor element.
-      // See https://github.com/bustlelabs/mobiledoc-kit/issues/286
-      let range = new Range(card.tailPosition());
-      postEditor.setRange(range);
-    });
+    editor.insertCard(cardName, payload, editMode);
   }
 });
