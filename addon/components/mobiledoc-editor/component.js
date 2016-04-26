@@ -2,6 +2,8 @@ import Ember from 'ember';
 import layout from './template';
 import Editor from 'mobiledoc-kit/editor/editor';
 import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
+import assign from 'ember-mobiledoc-editor/utils/polyfill-assign';
+
 let { computed, Component } = Ember;
 let { capitalize, camelize } = Ember.String;
 
@@ -48,7 +50,7 @@ export default Component.extend({
   editorOptions: computed(function() {
     let options = this.get('options');
 
-    return Ember.merge({
+    return assign({
       placeholder: this.get('placeholder'),
       spellcheck:  this.get('spellcheck'),
       autofocus:   this.get('autofocus'),
