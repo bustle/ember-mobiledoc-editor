@@ -134,6 +134,7 @@ Additionally `editor` provides the following actions:
 * `addCard`, passed a card name and payload will add that card at the end of the post.
 * `addCardInEditMode`, passed a card name and payload will add that card at the end of
   a post and render it in "edit" mode initially.
+* `addAtom`, passed an atomName, text, and payload, will add that atom at the cursor position.
 * [Deprecated] `createListSection`, changing selected content into list items.
 
 The `editor` object is often used indirectly by passing it to other
