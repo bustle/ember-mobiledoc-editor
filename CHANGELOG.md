@@ -1,3 +1,16 @@
+<a name="0.4.2"></a>
+## 0.4.2 (2016-05-10)
+
+* Adds createComponentAtom util to use Ember.Component as atoms ([f553a4d](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/f553a4d))
+* bump mobiledoc-kit to ^0.9.4 ([e57f8f9](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/e57f8f9))
+* Change deprecated Ember.merge to Ember.assign ([af8ee4d](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/af8ee4d))
+* depend on fix in mobiledoc-kit 0.9.4-beta.1 ([1f5aae0](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/1f5aae0))
+* Expose `addAtom` action. Refactor tests for greater clarity ([edbb8fe](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/edbb8fe))
+* Update mobiledoc-kit to ^0.9.6 ([7595f9a](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/7595f9a))
+* Use editor#insertAtom and editor#insertCard ([cf96819](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/cf96819))
+
+
+
 <a name="0.4.1"></a>
 ## 0.4.1 (2016-04-14)
 
@@ -11,6 +24,7 @@
 * Update mobiledoc-kit dependency to ^0.9.2 ([78df990](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/78df990))
 * Update README.md ([0939f8a](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/0939f8a))
 * Use inputModeDidChange and postDidChange hooks ([02cda9a](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/02cda9a))
+* v0.4.1 ([25199d1](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/25199d1))
 
 
 
