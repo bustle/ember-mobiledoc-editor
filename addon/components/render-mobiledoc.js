@@ -7,15 +7,15 @@ const {
   assert,
   computed,
   run: { join },
-  uuid,
-  $
+  uuid
 } = Ember;
 
-const ADD_CARD_HOOK      = 'addComponentCard';
-const REMOVE_CARD_HOOK   = 'removeComponentCard';
-const ADD_ATOM_HOOK      = 'addComponentAtom';
-const REMOVE_ATOM_HOOK   = 'removeComponentAtom';
-
+const ADD_CARD_HOOK             = 'addComponentCard';
+const REMOVE_CARD_HOOK          = 'removeComponentCard';
+const ADD_ATOM_HOOK             = 'addComponentAtom';
+const REMOVE_ATOM_HOOK          = 'removeComponentAtom';
+const CARD_TAG_NAME             = 'div';
+const ATOM_TAG_NAME             = 'span';
 const UUID_PREFIX               = '__rendered-mobiledoc-entity-';
 export const CARD_ELEMENT_CLASS = '__rendered-mobiledoc-card';
 export const ATOM_ELEMENT_CLASS = '__rendered-mobiledoc-atom';
@@ -113,36 +113,28 @@ export default Ember.Component.extend({
   _cardOptions: computed(function() {
     return {
       [ADD_CARD_HOOK]: ({env, options, payload}) => {
-        let { name: cardName } = env;
-        let uuid = this.generateUuid();
-        let element = $("<div></div>")
-          .attr('id', uuid)
-          .addClass(CARD_ELEMENT_CLASS)
-          .addClass(CARD_ELEMENT_CLASS + '-' + cardName)[0];
-
+        let { name: cardName, dom } = env;
+        let classNames = [CARD_ELEMENT_CLASS, `${CARD_ELEMENT_CLASS}-${cardName}`];
+        let element = this._createElement(dom, CARD_TAG_NAME, classNames);
         let componentName = this.cardNameToComponentName(cardName);
 
         let card = {
           componentName,
-          destinationElementId: uuid,
+          destinationElementId: element.getAttribute('id'),
           payload
         };
         this.addCard(card);
         return { card, element };
       },
       [ADD_ATOM_HOOK]: ({env, options, value, payload}) => {
-        let { name: atomName } = env;
-        let uuid = this.generateUuid();
-        let element = $("<span></span>")
-          .attr('id', uuid)
-          .addClass(ATOM_ELEMENT_CLASS)
-          .addClass(ATOM_ELEMENT_CLASS + '-' + atomName)[0];
-
+        let { name: atomName, dom } = env;
+        let classNames = [ATOM_ELEMENT_CLASS, `${ATOM_ELEMENT_CLASS}-${atomName}`];
+        let element = this._createElement(dom, ATOM_TAG_NAME, classNames);
         let componentName = this.atomNameToComponentName(atomName);
 
         let atom = {
           componentName,
-          destinationElementId: uuid,
+          destinationElementId: element.getAttribute('id'),
           payload,
           value
         };
@@ -203,5 +195,12 @@ export default Ember.Component.extend({
 
   generateUuid() {
     return `${UUID_PREFIX}${uuid()}`;
+  },
+
+  _createElement(dom, tagName, classNames=[]) {
+    let el = dom.createElement(tagName);
+    el.setAttribute('id', this.generateUuid());
+    el.setAttribute('class', classNames.join(' '));
+    return el;
   }
 });
