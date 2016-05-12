@@ -56,3 +56,15 @@ you will want to use the `{{render-mobiledoc}}` component, but if you need
 to use the renderer directly in code, it can be imported:
 
 `import DOMRenderer from 'ember-mobiledoc-dom-renderer'`;
+
+
+#### Release process
+
+To release a new version:
+
+  * update version in `package.json`
+  * run `npm run update-changelog`
+  * `git commit -am "v<version>"`
+  * `git tag v<version>`
+  * push code and tag to github
+  * `npm publish`

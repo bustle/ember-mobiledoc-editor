@@ -1,6 +1,6 @@
 {
   "name": "ember-mobiledoc-dom-renderer",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "provides mobiledoc-dom-renderer to ember apps",
   "directories": {
     "doc": "doc",
@@ -9,7 +9,8 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "ember try:testall"
+    "test": "ember try:testall",
+    "update-changelog": "conventional-changelog -i CHANGELOG.md -r 0 -s"
   },
   "repository": "https://github.com/bustlelabs/ember-mobiledoc-dom-renderer",
   "engines": {
@@ -19,6 +20,8 @@
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.1.2",
+    "conventional-changelog": "^1.1.0",
+    "conventional-changelog-cli": "^1.1.1",
     "ember-cli": "1.13.8",
     "ember-cli-app-version": "0.5.0",
     "ember-cli-dependency-checker": "^1.0.1",
