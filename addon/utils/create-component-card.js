@@ -2,13 +2,13 @@ const RENDER_TYPE = 'dom';
 
 import { ADD_CARD_HOOK, REMOVE_CARD_HOOK } from '../components/mobiledoc-editor/component';
 
-function renderFallback() {
-  let element = document.createElement('div');
+function renderFallback(doc) {
+  let element = doc.createElement('div');
   element.innerHTML = '[placeholder for Ember component card]';
   return element;
 }
 
-export default function createComponentCard(name) {
+export default function createComponentCard(name, doc = window.document) {
 
   return {
     name,
@@ -16,7 +16,7 @@ export default function createComponentCard(name) {
     render(cardArg) {
       let {env, options} = cardArg;
       if (!options[ADD_CARD_HOOK]) {
-        return renderFallback();
+        return renderFallback(doc);
       }
 
       let { card, element } = options[ADD_CARD_HOOK](cardArg);
@@ -29,7 +29,7 @@ export default function createComponentCard(name) {
     edit(cardArg) {
       let {env, options} = cardArg;
       if (!options[ADD_CARD_HOOK]) {
-        return renderFallback();
+        return renderFallback(doc);
       }
 
       let isEditing = true;
