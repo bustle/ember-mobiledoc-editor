@@ -4,7 +4,8 @@ import { ADD_CARD_HOOK, REMOVE_CARD_HOOK } from '../components/mobiledoc-editor/
 
 function renderFallback(doc) {
   let element = doc.createElement('div');
-  element.innerHTML = '[placeholder for Ember component card]';
+  let text = doc.createTextNode('[placeholder for Ember component card]');
+  element.appendChild(text);
   return element;
 }
 

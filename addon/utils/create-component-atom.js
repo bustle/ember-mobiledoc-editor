@@ -2,13 +2,14 @@ const RENDER_TYPE = 'dom';
 
 import { ADD_ATOM_HOOK, REMOVE_ATOM_HOOK } from '../components/mobiledoc-editor/component';
 
-function renderFallback() {
+function renderFallback(doc) {
   let element = document.createElement('span');
-  element.innerHTML = '[placeholder for Ember atom]';
+  let text = doc.createTextNode('[placeholder for Ember atom]');
+  element.appendChild(text);
   return element;
 }
 
-export default function createComponentAtom(name) {
+export default function createComponentAtom(name, doc = window.document) {
 
   return {
     name,
@@ -16,7 +17,7 @@ export default function createComponentAtom(name) {
     render(atomArg) {
       let {env, options} = atomArg;
       if (!options[ADD_ATOM_HOOK]) {
-        return renderFallback();
+        return renderFallback(doc);
       }
 
       let { atom, element } = options[ADD_ATOM_HOOK](atomArg);
