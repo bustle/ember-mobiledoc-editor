@@ -1,3 +1,12 @@
+<a name="0.4.3"></a>
+## 0.4.3 (2016-06-03)
+
+* [docs] Add `addAtom` hook to readme ([1cfc925](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/1cfc925))
+* added ability for document object to be passed in ([4e44203](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/4e44203))
+* made the fallback more friendly for simple DOM ([6df69ad](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/6df69ad))
+
+
+
 <a name="0.4.2"></a>
 ## 0.4.2 (2016-05-10)
 
@@ -8,6 +17,7 @@
 * Expose `addAtom` action. Refactor tests for greater clarity ([edbb8fe](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/edbb8fe))
 * Update mobiledoc-kit to ^0.9.6 ([7595f9a](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/7595f9a))
 * Use editor#insertAtom and editor#insertCard ([cf96819](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/cf96819))
+* v0.4.2 ([1c8a9dc](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/1c8a9dc))
 
 
 
