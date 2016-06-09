@@ -45,7 +45,7 @@
     "broccoli-merge-trees": "^1.0.0",
     "ember-cli-babel": "^5.1.3",
     "ember-cli-htmlbars": "^1.0.1",
-    "ember-wormhole": "^0.3.4",
+    "ember-wormhole": "^0.4.0",
     "mobiledoc-dom-renderer": "^0.5.1"
   },
   "ember-addon": {
