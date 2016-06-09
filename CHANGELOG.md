@@ -1,8 +1,16 @@
+<a name="0.5.2"></a>
+## 0.5.2 (2016-06-09)
+
+* Update ember-wormhole to ^0.4.0 ([a420601](https://github.com/bustlelabs/ember-mobiledoc-dom-renderer/commit/a420601))
+
+
+
 <a name="0.5.1"></a>
 ## 0.5.1 (2016-05-12)
 
 * Add update-changelog script ([ab744b4](https://github.com/bustlelabs/ember-mobiledoc-dom-renderer/commit/ab744b4))
 * Remove usage of jQuery ($) because it is not available in Fastboot ([a5995c1](https://github.com/bustlelabs/ember-mobiledoc-dom-renderer/commit/a5995c1))
+* v0.5.1 ([3a8c106](https://github.com/bustlelabs/ember-mobiledoc-dom-renderer/commit/3a8c106))
 
 
 
