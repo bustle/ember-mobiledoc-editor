@@ -707,7 +707,10 @@ test('calls `unknownCardHandler` when it renders an unknown card', function(asse
 });
 
 test('#activeSectionTagNames is correct', function(assert) {
+  assert.expect(2);
   let done = assert.async();
+
+  let editor;
 
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
@@ -719,8 +722,11 @@ test('#activeSectionTagNames is correct', function(assert) {
       [1, 'blockquote', [[0, [], 0, "blockquote section"]]]
     ]
   });
+
+  this.on('didCreateEditor', _editor => editor = _editor);
+
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc as |editor|}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc did-create-editor=(action 'didCreateEditor') autofocus=false as |editor|}}
       {{#if editor.activeSectionTagNames.isBlockquote}}
         <div id='is-block-quote'>is block quote</div>
       {{/if}}
@@ -730,24 +736,34 @@ test('#activeSectionTagNames is correct', function(assert) {
     {{/mobiledoc-editor}}
   `);
 
+  let cursorChanges = 0;
+  editor.cursorDidChange(() => {
+    cursorChanges++;
+
+    if (cursorChanges === 1) {
+      Ember.run.next(() => {
+        assert.ok(this.$('#is-block-quote').length, 'is block quote');
+        moveCursorTo(this, 'p:contains(first paragraph)');
+        simulateMouseup();
+      });
+    } else if (cursorChanges === 2) {
+      Ember.run.next(() => {
+        assert.ok(this.$('#is-p').length, 'is p');
+        done();
+      });
+    } else {
+      assert.ok(false, 'Invalid number of cursor changes: ' + cursorChanges);
+    }
+  });
+
   moveCursorTo(this, 'blockquote:contains(blockquote section)');
   simulateMouseup();
-
-  setTimeout(() => {
-    assert.ok(this.$('#is-block-quote').length, 'is block quote');
-
-    moveCursorTo(this, 'p:contains(first paragraph)');
-    simulateMouseup();
-
-    setTimeout(() => {
-      assert.ok(this.$('#is-p').length, 'is p');
-      done();
-    }, 10);
-  }, 10);
 });
 
 test('#activeSectionTagNames is correct when a card is selected', function(assert) {
   let done = assert.async();
+
+  let editor;
 
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
@@ -770,8 +786,10 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
     }
   }]);
 
+  this.on('didCreateEditor', _editor => editor = _editor);
+
   this.render(hbs`
-    {{#mobiledoc-editor cards=cards mobiledoc=mobiledoc autofocus=false as |editor|}}
+    {{#mobiledoc-editor cards=cards mobiledoc=mobiledoc did-create-editor=(action 'didCreateEditor') autofocus=false as |editor|}}
       {{#if editor.activeSectionTagNames.isP}}
         <div id='is-p'>is p</div>
       {{else}}
@@ -780,21 +798,28 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
     {{/mobiledoc-editor}}
   `);
 
+  let cursorChanges = 0;
+  editor.cursorDidChange(() => {
+    cursorChanges++;
+
+    if (cursorChanges === 1) {
+      Ember.run.next(() => {
+        assert.ok(this.$('#is-p').length, 'precond - is p');
+        moveCursorTo(this, '#card-test');
+        simulateMouseup();
+      });
+    } else if (cursorChanges === 2 ){
+      Ember.run.next(() => {
+        assert.ok(this.$('#not-p').length, 'is not p');
+        done();
+      });
+    } else {
+      assert.ok(false, 'too many cursor changes: ' + cursorChanges);
+    }
+  });
+
   moveCursorTo(this, '.mobiledoc-editor p');
   simulateMouseup();
-
-  setTimeout(() => {
-    assert.ok(this.$('#is-p').length, 'precond - is p');
-
-    moveCursorTo(this, '#card-test');
-    simulateMouseup();
-
-    setTimeout(() => {
-      assert.ok(this.$('#not-p').length, 'is not p');
-
-      done();
-    });
-  });
 });
 
 test('exposes `addAtom` action to add an atom', function(assert) {
