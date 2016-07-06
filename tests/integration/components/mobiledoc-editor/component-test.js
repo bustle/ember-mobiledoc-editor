@@ -766,16 +766,12 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
     name: 'test-card',
     type: 'dom',
     render() {
-      let input = $('<input id="test-card-inner">')[0];
-      setTimeout(() => {
-        $(input).focus();
-      });
-      return input;
+      return $('<div id="card-test">CARD CONTENT</div>')[0];
     }
   }]);
 
   this.render(hbs`
-    {{#mobiledoc-editor cards=cards mobiledoc=mobiledoc as |editor|}}
+    {{#mobiledoc-editor cards=cards mobiledoc=mobiledoc autofocus=false as |editor|}}
       {{#if editor.activeSectionTagNames.isP}}
         <div id='is-p'>is p</div>
       {{else}}
@@ -784,14 +780,20 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
     {{/mobiledoc-editor}}
   `);
 
-  // Since the card focuses on itself, the editor will report the card
-  // as the active selection after mouseup, triggering a bug in the
-  // cursorDidChange handler of the mobiledoc-editor component
+  moveCursorTo(this, '.mobiledoc-editor p');
   simulateMouseup();
 
   setTimeout(() => {
-    assert.ok(this.$('#not-p').length, 'is not p');
-    done();
+    assert.ok(this.$('#is-p').length, 'precond - is p');
+
+    moveCursorTo(this, '#card-test');
+    simulateMouseup();
+
+    setTimeout(() => {
+      assert.ok(this.$('#not-p').length, 'is not p');
+
+      done();
+    });
   });
 });
 
