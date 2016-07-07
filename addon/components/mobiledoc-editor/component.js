@@ -263,7 +263,9 @@ export default Component.extend({
     let editor = this.get('editor');
     if (!editor.hasRendered) {
       let editorElement = this.$('.mobiledoc-editor__editor')[0];
+      this._isRenderingEditor = true;
       editor.render(editorElement);
+      this._isRenderingEditor = false;
     }
   },
 
@@ -289,8 +291,18 @@ export default Component.extend({
     });
     const sectionTags = arrayToMap(sectionParentTagNames);
 
-    this.set('activeMarkupTagNames', markupTags);
-    this.set('activeSectionTagNames', sectionTags);
+    // Avoid updating this component's properties synchronously while
+    // rendering the editor (after rendering the component) because it
+    // causes Ember to display deprecation warnings
+    if (this._isRenderingEditor) {
+      Ember.run.next(() => {
+        this.set('activeMarkupTagNames', markupTags);
+        this.set('activeSectionTagNames', sectionTags);
+      });
+    } else {
+      this.set('activeMarkupTagNames', markupTags);
+      this.set('activeSectionTagNames', sectionTags);
+    }
   },
 
   willCreateEditor() {

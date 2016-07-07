@@ -1,10 +1,8 @@
 import { moduleForComponent, test } from 'ember-qunit';
-import { selectRange } from 'dummy/tests/helpers/selection';
+import { selectRange, selectRangeWithEditor, moveCursorTo } from 'dummy/tests/helpers/selection';
 import hbs from 'htmlbars-inline-precompile';
 import createComponentCard from 'ember-mobiledoc-editor/utils/create-component-card';
 import createComponentAtom from 'ember-mobiledoc-editor/utils/create-component-atom';
-import moveCursorTo from '../../../helpers/move-cursor-to';
-import simulateMouseup from '../../../helpers/simulate-mouse-up';
 import Ember from 'ember';
 import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
 import MobiledocKit from 'mobiledoc-kit';
@@ -121,7 +119,7 @@ test('it does not create a new editor when the same mobiledoc is set', function(
   assert.equal(didCreateCalls, 1, 'called didCreateEditor 1x');
 
   editor.run((postEditor) => {
-    postEditor.insertText(editor.range.tail, 'Friend');
+    postEditor.insertText(editor.post.tailPosition(), 'Friend');
   });
 
   assert.equal(willCreateCalls, 1, 'still only called willCreateEditor 1x');
@@ -213,24 +211,34 @@ test('passes through spellcheck option', function(assert) {
 });
 
 test('it bolds the text and fires `on-change`', function(assert) {
+  let done = assert.async();
   assert.expect(2);
   let text = 'Howdy';
   this.set('mobiledoc', simpleMobileDoc(text));
+
+  let changeEvents = [];
   this.on('on-change', (mobiledoc) => {
-    assert.ok(!!mobiledoc, 'change event fired with mobiledoc');
+    changeEvents.push(mobiledoc);
   });
+
   this.render(hbs`
     {{#mobiledoc-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |editor|}}
       <button {{action editor.toggleMarkup 'strong'}}>Bold</button>
     {{/mobiledoc-editor}}
   `);
   let textNode = this.$(`p:contains(${text})`)[0].firstChild;
-  selectRange(textNode, 0, textNode, text.length);
-  this.$('button').click();
-  assert.ok(
-    !!this.$('strong:contains(Howdy)').length,
-    'Bold tag contains text'
-  );
+
+  return selectRange(textNode, 0, textNode, text.length).then(() => {
+    this.$('button').click();
+
+    assert.ok(
+      !!this.$('strong:contains(Howdy)').length,
+      'Bold tag contains text'
+    );
+
+    assert.ok(!!changeEvents[0], 'on-change fired with mobiledoc');
+    done();
+  });
 });
 
 test('serializes mobiledoc to `mobiledocVersion`', function(assert) {
@@ -250,19 +258,20 @@ test('serializes mobiledoc to `mobiledocVersion`', function(assert) {
     {{/mobiledoc-editor}}
   `);
   let textNode = this.$(`p:contains(${text})`)[0].firstChild;
-  selectRange(textNode, 0, textNode, text.length);
-  this.$('button').click();
+  return selectRange(textNode, 0, textNode, text.length).then(() => {
+    this.$('button').click();
+    assert.equal(version, '0.2.0', 'serializes to the passed serializeVersion (0.2.0)');
 
-  assert.equal(version, '0.2.0', 'serializes to the passed serializeVersion (0.2.0)');
+    this.set('serializeVersion', '0.3.0');
+    version = null;
 
-  this.set('serializeVersion', '0.3.0');
-  version = null;
+    textNode = this.$(`p strong:contains(${text})`)[0].firstChild;
+    return selectRange(textNode, 0, textNode, text.length);
 
-  textNode = this.$(`p strong:contains(${text})`)[0].firstChild;
-  selectRange(textNode, 0, textNode, text.length);
-  this.$('button').click();
-
-  assert.equal(version, '0.3.0', 'serializes to the passed serializeVersion (0.3.0)');
+  }).then(() => {
+    this.$('button').click();
+    assert.equal(version, '0.3.0', 'serializes to the passed serializeVersion (0.3.0)');
+  });
 });
 
 test('it exposes "toggleSection" which toggles the section type and fires `on-change`', function(assert) {
@@ -279,20 +288,21 @@ test('it exposes "toggleSection" which toggles the section type and fires `on-ch
     {{/mobiledoc-editor}}
   `);
   const textNode = this.$(`p:contains(${text})`)[0].firstChild;
-  selectRange(textNode, 0, textNode, text.length);
 
-  assert.ok(!this.$('h2').length, 'precond - no h2');
-  assert.equal(onChangeCount, 0, 'precond - no on-change');
+  return selectRange(textNode, 0, textNode, text.length).then(() => {
+    assert.ok(!this.$('h2').length, 'precond - no h2');
+    assert.equal(onChangeCount, 0, 'precond - no on-change');
 
-  this.$('button').click();
+    this.$('button').click();
 
-  assert.equal(onChangeCount, 1, 'fires on-change');
-  assert.ok(!!this.$('h2:contains(Howdy)').length, 'Changes to h2 tag');
+    assert.equal(onChangeCount, 1, 'fires on-change');
+    assert.ok(!!this.$('h2:contains(Howdy)').length, 'Changes to h2 tag');
 
-  onChangeCount = 0;
-  this.$('button').click();
-  assert.equal(onChangeCount, 1, 'fires on-change again');
-  assert.ok(!this.$('h2').length, 'toggles h2 tag off again');
+    onChangeCount = 0;
+    this.$('button').click();
+    assert.equal(onChangeCount, 1, 'fires on-change again');
+    assert.ok(!this.$('h2').length, 'toggles h2 tag off again');
+  });
 });
 
 test('toolbar buttons can be active', function(assert) {
@@ -305,19 +315,19 @@ test('toolbar buttons can be active', function(assert) {
     {{/mobiledoc-editor}}
   `);
   const textNode = this.$(`p:contains(${text})`)[0].firstChild;
-  selectRange(textNode, 0, textNode, text.length);
+  return selectRange(textNode, 0, textNode, text.length).then(() => {
+    const button = this.$(`button[title=Heading]`);
+    assert.ok(button.length, 'has heading toolbar button');
+    button.click();
 
-  const button = this.$(`button[title=Heading]`);
-  assert.ok(button.length, 'has heading toolbar button');
-  button.click();
+    assert.ok(this.$(`h1:contains(${text})`).length, 'heading-ifies text');
+    assert.ok(button.hasClass('active'), 'heading button is active');
 
-  assert.ok(this.$(`h1:contains(${text})`).length, 'heading-ifies text');
-  assert.ok(button.hasClass('active'), 'heading button is active');
+    button.click();
 
-  button.click();
-
-  assert.ok(!this.$(`h1`).length, 'heading is gone');
-  assert.ok(!button.hasClass('active'), 'heading button is no longer active');
+    assert.ok(!this.$(`h1`).length, 'heading is gone');
+    assert.ok(!button.hasClass('active'), 'heading button is no longer active');
+  });
 });
 
 test('toolbar has list insertion button', function(assert) {
@@ -330,13 +340,13 @@ test('toolbar has list insertion button', function(assert) {
     {{/mobiledoc-editor}}
   `);
   const textNode = this.$(`p:contains(${text})`)[0].firstChild;
-  selectRange(textNode, 0, textNode, text.length);
+  return selectRange(textNode, 0, textNode, text.length).then(() => {
+    const button = this.$(`button[title=List]`);
+    assert.ok(button.length, 'has list toolbar button');
+    button.click();
 
-  const button = this.$(`button[title=List]`);
-  assert.ok(button.length, 'has list toolbar button');
-  button.click();
-
-  assert.ok(this.$(`ul li:contains(${text})`).length, 'list-ifies text');
+    assert.ok(this.$(`ul li:contains(${text})`).length, 'list-ifies text');
+  });
 });
 
 test('toggleLink action is no-op when nothing is selected', function(assert) {
@@ -366,19 +376,27 @@ test('it links selected text and fires `on-change`', function(assert) {
     {{/mobiledoc-editor}}
   `);
   let { _editor: editor } = this;
-  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
+  let nextFrame = () => new Ember.RSVP.Promise(resolve => window.requestAnimationFrame(resolve));
 
-  this.$('button:contains(Link)').click();
-  this.$('input').val('http://example.com');
-  this.$('input').change();
-  this.$('button:contains(Link):eq(1)').click();
-  assert.ok(
-    !!this.$('a[href="http://example.com"]:contains(Howdy)').length,
-    'a tag contains text'
-  );
-  let markup = this._mobiledoc.markups[0];
-  assert.deepEqual(markup, ['a', ['href', 'http://example.com']],
-                   'mobiledoc contains link markup');
+  return selectRangeWithEditor(editor, new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition())).then(() => {
+    this.$('button:contains(Link)').click();
+
+    return nextFrame();
+  }).then(() => {
+
+    this.$('input').val('http://example.com');
+    this.$('input').change();
+    return nextFrame();
+  }).then(() => {
+    this.$('button:contains(Link):eq(1)').click();
+    assert.ok(
+      !!this.$('a[href="http://example.com"]:contains(Howdy)').length,
+      'a tag contains text'
+    );
+    let markup = this._mobiledoc.markups[0];
+    assert.deepEqual(markup, ['a', ['href', 'http://example.com']],
+                     'mobiledoc contains link markup');
+  });
 });
 
 test('it de-links selected text and fires `on-change`', function(assert) {
@@ -394,32 +412,35 @@ test('it de-links selected text and fires `on-change`', function(assert) {
   `);
 
   let { _editor: editor } = this;
-  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
-  this.$('button').click();
+  return selectRangeWithEditor(editor, new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition())).then(() => {
+    this.$('button').click();
 
-  assert.ok(
-    !this.$('a[href="http://example.com"]:contains(Howdy)').length,
-    'a tag removed'
-  );
-  assert.equal(this._mobiledoc.markups.length, 0, 'no markups');
+    assert.ok(
+      !this.$('a[href="http://example.com"]:contains(Howdy)').length,
+      'a tag removed'
+    );
+    assert.equal(this._mobiledoc.markups.length, 0, 'no markups');
+  });
 });
 
 test('it adds a component in display mode to the mobiledoc editor', function(assert) {
   assert.expect(5);
   this.registry.register('template:components/demo-card', hbs`
-    <div id="demo-card"><button id='edit-card' {{action editCard}}></button></div>
+    <div id="demo-card"><button id='edit-card' {{action editCard}}>CLICK ME</button></div>
    `);
   this.registry.register('template:components/demo-card-editor', hbs`<div id="demo-card-editor"></div>`);
   this.set('cards', [
     createComponentCard('demo-card')
   ]);
+  this.set('mobiledoc', simpleMobileDoc());
   this.render(hbs`
-    {{#mobiledoc-editor cards=cards as |editor|}}
-      <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
+      <button id='add-card' {{action editor.addCard 'demo-card'}}>Add card</button>
     {{/mobiledoc-editor}}
   `);
 
   this.$('button#add-card').click();
+
   assert.ok(this.$(`#demo-card`).length, 'Card added in display mode');
   assert.ok(!this.$(`#demo-card-editor`).length, 'Card not in edit mode');
   assert.ok(this.$('button#edit-card').length, 'has edit card button');
@@ -455,34 +476,36 @@ test('it adds a card and removes an active blank section', function(assert) {
 });
 
 test('it adds a card and focuses the cursor at the end of the card', function(assert) {
-  assert.expect(6);
+  assert.expect(7);
 
   let card = this.registerCardComponent('demo-card', hbs`
-    <div id="demo-card"><button id='edit-card' {{action editCard}}></button></div>
+    <div id="demo-card"><button id='edit-card' {{action editCard}}>ADD CARD</button></div>
    `);
   this.set('cards', [card]);
   let editor;
   this.on('didCreateEditor', (_editor) => editor = _editor);
   this.set('mobiledoc', simpleMobileDoc());
   this.render(hbs`
-    {{#mobiledoc-editor did-create-editor=(action 'didCreateEditor') mobiledoc=mobiledoc cards=cards as |editor|}}
+    {{#mobiledoc-editor autofocus=false did-create-editor=(action 'didCreateEditor') mobiledoc=mobiledoc cards=cards as |editor|}}
       <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
     {{/mobiledoc-editor}}
   `);
 
-  moveCursorTo(this, '.mobiledoc-editor p');
-  this.$('button#add-card').click();
-  assert.equal(this.$('#demo-card').length, 1, 'card section exists');
+  return selectRangeWithEditor(editor, new MobiledocKit.Range(editor.post.tailPosition())).then(() => {
+    assert.ok(editor && !editor.range.isBlank, 'range is not blank');
+    this.$('button#add-card').click();
+    assert.equal(this.$('#demo-card').length, 1, 'card section exists');
 
-  let cardWrapper = this.$('#demo-card').parents('.__mobiledoc-card');
-  assert.ok(!!cardWrapper.length, 'precond - card wrapper is found');
-  let cursorElement = cardWrapper[0].nextSibling;
-  assert.ok(!!cursorElement, 'precond - cursor element is found');
+    let cardWrapper = this.$('#demo-card').parents('.__mobiledoc-card');
+    assert.ok(!!cardWrapper.length, 'precond - card wrapper is found');
+    let cursorElement = cardWrapper[0].nextSibling;
+    assert.ok(!!cursorElement, 'precond - cursor element is found');
 
-  assert.ok(window.getSelection().focusNode === cursorElement, 'selection focus is on cursor element');
-  assert.ok(window.getSelection().anchorNode === cursorElement, 'selection anchor is on cursor element');
-  assert.ok(document.activeElement === $('.__mobiledoc-editor')[0],
-               'document.activeElement is correct');
+    assert.ok(window.getSelection().focusNode === cursorElement, 'selection focus is on cursor element');
+    assert.ok(window.getSelection().anchorNode === cursorElement, 'selection anchor is on cursor element');
+    assert.ok(document.activeElement === $('.__mobiledoc-editor')[0],
+                 'document.activeElement is correct');
+  });
 });
 
 test('it has `addCardInEditMode` action to add card in edit mode', function(assert) {
@@ -492,9 +515,10 @@ test('it has `addCardInEditMode` action to add card in edit mode', function(asse
   this.registry.register('template:components/demo-card-editor',
                          hbs`<div id="demo-card-editor"></div>`);
   this.set('cards', [createComponentCard('demo-card')]);
+  this.set('mobiledoc', simpleMobileDoc());
 
   this.render(hbs`
-    {{#mobiledoc-editor cards=cards as |editor|}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
       <button id='add-card' {{action editor.addCardInEditMode 'demo-card'}}>Add Card</button>
     {{/mobiledoc-editor}}
   `);
@@ -573,9 +597,10 @@ test('(deprecated) `addCard` passes `data`, breaks reference to original payload
   this.set('cards', [card]);
   let payload = {foo: 'bar'};
   this.set('payload', payload);
+  this.set('mobiledoc', simpleMobileDoc());
 
   this.render(hbs`
-    {{#mobiledoc-editor cards=cards as |editor|}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
       <button id='add-card' {{action editor.addCard 'demo-card' payload}}>
       </button>
     {{/mobiledoc-editor}}
@@ -625,9 +650,10 @@ test('`addCard` passes `payload`, breaks reference to original payload', functio
   this.set('cards', [card]);
   let payload = {foo: 'bar'};
   this.set('payload', payload);
+  this.set('mobiledoc', simpleMobileDoc());
 
   this.render(hbs`
-    {{#mobiledoc-editor cards=cards as |editor|}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
       <button id='add-card' {{action editor.addCard 'demo-card' payload}}>
       </button>
     {{/mobiledoc-editor}}
@@ -708,9 +734,6 @@ test('calls `unknownCardHandler` when it renders an unknown card', function(asse
 
 test('#activeSectionTagNames is correct', function(assert) {
   assert.expect(2);
-  let done = assert.async();
-
-  let editor;
 
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
@@ -723,10 +746,8 @@ test('#activeSectionTagNames is correct', function(assert) {
     ]
   });
 
-  this.on('didCreateEditor', _editor => editor = _editor);
-
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc did-create-editor=(action 'didCreateEditor') autofocus=false as |editor|}}
+    {{#mobiledoc-editor autofocus=false mobiledoc=mobiledoc as |editor|}}
       {{#if editor.activeSectionTagNames.isBlockquote}}
         <div id='is-block-quote'>is block quote</div>
       {{/if}}
@@ -736,34 +757,16 @@ test('#activeSectionTagNames is correct', function(assert) {
     {{/mobiledoc-editor}}
   `);
 
-  let cursorChanges = 0;
-  editor.cursorDidChange(() => {
-    cursorChanges++;
-
-    if (cursorChanges === 1) {
-      Ember.run.next(() => {
-        assert.ok(this.$('#is-block-quote').length, 'is block quote');
-        moveCursorTo(this, 'p:contains(first paragraph)');
-        simulateMouseup();
-      });
-    } else if (cursorChanges === 2) {
-      Ember.run.next(() => {
-        assert.ok(this.$('#is-p').length, 'is p');
-        done();
-      });
-    } else {
-      assert.ok(false, 'Invalid number of cursor changes: ' + cursorChanges);
-    }
+  return moveCursorTo(this, 'blockquote:contains(blockquote section)').then(() => {
+    assert.ok(this.$('#is-block-quote').length, 'is block quote');
+    return moveCursorTo(this, 'p:contains(first paragraph)');
+  }).then(() => {
+    assert.ok(this.$('#is-p').length, 'is p');
   });
-
-  moveCursorTo(this, 'blockquote:contains(blockquote section)');
-  simulateMouseup();
 });
 
 test('#activeSectionTagNames is correct when a card is selected', function(assert) {
-  let done = assert.async();
-
-  let editor;
+  assert.expect(2);
 
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
@@ -786,10 +789,8 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
     }
   }]);
 
-  this.on('didCreateEditor', _editor => editor = _editor);
-
   this.render(hbs`
-    {{#mobiledoc-editor cards=cards mobiledoc=mobiledoc did-create-editor=(action 'didCreateEditor') autofocus=false as |editor|}}
+    {{#mobiledoc-editor autofocus=false cards=cards mobiledoc=mobiledoc as |editor|}}
       {{#if editor.activeSectionTagNames.isP}}
         <div id='is-p'>is p</div>
       {{else}}
@@ -798,57 +799,50 @@ test('#activeSectionTagNames is correct when a card is selected', function(asser
     {{/mobiledoc-editor}}
   `);
 
-  let cursorChanges = 0;
-  editor.cursorDidChange(() => {
-    cursorChanges++;
-
-    if (cursorChanges === 1) {
-      Ember.run.next(() => {
-        assert.ok(this.$('#is-p').length, 'precond - is p');
-        moveCursorTo(this, '#card-test');
-        simulateMouseup();
-      });
-    } else if (cursorChanges === 2 ){
-      Ember.run.next(() => {
-        assert.ok(this.$('#not-p').length, 'is not p');
-        done();
-      });
-    } else {
-      assert.ok(false, 'too many cursor changes: ' + cursorChanges);
-    }
+  return moveCursorTo(this, '.mobiledoc-editor p').then(() => {
+    assert.ok(this.$('#is-p').length, 'precond - is p');
+    return moveCursorTo(this, '#card-test');
+  }).then(() => {
+    assert.ok(this.$('#not-p').length, 'is not p');
   });
-
-  moveCursorTo(this, '.mobiledoc-editor p');
-  simulateMouseup();
 });
 
 test('exposes `addAtom` action to add an atom', function(assert) {
   let mobiledoc = simpleMobileDoc('howdy');
   this.set('mobiledoc', mobiledoc);
 
+  let editor;
   this.registerAtomComponent('ember-atom', hbs`I AM AN ATOM`);
   this.set('atoms', [createComponentAtom('ember-atom')]);
   this.set('atomText', 'atom text');
   this.set('atomPayload', {foo: 'bar'});
   this.on('onChange', (_mobiledoc) => mobiledoc = _mobiledoc);
+  this.on('didCreateEditor', (_editor) => editor = _editor);
   this.render(hbs`
-    {{#mobiledoc-editor on-change=(action 'onChange') mobiledoc=mobiledoc atoms=atoms as |editor|}}
+    {{#mobiledoc-editor on-change=(action 'onChange') did-create-editor=(action 'didCreateEditor') mobiledoc=mobiledoc atoms=atoms as |editor|}}
       <button id='add-atom' {{action editor.addAtom 'ember-atom' atomText atomPayload}}>Add Ember Atom</button>
     {{/mobiledoc-editor}}
   `);
 
-  let button = this.$('button#add-atom');
-  assert.ok(button.length, 'precond - has button');
-  assert.ok(!this.$('span:contains(I AM AN ATOM)').length, 'precond - no atom');
-  button.click();
+  let done = assert.async();
 
-  assert.ok(this.$('span:contains(I AM AN ATOM)').length, 'atom is added after clicking');
+  return selectRangeWithEditor(editor, new MobiledocKit.Range(editor.post.headPosition())).then(() => {
+    let button = this.$('button#add-atom');
+    assert.ok(button.length, 'precond - has button');
+    assert.ok(!this.$('span:contains(I AM AN ATOM)').length, 'precond - no atom');
+    button.click();
 
-  let atom = mobiledoc.atoms[0];
-  let [ name, text, payload ] = atom;
-  assert.equal(name, 'ember-atom', 'correct atom name in mobiledoc');
-  assert.equal(text, 'atom text', 'correct atom text in mobiledoc');
-  assert.deepEqual(payload, {foo: 'bar'}, 'correct atom payload in mobiledoc');
+    assert.ok(this.$('span:contains(I AM AN ATOM)').length, 'atom is added after clicking');
+
+    let atom = mobiledoc.atoms[0];
+    let [ name, text, payload ] = atom;
+    assert.equal(name, 'ember-atom', 'correct atom name in mobiledoc');
+    assert.equal(text, 'atom text', 'correct atom text in mobiledoc');
+    assert.deepEqual(payload, {foo: 'bar'}, 'correct atom payload in mobiledoc');
+
+    done();
+  });
+
 });
 
 test('wraps component-atom adding in runloop correctly', function(assert) {
@@ -866,7 +860,7 @@ test('wraps component-atom adding in runloop correctly', function(assert) {
 
   assert.ok(!Ember.run.currentRunLoop, 'precond - no run loop');
   editor.run((postEditor) => {
-    let position = editor.range.head;
+    let position = editor.post.headPosition();
     let atom = postEditor.builder.createAtom('demo-atom', 'value', {});
     postEditor.insertMarkers(position, [atom]);
   });

@@ -31,9 +31,10 @@ test('it displays buttons', function(assert) {
 test('Link button is active when text is linked', function(assert) {
   let text = 'Hello';
   this.set('mobiledoc', linkMobileDoc(text));
-  this.on('did-create-editor', (editor) => this._editor = editor);
+  let editor;
+  this.on('did-create-editor', _editor => editor = _editor);
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc did-create-editor=(action 'did-create-editor') as |editor|}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc autofocus=false did-create-editor=(action 'did-create-editor') as |editor|}}
       {{mobiledoc-toolbar editor=editor}}
     {{/mobiledoc-editor}}
   `);
@@ -42,7 +43,6 @@ test('Link button is active when text is linked', function(assert) {
   assert.ok(button.length, 'has link button');
   assert.ok(!button.hasClass('active'), 'precond - not active');
 
-  let { _editor: editor } = this;
   editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
 
   assert.ok(button.hasClass('active'), 'button is active after selecting link text');
@@ -53,7 +53,7 @@ test('List button is action when text is in list', function(assert) {
   this.set('mobiledoc', mobiledocWithList(text, 'ul'));
   this.on('did-create-editor', (editor) => this._editor = editor);
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc did-create-editor=(action 'did-create-editor') as |editor|}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc autofocus=false did-create-editor=(action 'did-create-editor') as |editor|}}
       {{mobiledoc-toolbar editor=editor}}
     {{/mobiledoc-editor}}
   `);
