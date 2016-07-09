@@ -1,5 +1,6 @@
 <li class="mobiledoc-toolbar__control">
   <button
+    type="button"
     title="Bold"
     class="mobiledoc-toolbar__button {{if editor.activeMarkupTagNames.isStrong 'active'}}"
     {{action editor.toggleMarkup 'strong'}}>
@@ -8,6 +9,7 @@
 </li>
 <li class="mobiledoc-toolbar__control">
   <button
+    type="button"
     title="Italic"
     class="mobiledoc-toolbar__button {{if editor.activeMarkupTagNames.isEm 'active'}}"
     {{action editor.toggleMarkup 'em'}}>
@@ -16,6 +18,7 @@
 </li>
 <li class="mobiledoc-toolbar__control">
   <button
+    type="button"
     title="Link"
     class="mobiledoc-toolbar__button {{if editor.activeMarkupTagNames.isA 'active'}}"
     {{action editor.toggleLink}}>
@@ -24,6 +27,7 @@
 </li>
 <li class="mobiledoc-toolbar__control">
   <button
+    type="button"
     title="Heading"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isH1 'active'}}"
     {{action editor.toggleSection 'h1'}}>
@@ -32,6 +36,7 @@
 </li>
 <li class="mobiledoc-toolbar__control">
   <button
+    type="button"
     title="Subheading"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isH2 'active'}}"
     {{action editor.toggleSection 'h2'}}>
@@ -40,6 +45,7 @@
 </li>
 <li class="mobiledoc-toolbar__control">
   <button
+    type="button"
     title="Block Quote"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isBlockquote 'active'}}"
     {{action editor.toggleSection 'blockquote'}}>
@@ -49,6 +55,7 @@
 </li>
 <li class="mobiledoc-toolbar__control">
   <button
+    type="button"
     title="Pull Quote"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isPullQuote 'active'}}"
     {{action editor.toggleSection 'pull-quote'}}>
@@ -57,6 +64,7 @@
 </li>
 <li class="mobiledoc-toolbar__control">
   <button
+    type="button"
     title="List"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isUl 'active'}}"
     {{action editor.toggleSection 'ul'}}>
@@ -65,6 +73,7 @@
 </li>
 <li class="mobiledoc-toolbar__control">
   <button
+    type="button"
     title="Numbered List"
     class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isOl 'active'}}"
     {{action editor.toggleSection 'ol'}}>

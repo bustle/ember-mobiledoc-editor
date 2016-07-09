@@ -7,7 +7,9 @@ let { computed, observer, defineProperty, Component } = Ember;
 export default Component.extend({
   tagName: 'button',
   layout,
+  attributeBindings: ['type'],
   classNameBindings: ['isActive:active'],
+  type: 'button',
   init() {
     this._super(...arguments);
     this._updateIsActiveCP();
