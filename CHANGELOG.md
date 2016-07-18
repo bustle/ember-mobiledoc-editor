@@ -1,9 +1,22 @@
+<a name="0.5.0"></a>
+# 0.5.0 (2016-07-18)
+
+* (tests) Change activeSectionTagNames test to be more robust ([7f07d44](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/7f07d44))
+* (tests) Use `cursorDidChange` callback in `activeSectionTagNames` tests ([e38d621](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/e38d621))
+* 0.5.0 ([39507fe](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/39507fe))
+* add postversion script for `np` ([ee69deb](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/ee69deb))
+* added to <button>s elements `type="button"` to avoid a11y problems ([d45d77f](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/d45d77f))
+* Update to mobiledoc-kit 0.10.1 ([22c7805](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/22c7805))
+
+
+
 <a name="0.4.3"></a>
 ## 0.4.3 (2016-06-03)
 
 * [docs] Add `addAtom` hook to readme ([1cfc925](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/1cfc925))
 * added ability for document object to be passed in ([4e44203](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/4e44203))
 * made the fallback more friendly for simple DOM ([6df69ad](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/6df69ad))
+* v0.4.3 ([3fff054](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/3fff054))
 
 
 
