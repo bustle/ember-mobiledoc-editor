@@ -1,12 +1,16 @@
-<a name="0.5.0"></a>
-# 0.5.0 (2016-07-18)
+<a name="0.5.1"></a>
+## 0.5.1 (2016-07-19)
 
 * (tests) Change activeSectionTagNames test to be more robust ([7f07d44](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/7f07d44))
 * (tests) Use `cursorDidChange` callback in `activeSectionTagNames` tests ([e38d621](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/e38d621))
-* 0.5.0 ([39507fe](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/39507fe))
+* 0.5.0 ([33ceb82](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/33ceb82))
+* 0.5.1 ([3b7fc36](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/3b7fc36))
 * add postversion script for `np` ([ee69deb](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/ee69deb))
 * added to <button>s elements `type="button"` to avoid a11y problems ([d45d77f](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/d45d77f))
+* Update ember-wormhole (#93) ([02451ee](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/02451ee))
+* update release instructions ([9e06a5f](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/9e06a5f))
 * Update to mobiledoc-kit 0.10.1 ([22c7805](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/22c7805))
+* Update travis.yml to use npm@3, node@6.2.0, and prebuilt phantom (#94) ([e6d5ebe](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/e6d5ebe))
 
 
 
