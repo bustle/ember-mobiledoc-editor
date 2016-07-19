@@ -287,12 +287,9 @@ The component will be provided with the following `attrs`:
 
 Releasing a new version:
 
-* update version in `package.json` and `addon/version.js`
-* `npm run update-changelog`
-* `git commit -am "v<versionNumber>"`
-* `git tag v<versionNumber>`
+* Use `np` (`npm install -g np`)
+* `np <version>` # e.g. `np 0.5.1`
 * `git push origin --tags`
-* `npm publish`
 
 To get started:
 
