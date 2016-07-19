@@ -1,9 +1,10 @@
 ---
 language: node_js
 node_js:
-  - "0.12"
+  - "6.2.0"
 
-sudo: false
+sudo: required
+dist: trusty
 
 cache:
   directories:
@@ -22,13 +23,9 @@ matrix:
     - env: EMBER_TRY_SCENARIO=ember-canary
 
 before_install:
-  # See https://mediocre.com/forum/topics/phantomjs-2-and-travis-ci-we-beat-our-heads-against-a-wall-so-you-dont-have-to
-  # modified to not use sudo (just puts $PWD on the path so that $PWD/phantomjs is the phantom used
-  - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
-  - tar -xjf phantomjs-2.0.0-ubuntu-12.04.tar.bz2
-  - export PATH=$PWD:$PATH
-  - "npm config set spin false"
-  - "npm install -g npm@^2"
+  - npm install -g npm@^3
+  - npm config set progress false
+  - npm install phantomjs-prebuilt
 
 install:
   - npm install -g bower
