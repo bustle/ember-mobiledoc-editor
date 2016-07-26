@@ -85,11 +85,6 @@ export default Component.extend({
       editor.toggleSection(sectionTagName);
     },
 
-    createListSection(tagName) {
-      Ember.deprecate('[ember-mobiledoc-editor] `createListSection` is deprecated. Use `toggleSection` with "ul" or "ol" instead', false);
-      this.send('toggleSection', tagName);
-    },
-
     addCard(cardName, payload={}) {
       this._addCard(cardName, payload);
     },
