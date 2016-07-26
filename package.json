@@ -38,7 +38,7 @@
     "ember-disable-proxy-controllers": "^1.0.1",
     "ember-export-application-global": "^1.0.4",
     "ember-try": "~0.0.8",
-    "mobiledoc-dom-renderer": "^0.5.0"
+    "mobiledoc-dom-renderer": "^0.5.3"
   },
   "keywords": [
     "ember-addon",
@@ -51,7 +51,7 @@
     "ember-cli-babel": "^5.1.5",
     "ember-cli-htmlbars": "^1.0.0",
     "ember-wormhole": "^0.4.0",
-    "mobiledoc-kit": "^0.10.1"
+    "mobiledoc-kit": "^0.10.3"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
