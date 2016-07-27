@@ -1,11 +1,12 @@
-<a name="0.5.2"></a>
-## 0.5.2 (2016-07-27)
+<a name="0.5.3"></a>
+## 0.5.3 (2016-07-27)
 
 * (tests) Change activeSectionTagNames test to be more robust ([7f07d44](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/7f07d44))
 * (tests) Use `cursorDidChange` callback in `activeSectionTagNames` tests ([e38d621](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/e38d621))
 * 0.5.0 ([33ceb82](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/33ceb82))
 * 0.5.1 ([b642347](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/b642347))
-* 0.5.2 ([d134b35](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/d134b35))
+* 0.5.2 ([36384d0](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/36384d0))
+* 0.5.3 ([616d841](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/616d841))
 * add postversion script for `np` ([ee69deb](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/ee69deb))
 * added to <button>s elements `type="button"` to avoid a11y problems ([d45d77f](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/d45d77f))
 * allow ember-beta to fail ([df15cd8](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/df15cd8))
@@ -15,6 +16,7 @@
 * update release instructions ([9e06a5f](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/9e06a5f))
 * Update release instructions ([3380c85](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/3380c85))
 * update to ember-cli 1.13.15 ([736755b](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/736755b))
+* Update to ember-cli 2.5.0 ([b793e9d](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/b793e9d))
 * Update to mobiledoc-kit 0.10.1 ([22c7805](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/22c7805))
 * Update travis.yml to use npm@3, node@6.2.0, and prebuilt phantom (#94) ([e6d5ebe](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/e6d5ebe))
 * upgrade to ember-cli 1.13.12 (#81) ([20816f0](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/20816f0))
