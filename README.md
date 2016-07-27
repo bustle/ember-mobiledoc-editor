@@ -287,7 +287,8 @@ The component will be provided with the following `attrs`:
 Releasing a new version:
 
 * Use `np` (`npm install -g np`)
-* `np <version>` # e.g. `np 0.5.1`
+* `np <version>` # e.g. `np 0.6.0`
+* (np can get stuck when ember-try runs tests because it doesn't know which test suites are allowed to fail. If necessary, use `np --yolo` (see `np --help`))
 * `git push origin --tags`
 
 To get started:
