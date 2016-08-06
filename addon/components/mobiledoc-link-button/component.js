@@ -6,7 +6,7 @@ let { computed, Component } = Ember;
 export default Component.extend({
   tagName: 'button',
   layout,
-  attributeBindings: ['type'],
+  attributeBindings: ['type', 'title'],
   classNameBindings: ['isActive:active'],
   type: 'button',
   isActive: computed.bool('editor.activeMarkupTagNames.isA'),
