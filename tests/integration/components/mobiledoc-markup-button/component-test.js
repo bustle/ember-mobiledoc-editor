@@ -33,6 +33,23 @@ test('it displays button', function(assert) {
     'button activates');
 });
 
+test('it includes `title` attribute when provided', function(assert) {
+  this.render(hbs`{{mobiledoc-markup-button for="strong" title=title}}`);
+
+  let button = this.$('button');
+  assert.equal(
+    button.attr('title'),
+    undefined,
+    'button does not have a `title` attribute by default');
+
+  this.set('title', 'Bold');
+
+  assert.equal(
+    button.attr('title'),
+    'Bold',
+    'button has `title` attribute when provided');
+});
+
 test('it yields for html', function(assert) {
   this.set('editor', {
     toggleMarkup() {},

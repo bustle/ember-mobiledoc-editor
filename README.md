@@ -155,6 +155,10 @@ Requires two properties:
 * `for`, the name of the tag
 * `editor`, the `editor` instance from `mobiledoc-editor`
 
+And accepts one optional property:
+
+* `title`, added as the `title` attribute on the `button` element
+
 Creates a `<button>` element that has a class of `active` when the provided
 section tag is used in the current selection. For example:
 
@@ -179,6 +183,10 @@ Requires two properties:
 * `for`, the name of the tag
 * `editor`, the `editor` instance from `mobiledoc-editor`
 
+And accepts one optional property:
+
+* `title`, added as the `title` attribute on the `button` element
+
 Creates a `<button>` element that has a class of `active` when the provided
 markup tag is used in the current selection. For example:
 
@@ -201,6 +209,10 @@ When clicked, the markup tag name will be toggled.
 Requires one property:
 
 * `editor`, the `editor` instance from `mobiledoc-editor`
+
+And accepts one optional property:
+
+* `title`, added as the `title` attribute on the `button` element
 
 Creates a `<button>` element that has a class of `active` when the an `a`
 tag is used in the current selection. For example:
