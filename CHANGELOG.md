@@ -1,12 +1,14 @@
-<a name="0.5.3"></a>
-## 0.5.3 (2016-07-27)
+<a name="0.5.4"></a>
+## 0.5.4 (2016-08-10)
 
+* feat(buttons): Add property for title attribute on button components (#102) ([3205b96](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/3205b96))
+* chore(npm): Use "version" script instead of "postversion" (#101) ([9aaeeab](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/9aaeeab))
 * (tests) Change activeSectionTagNames test to be more robust ([7f07d44](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/7f07d44))
 * (tests) Use `cursorDidChange` callback in `activeSectionTagNames` tests ([e38d621](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/e38d621))
 * 0.5.0 ([33ceb82](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/33ceb82))
 * 0.5.1 ([b642347](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/b642347))
 * 0.5.2 ([36384d0](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/36384d0))
-* 0.5.3 ([616d841](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/616d841))
+* 0.5.3 ([890edac](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/890edac))
 * add postversion script for `np` ([ee69deb](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/ee69deb))
 * added to <button>s elements `type="button"` to avoid a11y problems ([d45d77f](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/d45d77f))
 * allow ember-beta to fail ([df15cd8](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/df15cd8))
