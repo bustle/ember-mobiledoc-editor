@@ -10,7 +10,7 @@ import {
   WILL_CREATE_EDITOR_ACTION, DID_CREATE_EDITOR_ACTION
 } from 'ember-mobiledoc-editor/components/mobiledoc-editor/component';
 import {
-  simpleMobileDoc, linkMobileDoc, mobiledocWithCard
+  simpleMobileDoc, blankMobiledoc, linkMobileDoc, mobiledocWithCard
 } from '../../../helpers/create-mobiledoc';
 
 let { Component } = Ember;
@@ -468,7 +468,7 @@ test('it adds a card and removes an active blank section', function(assert) {
 
   assert.equal(this.$('.mobiledoc-editor p').length, 1, 'blank section exists');
   assert.equal(this.$('#demo-card').length, 0, 'no card section exists');
-  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition()));
+  editor.selectRange(editor.post.headPosition());
   this.$('button#add-card').click();
 
   assert.equal(this.$('.mobiledoc-editor p').length, 0, 'no blank section');
@@ -491,7 +491,7 @@ test('it adds a card and focuses the cursor at the end of the card', function(as
     {{/mobiledoc-editor}}
   `);
 
-  return selectRangeWithEditor(editor, new MobiledocKit.Range(editor.post.tailPosition())).then(() => {
+  return selectRangeWithEditor(editor, editor.post.tailPosition()).then(() => {
     assert.ok(editor && !editor.range.isBlank, 'range is not blank');
     this.$('button#add-card').click();
     assert.equal(this.$('#demo-card').length, 1, 'card section exists');
@@ -505,6 +505,30 @@ test('it adds a card and focuses the cursor at the end of the card', function(as
     assert.ok(window.getSelection().anchorNode === cursorElement, 'selection anchor is on cursor element');
     assert.ok(document.activeElement === $('.__mobiledoc-editor')[0],
                  'document.activeElement is correct');
+  });
+});
+
+// See https://github.com/bustlelabs/ember-mobiledoc-editor/issues/86
+test('can add a card to a blank post', function(assert) {
+  assert.expect(3);
+
+  let card = this.registerCardComponent('demo-card', hbs`<div id="demo-card">DEMO CARD</div>`);
+  this.set('cards', [card]);
+  let editor;
+  this.on('didCreateEditor', (_editor) => editor = _editor);
+  this.set('mobiledoc', blankMobiledoc());
+  this.render(hbs`
+    {{#mobiledoc-editor did-create-editor=(action 'didCreateEditor') mobiledoc=mobiledoc cards=cards as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+
+  let editorEl = this.$('.mobiledoc-editor__editor')[0];
+  return selectRange(editorEl, 0, editorEl, 0).then(() => {
+    assert.ok(editor.hasCursor(), 'precond - editor has cursor');
+    assert.ok(!this.$('#demo-card').length, 'precond - no card inserted');
+    return Ember.run(() => editor.insertCard('demo-card'));
+  }).then(() => {
+    assert.ok(this.$('#demo-card').length, 'inserts card');
   });
 });
 
