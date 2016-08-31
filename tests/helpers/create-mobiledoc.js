@@ -1,5 +1,15 @@
 import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
 
+export function blankMobiledoc() {
+  return {
+    version: MOBILEDOC_VERSION,
+    markups: [],
+    atoms: [],
+    cards: [],
+    sections: []
+  };
+}
+
 export function simpleMobileDoc(text) {
   return {
     version: MOBILEDOC_VERSION,
