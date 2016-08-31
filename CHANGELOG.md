@@ -1,3 +1,12 @@
+<a name="0.5.5"></a>
+## 0.5.5 (2016-08-31)
+
+* chore(dependencies): bump mobiledoc-kit to ^0.10.9 (#103) ([5c4dce6](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/5c4dce6))
+* test(add-card): Test that adding a card to a blank post is allowed (#104) ([7cf04f7](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/7cf04f7)), closes [#86](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/86)
+* docs(changelog): update changelog ([52b3d52](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/52b3d52))
+
+
+
 <a name="0.5.4"></a>
 ## 0.5.4 (2016-08-10)
 
