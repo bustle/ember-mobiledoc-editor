@@ -951,3 +951,46 @@ test('calls `unknownAtomHandler` when it renders an unknown atom', function(asse
     {{/mobiledoc-editor}}
   `);
 });
+
+// See https://github.com/bustlelabs/ember-mobiledoc-editor/issues/90
+test('does not rerender atoms when updating text in section', function(assert) {
+  let renderCount = 0;
+  this.registerAtomComponent('ember-atom', hbs`I AM AN ATOM`, Component.extend({
+    tagName: 'span',
+    didRender() {
+      renderCount++;
+    }
+  }));
+  this.set('atoms', [createComponentAtom('ember-atom')]);
+  this.set('mobiledoc', {
+    version: MOBILEDOC_VERSION,
+    atoms: [
+      ['ember-atom', 'value', {}]
+    ],
+    markups: [],
+    cards: [],
+    sections: [
+      [1, 'P', [
+        [1, [], 0, 0]]
+      ]
+    ]
+  });
+
+  let editor;
+  this.on('didCreateEditor', (_editor) => editor = _editor);
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc 
+                        atoms=atoms
+                        did-create-editor=(action 'didCreateEditor')as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+
+  assert.equal(renderCount, 1, 'precond - initially renders atom');
+
+  return selectRangeWithEditor(editor, editor.post.tailPosition()).then(() => {
+    Ember.run(() => editor.insertText('abc'));
+  }).then(() => {
+    assert.equal(renderCount, 1, 'still only 1 render of the atom');
+  });
+});
