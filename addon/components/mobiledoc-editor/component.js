@@ -14,6 +14,8 @@ export const REMOVE_ATOM_HOOK = 'removeAtomComponent';
 export const WILL_CREATE_EDITOR_ACTION = 'will-create-editor';
 export const DID_CREATE_EDITOR_ACTION = 'did-create-editor';
 
+export const TESTING_EXPANDO_PROPERTY = '__mobiledoc_kit_editor';
+
 const EDITOR_CARD_SUFFIX = '-editor';
 const EMPTY_MOBILEDOC = {
   version: MOBILEDOC_VERSION,
@@ -262,6 +264,7 @@ export default Component.extend({
       editor.render(editorElement);
       this._isRenderingEditor = false;
     }
+    this._setExpandoProperty(editor);
   },
 
   willDestroyElement() {
@@ -316,5 +319,12 @@ export default Component.extend({
   _addCard(cardName, payload, editMode=false) {
     let editor = this.get('editor');
     editor.insertCard(cardName, payload, editMode);
+  },
+
+  _setExpandoProperty(editor) {
+    // Store a reference to the editor for the acceptance test helpers
+    if (this.element && Ember.testing) {
+      this.element[TESTING_EXPANDO_PROPERTY] = editor;
+    }
   }
 });
