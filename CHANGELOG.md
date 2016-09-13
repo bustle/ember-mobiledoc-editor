@@ -1,6 +1,18 @@
+<a name="0.5.6"></a>
+## 0.5.6 (2016-09-13)
+
+* tests(beta): remove beta from allowed failures (#111) ([675701f](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/675701f))
+* chore(npm): upgrade to mobiledoc-kit ^0.10.10 (#109) ([5394ee7](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/5394ee7))
+* feat(test-helpers): Add `insertText` and `run` ember-mobiledoc-kit editor helpers (#107) ([84f311e](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/84f311e)), closes [#100](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/100)
+* test(atoms): test that atoms do not rerender when section changes (#105) ([2a3e9a0](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2a3e9a0)), closes [#90](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/90)
+* test(beta): Fix beta tests, update to wormhole ^0.4.1 (#108) ([d24182b](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/d24182b)), closes [#108](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/108) [#99](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/99)
+
+
+
 <a name="0.5.5"></a>
 ## 0.5.5 (2016-08-31)
 
+* 0.5.5 ([201f04b](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/201f04b))
 * chore(dependencies): bump mobiledoc-kit to ^0.10.9 (#103) ([5c4dce6](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/5c4dce6))
 * test(add-card): Test that adding a card to a blank post is allowed (#104) ([7cf04f7](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/7cf04f7)), closes [#86](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/86)
 * docs(changelog): update changelog ([52b3d52](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/52b3d52))
