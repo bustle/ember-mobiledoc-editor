@@ -12,6 +12,7 @@ import {
 import {
   simpleMobileDoc, blankMobiledoc, linkMobileDoc, mobiledocWithCard
 } from '../../../helpers/create-mobiledoc';
+import wait from 'ember-test-helpers/wait';
 
 let { Component } = Ember;
 
@@ -479,7 +480,7 @@ test('it adds a card and focuses the cursor at the end of the card', function(as
   assert.expect(7);
 
   let card = this.registerCardComponent('demo-card', hbs`
-    <div id="demo-card"><button id='edit-card' {{action editCard}}>ADD CARD</button></div>
+    <div id="demo-card"><button id='edit-card' {{action editCard}}>DEMO CARD</button></div>
    `);
   this.set('cards', [card]);
   let editor;
@@ -487,13 +488,15 @@ test('it adds a card and focuses the cursor at the end of the card', function(as
   this.set('mobiledoc', simpleMobileDoc());
   this.render(hbs`
     {{#mobiledoc-editor autofocus=false did-create-editor=(action 'didCreateEditor') mobiledoc=mobiledoc cards=cards as |editor|}}
-      <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
+      <button id='add-card' {{action editor.addCard 'demo-card'}}>ADD CARD</button>
     {{/mobiledoc-editor}}
   `);
 
   return selectRangeWithEditor(editor, editor.post.tailPosition()).then(() => {
     assert.ok(editor && !editor.range.isBlank, 'range is not blank');
     this.$('button#add-card').click();
+    return wait();
+  }).then(() => {
     assert.equal(this.$('#demo-card').length, 1, 'card section exists');
 
     let cardWrapper = this.$('#demo-card').parents('.__mobiledoc-card');
@@ -526,7 +529,8 @@ test('can add a card to a blank post', function(assert) {
   return selectRange(editorEl, 0, editorEl, 0).then(() => {
     assert.ok(editor.hasCursor(), 'precond - editor has cursor');
     assert.ok(!this.$('#demo-card').length, 'precond - no card inserted');
-    return Ember.run(() => editor.insertCard('demo-card'));
+    Ember.run(() => editor.insertCard('demo-card'));
+    return wait();
   }).then(() => {
     assert.ok(this.$('#demo-card').length, 'inserts card');
   });
@@ -855,6 +859,8 @@ test('exposes `addAtom` action to add an atom', function(assert) {
     assert.ok(button.length, 'precond - has button');
     assert.ok(!this.$('span:contains(I AM AN ATOM)').length, 'precond - no atom');
     button.click();
+    return wait();
+  }).then(() => {
 
     assert.ok(this.$('span:contains(I AM AN ATOM)').length, 'atom is added after clicking');
 
@@ -982,15 +988,17 @@ test('does not rerender atoms when updating text in section', function(assert) {
   this.render(hbs`
     {{#mobiledoc-editor mobiledoc=mobiledoc 
                         atoms=atoms
-                        did-create-editor=(action 'didCreateEditor')as |editor|}}
+                        did-create-editor=(action 'didCreateEditor') as |editor|}}
     {{/mobiledoc-editor}}
   `);
 
-  assert.equal(renderCount, 1, 'precond - initially renders atom');
-
-  return selectRangeWithEditor(editor, editor.post.tailPosition()).then(() => {
-    Ember.run(() => editor.insertText('abc'));
+  return wait().then(() => {
+    renderCount = 0;
+    return selectRangeWithEditor(editor, editor.post.tailPosition());
   }).then(() => {
-    assert.equal(renderCount, 1, 'still only 1 render of the atom');
+    Ember.run(() => editor.insertText('abc'));
+    return wait();
+  }).then(() => {
+    assert.equal(renderCount, 0, 'does not rerender atom when inserting text');
   });
 });
