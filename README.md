@@ -294,6 +294,32 @@ The component will be provided with the following `attrs`:
   * `editor` A reference to the [mobiledoc-kit](https://github.com/bustlelabs/mobiledoc-kit)
   * `postModel` A reference to this card's model in the editor's abstract tree. This may be necessary to do programmatic editing (such as moving the card via the `postEditor#moveSection` API that Mobiledoc editor provides)
 
+### Test Helpers
+
+ember-mobiledoc-editor exposes two test helpers for use in your acceptance tests:
+  * `insertText(editorElement, text)` -- inserts text into the editor (at the end)
+  * `run(editorElement, callback)` -- equivalent to [`editor.run`](http://bustlelabs.github.io/mobiledoc-kit/demo/docs/Editor.html#run), it calls the callback with the `postEditor`
+
+Example usage:
+```javascript
+// acceptance test
+import { insertText, run } from '../../helpers/ember-mobiledoc-editor';
+
+test('visit /', function(assert) {
+  visit('/');
+  andThen(() => {
+    let editorEl = find('.mobiledoc-kit')[0];
+    return insertText(editorEl, 'here is some text');
+    /* Or:
+      return run(editorEl, (postEditor) => ...);
+    */
+  });
+  andThen(() => {
+    // assert text inserted, etc.
+  });
+});
+```
+
 ### Developing ember-mobiledoc-editor
 
 Releasing a new version:
