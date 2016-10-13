@@ -74,6 +74,12 @@ export default Ember.Component.extend({
   didReceiveAttrs() {
     let mobiledoc = this.get('mobiledoc');
     assert(`Must pass mobiledoc to render-mobiledoc component`, !!mobiledoc);
+
+    if (this._teardownRender) {
+      this._teardownRender();
+      this._teardownRender = null;
+    }
+    this._renderMobiledoc();
   },
 
   // pass in an array of card names that the mobiledoc may have. These
@@ -92,7 +98,7 @@ export default Ember.Component.extend({
     return this.get('atomNames').map(name => createComponentAtom(name));
   }),
 
-  willRender() {
+  _renderMobiledoc() {
     let domHelper = getDOM(this);
     let dom = domHelper.document;
 
@@ -113,8 +119,6 @@ export default Ember.Component.extend({
 
     this.set('renderedMobiledoc', wrapper);
     this._teardownRender = teardown;
-
-    this._super(...arguments);
   },
 
   _cardOptions: computed(function() {
@@ -131,7 +135,7 @@ export default Ember.Component.extend({
           payload
         };
         this.addCard(card);
-        return { card, element };
+        return { entity: card, element };
       },
       [ADD_ATOM_HOOK]: ({env, options, value, payload}) => {
         let { name: atomName, dom } = env;
@@ -146,7 +150,7 @@ export default Ember.Component.extend({
           value
         };
         this.addAtom(atom);
-        return { atom, element };
+        return { entity: atom, element };
       },
       [REMOVE_CARD_HOOK]: (card) => this.removeCard(card),
       [REMOVE_ATOM_HOOK]: (atom) => this.removeAtom(atom)
