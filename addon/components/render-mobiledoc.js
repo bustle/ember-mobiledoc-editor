@@ -2,6 +2,7 @@ import Ember from 'ember';
 import Renderer from 'ember-mobiledoc-dom-renderer';
 import { RENDER_TYPE } from 'ember-mobiledoc-dom-renderer';
 import layout from '../templates/components/render-mobiledoc';
+import { getDOM } from '../utils/dom';
 
 const {
   assert,
@@ -92,9 +93,8 @@ export default Ember.Component.extend({
   }),
 
   willRender() {
-    let emberRenderer = this.get('renderer');
-    let dom = emberRenderer && emberRenderer._dom;
-    assert('Unable to get renderer dom helper', !!dom);
+    let domHelper = getDOM(this);
+    let dom = domHelper.document;
 
     let cards = this.get('_mdcCards');
     let atoms = this.get('_mdcAtoms');
@@ -104,7 +104,14 @@ export default Ember.Component.extend({
     let renderer = new Renderer({atoms, cards, cardOptions, dom});
     let { result, teardown } = renderer.render(mobiledoc);
 
-    this.set('renderedMobiledoc', result);
+    // result is a document fragment, and glimmer2 errors when cleaning it up.
+    // We must append the document fragment to a static wrapper.
+    // Related: https://github.com/tildeio/glimmer/pull/331 and
+    //          https://github.com/yapplabs/ember-wormhole/issues/66#issuecomment-246207622
+    let wrapper = this._createElement(dom, 'div');
+    wrapper.appendChild(result);
+
+    this.set('renderedMobiledoc', wrapper);
     this._teardownRender = teardown;
 
     this._super(...arguments);
