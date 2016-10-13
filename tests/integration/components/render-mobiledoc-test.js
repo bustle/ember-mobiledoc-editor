@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { CARD_ELEMENT_CLASS, ATOM_ELEMENT_CLASS } from 'ember-mobiledoc-dom-renderer/components/render-mobiledoc';
 import Ember from 'ember';
+import { createSimpleMobiledoc, createMobiledocWithCard, createMobiledocWithAtom } from '../../helpers/mobiledoc';
 
 moduleForComponent('render-mobiledoc', 'Integration | Component | render-mobiledoc', {
   integration: true
@@ -9,51 +10,6 @@ moduleForComponent('render-mobiledoc', 'Integration | Component | render-mobiled
 
 const cardName = 'sample-test-card';
 const atomName = 'sample-test-atom';
-
-function createSimpleMobiledoc(text) {
-  return {
-    version: '0.3.0',
-    markups: [],
-    atoms: [],
-    cards: [],
-    sections: [
-      [1, 'P', [
-        [0, [], 0, text]
-      ]]
-    ]
-  };
-}
-
-function createMobiledocWithAtom(atomName) {
-  return {
-    version: '0.3.0',
-    markups: [],
-    atoms: [
-      [atomName, 'value', {foo: 'bar'}]
-    ],
-    cards: [],
-    sections: [
-      [1, 'P', [
-        [1, [], 0, 0]
-      ]]
-    ]
-  };
-}
-
-function createMobiledocWithCard(cardName) {
-  return {
-    version: '0.3.0',
-    markups: [],
-    atoms: [],
-    cards: [
-      [cardName, {foo: 'bar'}]
-    ],
-    sections: [
-      [10, 0]
-    ]
-  };
-}
-
 
 test('it renders mobiledoc', function(assert) {
   this.set('mobiledoc', createSimpleMobiledoc('Hello, world!'));
@@ -161,6 +117,88 @@ test('it does not rerender if a atom component changes its card\'s payload or va
   assert.equal(inserted, 1, 'after modifying value, does not insert component atom again');
 });
 
+test('teardown destroys atom components', function(assert) {
+  this.set('showRendered', true);
+  this.set('mobiledoc', createMobiledocWithAtom('test-atom'));
+  this.set('atomNames', ['test-atom']);
+
+  let MyRenderComponent = this.container.lookupFactory('component:render-mobiledoc');
+  let didDestroy = [], didInsert = [];
+  this.registry.register('component:my-render-mobiledoc', MyRenderComponent.extend({
+    willDestroy() {
+      didDestroy.push('my-render-mobiledoc');
+    }
+  }));
+
+  let Component = Ember.Component.extend({
+    didInsertElement() { didInsert.push('test-atom'); },
+    willDestroy() { didDestroy.push('test-atom'); }
+  });
+  this.registry.register('component:test-atom', Component);
+
+  this.render(
+    hbs`{{#if showRendered}}
+      {{my-render-mobiledoc mobiledoc=mobiledoc atomNames=atomNames}}
+    {{/if}}`
+  );
+
+  assert.deepEqual(didDestroy, [], 'nothing destroyed');
+  assert.deepEqual(didInsert, ['test-atom'], 'test-atom inserted');
+
+  didInsert = [];
+
+  this.set('mobiledoc', createSimpleMobiledoc('no cards or atoms'));
+
+  assert.deepEqual(didDestroy, ['test-atom'], 'test-atom destroyed');
+  assert.deepEqual(didInsert, [], 'nothing inserted');
+
+  didDestroy = [];
+
+  this.set('mobiledoc', createMobiledocWithAtom('test-atom'));
+
+  didInsert = [];
+  didDestroy = [];
+
+  this.set('showRendered', false);
+
+  assert.deepEqual(didDestroy, ['my-render-mobiledoc', 'test-atom'], 'destroyed all');
+  assert.deepEqual(didInsert, [], 'nothing inserted');
+});
+
+test('changing mobiledoc calls teardown and destroys atom component', function(assert) {
+  this.set('mobiledoc', createMobiledocWithAtom('test-atom'));
+  this.set('atomNames', ['test-atom', 'other-atom']);
+
+  let MyRenderComponent = this.container.lookupFactory('component:render-mobiledoc');
+  let didDestroy = [], didInsert = [];
+  this.registry.register('component:my-render-mobiledoc', MyRenderComponent.extend({
+    willDestroy() {
+      didDestroy.push('my-render-mobiledoc');
+    }
+  }));
+
+  this.registry.register('component:test-atom', Ember.Component.extend({
+    didInsertElement() { didInsert.push('test-atom'); },
+    willDestroy() { didDestroy.push('test-atom'); }
+  }));
+  this.registry.register('component:other-atom', Ember.Component.extend({
+    didInsertElement() { didInsert.push('other-atom'); },
+    willDestroy() { didDestroy.push('other-atom'); }
+  }));
+
+  this.render(hbs`{{my-render-mobiledoc mobiledoc=mobiledoc atomNames=atomNames}}`);
+
+  assert.deepEqual(didDestroy, [], 'nothing destroyed');
+  assert.deepEqual(didInsert, ['test-atom'], 'test-atom inserted');
+
+  didInsert = [];
+
+  this.set('mobiledoc', createMobiledocWithAtom('other-atom'));
+
+  assert.deepEqual(didInsert, ['other-atom'], 'inserted other atom');
+  assert.deepEqual(didDestroy, ['test-atom'], 'destroyed test-atom');
+});
+
 test('it rerenders when its mobiledoc changes', function(assert) {
   this.set('mobiledoc', createSimpleMobiledoc('Hello, world!'));
   this.render(hbs`{{render-mobiledoc mobiledoc=mobiledoc}}`);
@@ -185,4 +223,86 @@ test('it does not rerender if a card component changes its card\'s payload', fun
   assert.equal(inserted, 1, 'inserts component once');
   Ember.run(() => card.set('payload', {}));
   assert.equal(inserted, 1, 'after modifying payload, does not insert component card again');
+});
+
+test('teardown destroys card components', function(assert) {
+  this.set('showRendered', true);
+  this.set('mobiledoc', createMobiledocWithCard('test-card'));
+  this.set('cardNames', ['test-card']);
+
+  let MyRenderComponent = this.container.lookupFactory('component:render-mobiledoc');
+  let didDestroy = [], didInsert = [];
+  this.registry.register('component:my-render-mobiledoc', MyRenderComponent.extend({
+    willDestroy() {
+      didDestroy.push('my-render-mobiledoc');
+    }
+  }));
+
+  let Component = Ember.Component.extend({
+    didInsertElement() { didInsert.push('test-card'); },
+    willDestroy() { didDestroy.push('test-card'); }
+  });
+  this.registry.register('component:test-card', Component);
+
+  this.render(
+    hbs`{{#if showRendered}}
+      {{my-render-mobiledoc mobiledoc=mobiledoc cardNames=cardNames}}
+    {{/if}}`
+  );
+
+  assert.deepEqual(didDestroy, [], 'nothing destroyed');
+  assert.deepEqual(didInsert, ['test-card'], 'test-card inserted');
+
+  didInsert = [];
+
+  this.set('mobiledoc', createSimpleMobiledoc('no cards'));
+
+  assert.deepEqual(didDestroy, ['test-card'], 'test-card destroyed');
+  assert.deepEqual(didInsert, [], 'nothing inserted');
+
+  // Change back to mobiledoc with card
+  this.set('mobiledoc', createMobiledocWithCard('test-card'));
+
+  didInsert = [];
+  didDestroy = [];
+
+  this.set('showRendered', false);
+
+  assert.deepEqual(didDestroy, ['my-render-mobiledoc', 'test-card'], 'destroyed all');
+  assert.deepEqual(didInsert, [], 'nothing inserted');
+});
+
+test('changing mobiledoc calls teardown and destroys card components', function(assert) {
+  this.set('mobiledoc', createMobiledocWithCard('test-card'));
+  this.set('cardNames', ['test-card', 'other-card']);
+
+  let MyRenderComponent = this.container.lookupFactory('component:render-mobiledoc');
+  let didDestroy = [], didInsert = [];
+  this.registry.register('component:my-render-mobiledoc', MyRenderComponent.extend({
+    willDestroy() {
+      didDestroy.push('my-render-mobiledoc');
+    }
+  }));
+
+  this.registry.register('component:test-card', Ember.Component.extend({
+    didInsertElement() { didInsert.push('test-card'); },
+    willDestroy() { didDestroy.push('test-card'); }
+  }));
+  this.registry.register('component:other-card', Ember.Component.extend({
+    didInsertElement() { didInsert.push('other-card'); },
+    willDestroy() { didDestroy.push('other-card'); }
+  }));
+
+  this.render(hbs`{{my-render-mobiledoc mobiledoc=mobiledoc cardNames=cardNames}}`);
+
+  assert.deepEqual(didDestroy, [], 'nothing destroyed');
+  assert.deepEqual(didInsert, ['test-card'], 'test-card inserted');
+
+  didInsert = [];
+
+  // change mobiledoc to one with other-card
+  this.set('mobiledoc', createMobiledocWithCard('other-card'));
+
+  assert.deepEqual(didInsert, ['other-card'], 'inserted other card');
+  assert.deepEqual(didDestroy, ['test-card'], 'destroyed test-card');
 });
