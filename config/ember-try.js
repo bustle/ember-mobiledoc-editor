@@ -3,7 +3,7 @@ module.exports = {
     {
       name: '1.13',
       dependencies: {
-        "ember": "~1.13.7"
+        "ember": "^1.13"
       }
     },
     {
@@ -11,9 +11,21 @@ module.exports = {
       dependencies: { }
     },
     {
-      name: '2.3',
+      name: 'ember-release',
       dependencies: {
-        'ember': '2.3.0-beta.1'
+        'ember': 'components/ember#release'
+      },
+      resolutions: {
+        'ember': 'release'
+      }
+    },
+    {
+      name: 'ember-beta',
+      dependencies: {
+        'ember': 'components/ember#beta'
+      },
+      resolutions: {
+        'ember': 'beta'
       }
     },
     {
