@@ -2,11 +2,11 @@
 
 {{#each _componentCards as |card|}}
   {{#ember-wormhole to=card.destinationElementId}}
-    {{component card.componentName payload=card.payload}}
+    {{component card.componentName payload=(readonly card.payload)}}
   {{/ember-wormhole}}
 {{/each}}
 {{#each _componentAtoms as |atom|}}
   {{#ember-wormhole to=atom.destinationElementId}}
-    {{component atom.componentName payload=atom.payload value=atom.value}}
+    {{component atom.componentName payload=(readonly atom.payload) value=(readonly atom.value)}}
   {{/ember-wormhole}}
 {{/each}}
