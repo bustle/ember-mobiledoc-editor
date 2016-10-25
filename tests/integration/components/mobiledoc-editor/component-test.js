@@ -10,13 +10,15 @@ import {
   WILL_CREATE_EDITOR_ACTION, DID_CREATE_EDITOR_ACTION
 } from 'ember-mobiledoc-editor/components/mobiledoc-editor/component';
 import {
-  simpleMobileDoc, blankMobiledoc, linkMobileDoc, mobiledocWithCard
+  simpleMobileDoc, blankMobiledoc, linkMobileDoc, mobiledocWithCard, mobiledocWithAtom
 } from '../../../helpers/create-mobiledoc';
 import wait from 'ember-test-helpers/wait';
 
 let { Component } = Ember;
 
 const COMPONENT_CARD_EXPECTED_PROPS = ['env', 'editCard', 'saveCard', 'cancelCard', 'removeCard', 'postModel'];
+
+const COMPONENT_ATOM_EXPECTED_PROPS = ['saveAtom'];
 
 moduleForComponent('mobiledoc-editor', 'Integration | Component | mobiledoc editor', {
   integration: true,
@@ -899,6 +901,26 @@ test('wraps component-atom adding in runloop correctly', function(assert) {
   assert.ok(this.$('#demo-atom').length, 'demo atom is added');
 });
 
+test(`sets ${COMPONENT_ATOM_EXPECTED_PROPS.join(',')} properties on atom components`, function(assert) {
+  assert.expect(COMPONENT_ATOM_EXPECTED_PROPS.length);
+
+  let Component = Ember.Component.extend({
+    didInsertElement() {
+      COMPONENT_ATOM_EXPECTED_PROPS.forEach(propName => {
+        assert.ok(!!this.get(propName), `has ${propName} property`);
+      });
+    }
+  });
+  let atom = this.registerAtomComponent('demo-atom', hbs`<div id='demo-atom'></div>`, Component);
+  this.set('atoms', [atom]);
+  this.set('mobiledoc', mobiledocWithAtom('demo-atom'));
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc atoms=atoms as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+});
+
 test('throws on unknown atom when `unknownAtomHandler` is not passed', function(assert) {
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
@@ -986,7 +1008,7 @@ test('does not rerender atoms when updating text in section', function(assert) {
   this.on('didCreateEditor', (_editor) => editor = _editor);
 
   this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc 
+    {{#mobiledoc-editor mobiledoc=mobiledoc
                         atoms=atoms
                         did-create-editor=(action 'didCreateEditor') as |editor|}}
     {{/mobiledoc-editor}}
