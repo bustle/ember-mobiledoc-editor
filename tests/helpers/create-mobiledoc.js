@@ -54,6 +54,26 @@ export function mobiledocWithCard(cardName, cardPayload={}) {
   };
 }
 
+export function mobiledocWithAtom(atomName, atomText='atom', atomPayload={}) {
+  return {
+    version: MOBILEDOC_VERSION,
+    markups: [],
+    atoms: [
+      [atomName, atomText, atomPayload]
+    ],
+    cards: [],
+    sections: [
+      [1, "P",
+        [
+          [0, [], 0, "text before atom"],
+          [1, [], 0, 0],
+          [0, [], 0, "text after atom"]
+        ]
+      ]
+    ]
+  };
+}
+
 export function linkMobileDoc(text) {
   return {
     version: MOBILEDOC_VERSION,
