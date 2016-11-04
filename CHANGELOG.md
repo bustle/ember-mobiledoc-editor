@@ -1,6 +1,14 @@
+<a name="0.5.7"></a>
+## 0.5.7 (2016-11-04)
+
+* feat(atom.save): Pass atom.save to atom components (#117) ([142ef3d](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/142ef3d))
+
+
+
 <a name="0.5.6"></a>
 ## 0.5.6 (2016-09-13)
 
+* 0.5.6 ([a5b2d54](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/a5b2d54))
 * tests(beta): remove beta from allowed failures (#111) ([675701f](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/675701f))
 * chore(npm): upgrade to mobiledoc-kit ^0.10.10 (#109) ([5394ee7](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/5394ee7))
 * feat(test-helpers): Add `insertText` and `run` ember-mobiledoc-kit editor helpers (#107) ([84f311e](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/84f311e)), closes [#100](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/100)
