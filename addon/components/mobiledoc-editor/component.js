@@ -293,7 +293,7 @@ export default Component.extend({
     // rendering the editor (after rendering the component) because it
     // causes Ember to display deprecation warnings
     if (this._isRenderingEditor) {
-      Ember.run.next(() => {
+      Ember.run.schedule('afterRender', () => {
         this.set('activeMarkupTagNames', markupTags);
         this.set('activeSectionTagNames', sectionTags);
       });
