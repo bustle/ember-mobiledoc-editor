@@ -1,6 +1,15 @@
+<a name="0.5.8-0"></a>
+## 0.5.8-0 (2016-11-17)
+
+* Bump deps to mobiledoc-kit beta ([2a4eead](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2a4eead))
+* Schedule active setup into runloop afterRender ([9813a23](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/9813a23))
+
+
+
 <a name="0.5.7"></a>
 ## 0.5.7 (2016-11-04)
 
+* 0.5.7 ([eada514](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/eada514))
 * feat(atom.save): Pass atom.save to atom components (#117) ([142ef3d](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/142ef3d))
 
 
