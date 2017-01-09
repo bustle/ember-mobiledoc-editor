@@ -33,6 +33,7 @@
         payload=card.payload
         data=card.payload
         env=card.env
+        options=card.options
         editCard=(action card.env.edit)
         saveCard=(action card.env.save)
         cancelCard=(action card.env.cancel)
@@ -48,6 +49,7 @@
         atomName=atom.atomName
         payload=atom.payload
         value=atom.value
+        options=atom.options
         saveAtom=(action atom.callbacks.save)
         }}
   {{/ember-wormhole}}
