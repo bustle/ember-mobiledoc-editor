@@ -308,7 +308,7 @@ import { insertText, run } from '../../helpers/ember-mobiledoc-editor';
 test('visit /', function(assert) {
   visit('/');
   andThen(() => {
-    let editorEl = find('.mobiledoc-kit')[0];
+    let editorEl = find('.mobiledoc-editor__editor')[0];
     return insertText(editorEl, 'here is some text');
     /* Or:
       return run(editorEl, (postEditor) => ...);
