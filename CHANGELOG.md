@@ -1,6 +1,17 @@
+<a name="0.5.8-1"></a>
+## 0.5.8-1 (2017-02-09)
+
+* Bump to ember-cli 2.12.0-beta.1 ([53f072e](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/53f072e))
+* cardHooks take priority over user card options ([d35a903](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/d35a903))
+* Pass card options to card/atom components ([b451a22](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/b451a22))
+* Update editor class in acceptance test example ([55616bc](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/55616bc))
+
+
+
 <a name="0.5.8-0"></a>
 ## 0.5.8-0 (2016-11-17)
 
+* 0.5.8-0 ([050a8c9](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/050a8c9))
 * Bump deps to mobiledoc-kit beta ([2a4eead](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2a4eead))
 * Schedule active setup into runloop afterRender ([9813a23](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/9813a23))
 
