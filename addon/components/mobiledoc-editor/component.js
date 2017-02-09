@@ -220,7 +220,11 @@ export default Component.extend({
         this.get('componentAtoms').removeObject(atom);
       }
     };
-    editorOptions.cardOptions = assign(componentHooks, editorOptions.cardOptions);
+    if (editorOptions.cardOptions) {
+      editorOptions.cardOptions = assign(editorOptions.cardOptions, componentHooks);
+    } else {
+      editorOptions.cardOptions = componentHooks;
+    }
     editor = new Editor(editorOptions);
     editor.willRender(() => {
       // The editor's render/rerender will happen after this `editor.willRender`,
