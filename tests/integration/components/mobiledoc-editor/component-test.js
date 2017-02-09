@@ -16,9 +16,9 @@ import wait from 'ember-test-helpers/wait';
 
 let { Component } = Ember;
 
-const COMPONENT_CARD_EXPECTED_PROPS = ['env', 'editCard', 'saveCard', 'cancelCard', 'removeCard', 'postModel'];
+const COMPONENT_CARD_EXPECTED_PROPS = ['env', 'editCard', 'saveCard', 'cancelCard', 'removeCard', 'postModel', 'options'];
 
-const COMPONENT_ATOM_EXPECTED_PROPS = ['saveAtom'];
+const COMPONENT_ATOM_EXPECTED_PROPS = ['saveAtom', 'options'];
 
 moduleForComponent('mobiledoc-editor', 'Integration | Component | mobiledoc editor', {
   integration: true,
@@ -575,6 +575,48 @@ test(`sets ${COMPONENT_CARD_EXPECTED_PROPS.join(',')} properties on card compone
 
   this.render(hbs`
     {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+});
+
+test(`passes options through to card components`, function(assert) {
+
+  let cardOptions = {
+    foo: 'bar'
+  };
+  let Component = Ember.Component.extend({
+    didInsertElement() {
+      assert.equal(this.get('options.foo'), 'bar', `options property has been passed`);
+    }
+  });
+  let card = this.registerCardComponent('demo-card', hbs`<div id='demo-card'></div>`, Component);
+  this.set('cards', [card]);
+  this.set('mobiledoc', mobiledocWithCard('demo-card'));
+  this.set('cardOptions', cardOptions);
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc cards=cards cardOptions=cardOptions as |editor|}}
+    {{/mobiledoc-editor}}
+  `);
+});
+
+test(`passes options through to atom components`, function(assert) {
+
+  let cardOptions = {
+    foo: 'bar'
+  };
+  let Component = Ember.Component.extend({
+    didInsertElement() {
+      assert.equal(this.get('options.foo'), 'bar', `options property has been passed`);
+    }
+  });
+  let atom = this.registerAtomComponent('demo-atom', hbs`I AM AN ATOM`, Component);
+  this.set('atoms', [atom]);
+  this.set('mobiledoc', mobiledocWithAtom('demo-atom'));
+  this.set('cardOptions', cardOptions);
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc atoms=atoms cardOptions=cardOptions as |editor|}}
     {{/mobiledoc-editor}}
   `);
 });
