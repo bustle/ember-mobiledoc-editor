@@ -13,6 +13,7 @@ import {
   simpleMobileDoc, blankMobiledoc, linkMobileDoc, mobiledocWithCard, mobiledocWithAtom
 } from '../../../helpers/create-mobiledoc';
 import wait from 'ember-test-helpers/wait';
+import $ from 'jquery';
 
 let { Component } = Ember;
 
