@@ -1,6 +1,15 @@
+<a name="0.5.8"></a>
+## 0.5.8 (2017-02-11)
+
+* Add 1.13 to the travis build ([2a6ab67](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2a6ab67))
+* Bump mobiledoc-kit to release version ([10114d9](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/10114d9))
+
+
+
 <a name="0.5.8-1"></a>
 ## 0.5.8-1 (2017-02-09)
 
+* 0.5.8-1 ([b9ef0c5](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/b9ef0c5))
 * Bump to ember-cli 2.12.0-beta.1 ([53f072e](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/53f072e))
 * cardHooks take priority over user card options ([d35a903](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/d35a903))
 * Pass card options to card/atom components ([b451a22](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/b451a22))
