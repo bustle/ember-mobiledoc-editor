@@ -1,6 +1,14 @@
+<a name="0.5.9"></a>
+## 0.5.9 (2017-02-22)
+
+* Make mobiledoc-dom-renderer a dependency (#127) ([a4dfb67](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/a4dfb67))
+
+
+
 <a name="0.5.8"></a>
 ## 0.5.8 (2017-02-11)
 
+* 0.5.8 ([2c43fa5](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2c43fa5))
 * Add 1.13 to the travis build ([2a6ab67](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/2a6ab67))
 * Bump mobiledoc-kit to release version ([10114d9](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/10114d9))
 
