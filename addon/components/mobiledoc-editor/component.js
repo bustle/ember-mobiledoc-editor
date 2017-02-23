@@ -157,7 +157,9 @@ export default Component.extend({
 
     // Create a new editor.
     let editorOptions = this.get('editorOptions');
-    editorOptions.mobiledoc = mobiledoc;
+    if (!editorOptions.html) {
+      editorOptions.mobiledoc = mobiledoc;
+    }
     let componentHooks = {
       [ADD_CARD_HOOK]: ({env, options, payload}, isEditing=false) => {
         let cardId = Ember.uuid();
