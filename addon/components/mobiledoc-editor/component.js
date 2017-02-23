@@ -45,6 +45,7 @@ export default Component.extend({
   spellcheck: true,
   autofocus: true,
   serializeVersion: MOBILEDOC_VERSION,
+  html: null,
 
   options: {},
 
@@ -65,9 +66,9 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     let mobiledoc = this.get('mobiledoc');
-    if (!mobiledoc) {
-      mobiledoc = EMPTY_MOBILEDOC;
-      this.set('mobiledoc', mobiledoc);
+    let html = this.get('html');
+    if (mobiledoc && html) {
+      throw new Error('cannot set html and mobiledoc');
     }
     this.set('componentCards', Ember.A([]));
     this.set('componentAtoms', Ember.A([]));
@@ -133,19 +134,28 @@ export default Component.extend({
   willRender() {
     // Use a default mobiledoc. If there are no changes, then return
     // early.
+    let html = this.get('html');
     let mobiledoc = this.get('mobiledoc') || EMPTY_MOBILEDOC;
-    if (
-      (
-        (this._localMobiledoc && this._localMobiledoc === mobiledoc) ||
-        (this._upstreamMobiledoc && this._upstreamMobiledoc === mobiledoc)
-      ) && (this._lastIsEditingDisabled === this.get('isEditingDisabled'))
-    ) {
-      // No change to mobiledoc, no need to recreate the editor
-      return;
+
+    if (html) {
+      if (html === this._lastHtml) {
+        return;
+      }
+      this._lastHtml = html;
+    } else {
+      if (
+        (
+          (this._localMobiledoc && this._localMobiledoc === mobiledoc) ||
+          (this._upstreamMobiledoc && this._upstreamMobiledoc === mobiledoc)
+        ) && (this._lastIsEditingDisabled === this.get('isEditingDisabled'))
+      ) {
+        // No change to mobiledoc, no need to recreate the editor
+        return;
+      }
+      this._lastIsEditingDisabled = this.get('isEditingDisabled');
+      this._upstreamMobiledoc = mobiledoc;
+      this._localMobiledoc = null;
     }
-    this._lastIsEditingDisabled = this.get('isEditingDisabled');
-    this._upstreamMobiledoc = mobiledoc;
-    this._localMobiledoc = null;
 
     this.willCreateEditor();
 
@@ -157,7 +167,9 @@ export default Component.extend({
 
     // Create a new editor.
     let editorOptions = this.get('editorOptions');
-    if (!editorOptions.html) {
+    if (html) {
+      editorOptions.html = html;
+    } else {
       editorOptions.mobiledoc = mobiledoc;
     }
     let componentHooks = {

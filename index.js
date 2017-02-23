@@ -15,6 +15,7 @@ function distDirFor(packageName) {
 
 module.exports = {
   name: 'ember-mobiledoc-editor',
+  isDevelopingAddon() { return true; },
 
   treeForVendor: function() {
     var files = [];
