@@ -14,6 +14,10 @@ import {
 } from '../../../helpers/create-mobiledoc';
 import wait from 'ember-test-helpers/wait';
 import $ from 'jquery';
+import {
+  setup as setupThrowingAdapter,
+  teardown as teardownThrowingAdapter
+} from '../../../helpers/create-throwing-adapter';
 
 let { Component } = Ember;
 
@@ -40,6 +44,10 @@ moduleForComponent('mobiledoc-editor', 'Integration | Component | mobiledoc edit
       this.registry.register(`template:components/${cardName}-editor`, editorTemplate);
       return card;
     };
+  },
+
+  afterEach() {
+    teardownThrowingAdapter(this);
   }
 });
 
@@ -750,6 +758,9 @@ test('`addCard` passes `payload`, breaks reference to original payload', functio
 });
 
 test('throws on unknown card when `unknownCardHandler` is not passed', function(assert) {
+  setupThrowingAdapter(this);
+
+  assert.expect(1);
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
     cards: [
@@ -769,7 +780,7 @@ test('throws on unknown card when `unknownCardHandler` is not passed', function(
                 options=(hash unknownCardHandler=unknownCardHandler) as |editor|}}
       {{/mobiledoc-editor}}
     `);
-  }, /Unknown card "missing-card" found.*no unknownCardHandler/);
+  }, /Unknown card "missing-card".*no unknownCardHandler/);
 });
 
 test('calls `unknownCardHandler` when it renders an unknown card', function(assert) {
@@ -965,6 +976,7 @@ test(`sets ${COMPONENT_ATOM_EXPECTED_PROPS.join(',')} properties on atom compone
 });
 
 test('throws on unknown atom when `unknownAtomHandler` is not passed', function(assert) {
+  setupThrowingAdapter(this);
   this.set('mobiledoc', {
     version: MOBILEDOC_VERSION,
     atoms: [
