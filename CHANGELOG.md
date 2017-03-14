@@ -1,6 +1,16 @@
+<a name="0.5.10"></a>
+## 0.5.10 (2017-03-14)
+
+* remove ember-cli-release (#131) ([4bf0c4a](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/4bf0c4a))
+* Upgrade dependencies (#130) ([e36db79](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/e36db79))
+* Use TestAdapter to ensure render errors are thrown (#129) ([b830f52](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/b830f52)), closes [#128](https://github.com/bustlelabs/ember-mobiledoc-editor/issues/128)
+
+
+
 <a name="0.5.9"></a>
 ## 0.5.9 (2017-02-22)
 
+* 0.5.9 ([0c7bb50](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/0c7bb50))
 * Make mobiledoc-dom-renderer a dependency (#127) ([a4dfb67](https://github.com/bustlelabs/ember-mobiledoc-editor/commit/a4dfb67))
 
 
