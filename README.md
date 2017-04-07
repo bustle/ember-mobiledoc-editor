@@ -56,6 +56,9 @@ The components accepts these arguments:
 * `cards`, an array of available cards for use by the editor. Jump to
   the section on [Component-based cards](#component-based-cards) for more detail on how
   to use cards with Ember components.
+* `atoms`, an array of available atoms for use by the editor. Jump to
+  the section on [Component-based atoms](#component-based-atoms) for more detail on how
+  to use atoms with Ember components.
 * `spellcheck` boolean
 * `autofocus` boolean
 * `placeholder` string -- the placeholder text to display when the mobiledoc is blank
@@ -293,6 +296,36 @@ The component will be provided with the following `attrs`:
   * `cardName` the name of this card
   * `editor` A reference to the [mobiledoc-kit](https://github.com/bustlelabs/mobiledoc-kit)
   * `postModel` A reference to this card's model in the editor's abstract tree. This may be necessary to do programmatic editing (such as moving the card via the `postEditor#moveSection` API that Mobiledoc editor provides)
+
+
+### Component-based Atoms
+
+Mobiledoc supports "atoms", inline sections of rich content that are embedded into a line of text in your post.
+For more details on the API for authoring atoms in vanilla JavaScript, see
+[ATOMS.md](https://github.com/bustlelabs/mobiledoc-kit/blob/master/ATOMS.md).
+
+ember-mobiledoc-editor comes with a handle helper for using Ember
+components as an atom. Create a list of atoms using the `createComponentAtom` helper:
+
+```js
+import Ember from 'ember';
+import createComponentAtom from 'ember-mobiledoc-editor/utils/create-component-atom';
+
+export default Ember.Component.extend({
+  atoms: Ember.computed(function() {
+    return [
+      createComponentAtom('demo-atom')
+    ];
+  })
+});
+```
+
+And pass that list into the `{{mobiledoc-editor}}` component:
+
+```hbs
+{{mobiledoc-editor atoms=atoms}}
+```
+
 
 ### Test Helpers
 
