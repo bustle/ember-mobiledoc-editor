@@ -6,9 +6,7 @@ node_js:
 sudo: false
 
 cache:
-  directories:
-    - $HOME/.npm
-    - $HOME/.cache # includes bowers cache
+  yarn: true
 
 env:
   # we recommend testing LTS's and latest stable release (bonus points to beta/canary)
@@ -32,8 +30,7 @@ before_install:
   - phantomjs --version
 
 install:
-  - npm install
-  - bower install
+  - yarn install
 
 script:
   # Usually, it's ok to finish the test scenario without reverting
