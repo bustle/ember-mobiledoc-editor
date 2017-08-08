@@ -365,8 +365,7 @@ Releasing a new version:
 To get started:
 
 * `git clone` this repository
-* `npm install`
-* `bower install`
+* `yarn install`
 
 Run the development server:
 
