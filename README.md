@@ -1,6 +1,8 @@
 ## ember-mobiledoc-editor
 
+[![npm version](https://badge.fury.io/js/ember-mobiledoc-editor.svg)](https://badge.fury.io/js/ember-mobiledoc-editor)
 [![Build Status](https://travis-ci.org/bustle/ember-mobiledoc-editor.svg)](https://travis-ci.org/bustle/ember-mobiledoc-editor)
+[![Ember Observer Score](https://emberobserver.com/badges/ember-mobiledoc-editor.svg)](https://emberobserver.com/addons/ember-mobiledoc-editor)
 
 A Mobiledoc editor written using Ember.js UI components and
 [Mobiledoc Kit](https://github.com/bustle/mobiledoc-kit).
