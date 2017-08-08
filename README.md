@@ -1,14 +1,14 @@
 ## ember-mobiledoc-editor
 
 [![npm version](https://badge.fury.io/js/ember-mobiledoc-editor.svg)](https://badge.fury.io/js/ember-mobiledoc-editor)
-[![Build Status](https://travis-ci.org/bustlelabs/ember-mobiledoc-editor.svg)](https://travis-ci.org/bustlelabs/ember-mobiledoc-editor)
+[![Build Status](https://travis-ci.org/bustle/ember-mobiledoc-editor.svg)](https://travis-ci.org/bustle/ember-mobiledoc-editor)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-mobiledoc-editor.svg)](https://emberobserver.com/addons/ember-mobiledoc-editor)
 
 A Mobiledoc editor written using Ember.js UI components and
-[Mobiledoc Kit](https://github.com/bustlelabs/mobiledoc-kit).
+[Mobiledoc Kit](https://github.com/bustle/mobiledoc-kit).
 
 Additionally, ember-mobiledoc-editor supports the creation of
-[Mobiledoc cards](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md)
+[Mobiledoc cards](https://github.com/bustle/mobiledoc-kit/blob/master/CARDS.md)
 as Ember components. This is a significant improvement for developer
 ergonomics over using Mobiledoc cards directly.
 
@@ -256,7 +256,7 @@ For example:
 
 Mobiledoc supports "cards", blocks of rich content that are embedded into a
 post. For more details on the API for authoring cards in vanilla JavaScript, see
-[CARDS.md](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md).
+[CARDS.md](https://github.com/bustle/mobiledoc-kit/blob/master/CARDS.md).
 
 ember-mobiledoc-editor comes with a handle helper for using Ember
 components as the display and edit modes of a card. Create a list of cards
@@ -291,12 +291,12 @@ The component will be provided with the following `attrs`:
 
   * `payload`, the payload for this card. *Note* the payload object is disconnected from the card's payload in the serialized mobiledoc. To update the mobiledoc payload, use the `saveCard` action.
   * `editCard`, an action for toggling this card into edit mode (this action is a no-op if the card is already in edit mode)
-  * `removeCard`, an action for removing this card (see the ["remove" Mobiledoc card action](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
+  * `removeCard`, an action for removing this card (see the ["remove" Mobiledoc card action](https://github.com/bustle/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
   * `saveCard`, an action accepting new payload for the card, then saving
-    that payload and toggling this card into display mode can optionally be passed an extra `false` argument to avoid toggling to display mode (see the ["save Mobiledoc card action](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
-  * `cancelCard`, an action toggling this card to display mode without saving (this action is a no-op if the card is already in display mode) (see the ["cancel Mobiledoc card action](https://github.com/bustlelabs/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
+    that payload and toggling this card into display mode can optionally be passed an extra `false` argument to avoid toggling to display mode (see the ["save Mobiledoc card action](https://github.com/bustle/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
+  * `cancelCard`, an action toggling this card to display mode without saving (this action is a no-op if the card is already in display mode) (see the ["cancel Mobiledoc card action](https://github.com/bustle/mobiledoc-kit/blob/master/CARDS.md#available-hooks))
   * `cardName` the name of this card
-  * `editor` A reference to the [mobiledoc-kit](https://github.com/bustlelabs/mobiledoc-kit)
+  * `editor` A reference to the [mobiledoc-kit](https://github.com/bustle/mobiledoc-kit)
   * `postModel` A reference to this card's model in the editor's abstract tree. This may be necessary to do programmatic editing (such as moving the card via the `postEditor#moveSection` API that Mobiledoc editor provides)
 
 
@@ -304,7 +304,7 @@ The component will be provided with the following `attrs`:
 
 Mobiledoc supports "atoms", inline sections of rich content that are embedded into a line of text in your post.
 For more details on the API for authoring atoms in vanilla JavaScript, see
-[ATOMS.md](https://github.com/bustlelabs/mobiledoc-kit/blob/master/ATOMS.md).
+[ATOMS.md](https://github.com/bustle/mobiledoc-kit/blob/master/ATOMS.md).
 
 ember-mobiledoc-editor comes with a handle helper for using Ember
 components as an atom. Create a list of atoms using the `createComponentAtom` helper:
@@ -333,7 +333,7 @@ And pass that list into the `{{mobiledoc-editor}}` component:
 
 ember-mobiledoc-editor exposes two test helpers for use in your acceptance tests:
   * `insertText(editorElement, text)` -- inserts text into the editor (at the end)
-  * `run(editorElement, callback)` -- equivalent to [`editor.run`](http://bustlelabs.github.io/mobiledoc-kit/demo/docs/Editor.html#run), it calls the callback with the `postEditor`
+  * `run(editorElement, callback)` -- equivalent to [`editor.run`](http://bustle.github.io/mobiledoc-kit/demo/docs/Editor.html#run), it calls the callback with the `postEditor`
 
 Example usage:
 ```javascript

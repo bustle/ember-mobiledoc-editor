@@ -11,7 +11,7 @@
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "bustlelabs/ember-mobiledoc-editor",
+  "repository": "bustle/ember-mobiledoc-editor",
   "scripts": {
     "build": "ember build",
     "start": "ember server",
