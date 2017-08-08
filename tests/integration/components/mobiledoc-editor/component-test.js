@@ -522,7 +522,7 @@ test('it adds a card and focuses the cursor at the end of the card', function(as
   });
 });
 
-// See https://github.com/bustlelabs/ember-mobiledoc-editor/issues/86
+// See https://github.com/bustle/ember-mobiledoc-editor/issues/86
 test('can add a card to a blank post', function(assert) {
   assert.expect(3);
 
@@ -1035,7 +1035,7 @@ test('calls `unknownAtomHandler` when it renders an unknown atom', function(asse
   `);
 });
 
-// See https://github.com/bustlelabs/ember-mobiledoc-editor/issues/90
+// See https://github.com/bustle/ember-mobiledoc-editor/issues/90
 test('does not rerender atoms when updating text in section', function(assert) {
   let renderCount = 0;
   this.registerAtomComponent('ember-atom', hbs`I AM AN ATOM`, Component.extend({
