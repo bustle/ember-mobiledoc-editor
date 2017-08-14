@@ -1,12 +1,20 @@
+<a name="0.5.12"></a>
+## 0.5.12 (2017-08-14)
+
+* Upgrade mobiledoc-kit dep, use editor#toggleMarkup (#139) ([66d0e65](https://github.com/bustle/ember-mobiledoc-editor/commit/66d0e65))
+
+
+
 <a name="0.5.11"></a>
 ## 0.5.11 (2017-08-08)
 
+* Start documenting atoms for the editor ([8c6e979](https://github.com/bustle/ember-mobiledoc-editor/commit/8c6e979))
+* v0.5.11 ([d4b3534](https://github.com/bustle/ember-mobiledoc-editor/commit/d4b3534))
 * chore(dependencies): Add yarn.lock, specify yarn in README (#135) ([8edf7f8](https://github.com/bustle/ember-mobiledoc-editor/commit/8edf7f8))
 * chore(dependencies): Upgrade outdated packages (#138) ([0846c8e](https://github.com/bustle/ember-mobiledoc-editor/commit/0846c8e))
 * chore(docs): Add npm version and ember observer badges (#137) ([3a3804f](https://github.com/bustle/ember-mobiledoc-editor/commit/3a3804f))
 * chore(docs): change bustlelabs urls to bustle (#136) ([1006ced](https://github.com/bustle/ember-mobiledoc-editor/commit/1006ced))
 * fix(link prompt submit): Move link prompt submit action to submit button (#132) ([a31f0ef](https://github.com/bustle/ember-mobiledoc-editor/commit/a31f0ef))
-* Start documenting atoms for the editor ([8c6e979](https://github.com/bustle/ember-mobiledoc-editor/commit/8c6e979))
 
 
 
