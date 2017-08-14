@@ -117,10 +117,8 @@ export default Component.extend({
       let offsets = this.get('linkOffsets');
       this.set('linkOffsets', null);
       let editor = this.get('editor');
-      editor.run(postEditor => {
-        let markup = postEditor.builder.createMarkup('a', {href});
-        postEditor.addMarkupToRange(offsets, markup);
-      });
+      editor.selectRange(offsets);
+      editor.toggleMarkup('a', {href});
     },
 
     cancelLink() {
