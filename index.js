@@ -32,7 +32,8 @@ module.exports = {
     if (rendererDir) {
       files.push(new Funnel(rendererDir, {
         files: [
-          'amd/mobiledoc-dom-renderer.js'
+          'amd/mobiledoc-dom-renderer.js',
+          'amd/mobiledoc-dom-renderer.map'
         ],
         destDir: 'mobiledoc-dom-renderer'
       }));
