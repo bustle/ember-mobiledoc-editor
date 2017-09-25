@@ -1,6 +1,6 @@
 {
   "name": "ember-mobiledoc-editor",
-  "version": "0.5.13-alpha",
+  "version": "0.5.13",
   "description": "A Mobiledoc editor for Ember.js apps",
   "keywords": [
     "ember-addon"
