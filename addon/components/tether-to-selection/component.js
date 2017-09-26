@@ -20,6 +20,8 @@ export default Component.extend({
 
     if (range) {
       let rect = range.getBoundingClientRect();
+      // Fallback on parent element container if no anchor container found:
+      if (!rect.left && !rect.top) rect = range.startContainer.getBoundingClientRect()
       this.set('left', rect.left);
       this.set('top', rect.top);
     }
