@@ -155,6 +155,10 @@ export default Component.extend({
       editor.destroy();
     }
 
+    //Keep track of cards that were removed before afterRender is called,
+    //otherwise they will be added when they shouldn't be
+    let cardsRemovedBeforeRender = [];
+
     // Create a new editor.
     let editorOptions = this.get('editorOptions');
     editorOptions.mobiledoc = mobiledoc;
@@ -181,9 +185,19 @@ export default Component.extend({
           editor,
           postModel: env.postModel
         });
+        
         Ember.run.schedule('afterRender', () => {
-          this.get('componentCards').pushObject(card);
+            //If there was an attempt to remove this card before the afterRender
+            //function fired, don't push the card.
+            let existingIndex = cardsRemovedBeforeRender.indexOf(card);
+            if (existingIndex !== -1) {
+                cardsRemovedBeforeRender.splice(existingIndex, 1);
+                return;
+            }
+
+            this.get('componentCards').pushObject(card);
         });
+        
         return { card, element };
       },
       [ADD_ATOM_HOOK]: ({env, options, payload, value}) => {
@@ -212,7 +226,16 @@ export default Component.extend({
         return { atom, element };
       },
       [REMOVE_CARD_HOOK]: (card) => {
-        this.get('componentCards').removeObject(card);
+        let cards = this.get('componentCards');
+
+        //If the card doesn't exist, then it's quite likely the afterRender function
+        //hasn't fired yet. Keep track of this card to prevent re-adding when the event fires
+        if (cards.indexOf(card) === -1) {
+            cardsRemovedBeforeRender.push(card);
+            return;
+        }
+
+        cards.removeObject(card);
       },
       [REMOVE_ATOM_HOOK]: (atom) => {
         this.get('componentAtoms').removeObject(atom);
