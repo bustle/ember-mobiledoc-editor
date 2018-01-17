@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { Promise as EmberPromise } from 'rsvp';
 import { TESTING_EXPANDO_PROPERTY } from 'ember-mobiledoc-editor/components/mobiledoc-editor/component';
 
 function findEditor(element) {
@@ -7,14 +7,14 @@ function findEditor(element) {
       return element[TESTING_EXPANDO_PROPERTY];
     }
     element = element.parentNode;
-  } while (!!element);
+  } while (element);
 
   throw new Error('Unable to find ember-mobiledoc-editor from element');
 }
 
 export function insertText(element, text) {
   let editor = findEditor(element);
-  return new Ember.RSVP.Promise(resolve => {
+  return new EmberPromise(resolve => {
     let { post } = editor;
     editor.run(postEditor => {
       if (editor.post.isBlank) {
@@ -32,7 +32,7 @@ export function run(element, callback) {
   let editor = findEditor(element);
   editor.run(callback);
 
-  return new Ember.RSVP.Promise(resolve => {
+  return new EmberPromise(resolve => {
     requestAnimationFrame(resolve);
   });
 }

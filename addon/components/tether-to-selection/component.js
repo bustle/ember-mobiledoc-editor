@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import { schedule } from '@ember/runloop';
+import { assert } from '@ember/debug';
+import Component from '@ember/component';
 import layout from './template';
-
-let { Component } = Ember;
 
 const LEFT_PADDING = 0;
 const TOP_PADDING = 10;
@@ -16,7 +16,7 @@ export default Component.extend({
     let selection = window.getSelection();
     let range = selection && selection.rangeCount && selection.getRangeAt(0);
 
-    Ember.assert('Should not render {{#tether-to-selection}} when there is no selection', !!range);
+    assert('Should not render {{#tether-to-selection}} when there is no selection', !!range);
 
     if (range) {
       let rect = range.getBoundingClientRect();
@@ -28,7 +28,7 @@ export default Component.extend({
   },
 
   didInsertElement() {
-    Ember.run.schedule('afterRender', () => {
+    schedule('afterRender', () => {
       let myHeight = this.$().height();
       let left = this.get('left') - LEFT_PADDING;
       let top = this.get('top') - TOP_PADDING - myHeight;

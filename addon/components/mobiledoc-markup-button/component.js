@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { defineProperty, observer, computed } from '@ember/object';
+import Component from '@ember/component';
 import layout from './template';
 import titleize from '../../utils/titleize';
-
-let { computed, observer, defineProperty, Component } = Ember;
 
 export default Component.extend({
   tagName: 'button',
