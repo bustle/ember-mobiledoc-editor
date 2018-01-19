@@ -1,8 +1,7 @@
+import { run } from '@ember/runloop';
+import EObject from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
-
-let { run, Object: EObject } = Ember;
 
 moduleForComponent('mobiledoc-link-button', 'Integration | Component | mobiledoc link button', {
   integration: true

@@ -1,6 +1,4 @@
-import Ember from 'ember';
-
-const { merge, assign } = Ember;
+import { assign, merge } from '@ember/polyfills';
 
 let polyfilledAssign = assign || merge;
 

@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { Promise as EmberPromise } from 'rsvp';
 
 function clearSelection() {
   window.getSelection().removeAllRanges();
@@ -8,7 +8,7 @@ let runLater = (cb) => window.requestAnimationFrame(cb);
 
 export function selectRangeWithEditor(editor, range) {
   editor.selectRange(range);
-  return new Ember.RSVP.Promise(resolve => runLater(resolve));
+  return new EmberPromise(resolve => runLater(resolve));
 }
 
 export function selectRange(startNode, startOffset, endNode, endOffset) {
@@ -21,7 +21,7 @@ export function selectRange(startNode, startOffset, endNode, endOffset) {
   const selection = window.getSelection();
   selection.addRange(range);
 
-  return new Ember.RSVP.Promise(resolve => runLater(resolve));
+  return new EmberPromise(resolve => runLater(resolve));
 }
 
 export function moveCursorTo(context, selector) {
@@ -40,5 +40,5 @@ export function moveCursorTo(context, selector) {
   range.selectNode(node);
   selection.addRange(range);
 
-  return new Ember.RSVP.Promise(resolve => runLater(resolve));
+  return new EmberPromise(resolve => runLater(resolve));
 }

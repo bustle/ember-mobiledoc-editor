@@ -1,3 +1,4 @@
+import { run } from '@ember/runloop';
 import Ember from 'ember';
 import { QUnitAdapter } from 'ember-qunit';
 
@@ -23,12 +24,12 @@ export function setup(context) {
 	let origTestAdapter = Ember.Test.adapter;
   context.__originalTestAdapter = origTestAdapter;
 
-  Ember.run(() => { Ember.Test.adapter = ThrowingAdapter.create(); });
+  run(() => { Ember.Test.adapter = ThrowingAdapter.create(); });
 }
 
 export function teardown(context) {
   if (context.__originalTestAdapter) {
-    Ember.run(() => {
+    run(() => {
       context.__originalTestAdapter.destroy();
       delete context.__originalTestAdapter;
 

@@ -1,7 +1,6 @@
-import Ember from 'ember';
+import { bool } from '@ember/object/computed';
+import Component from '@ember/component';
 import layout from './template';
-
-let { computed, Component } = Ember;
 
 export default Component.extend({
   tagName: 'button',
@@ -9,7 +8,7 @@ export default Component.extend({
   attributeBindings: ['type', 'title'],
   classNameBindings: ['isActive:active'],
   type: 'button',
-  isActive: computed.bool('editor.activeMarkupTagNames.isA'),
+  isActive: bool('editor.activeMarkupTagNames.isA'),
   click() {
     let editor = this.get('editor');
     editor.toggleLink();

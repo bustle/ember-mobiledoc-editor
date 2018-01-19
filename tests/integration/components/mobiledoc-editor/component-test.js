@@ -1,9 +1,15 @@
+import { Promise as EmberPromise } from 'rsvp';
+import { run } from '@ember/runloop';
+import Component from '@ember/component';
 import { moduleForComponent, test } from 'ember-qunit';
-import { selectRange, selectRangeWithEditor, moveCursorTo } from 'dummy/tests/helpers/selection';
+import {
+  selectRange,
+  selectRangeWithEditor,
+  moveCursorTo
+} from 'dummy/tests/helpers/selection';
 import hbs from 'htmlbars-inline-precompile';
 import createComponentCard from 'ember-mobiledoc-editor/utils/create-component-card';
 import createComponentAtom from 'ember-mobiledoc-editor/utils/create-component-atom';
-import Ember from 'ember';
 import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
 import MobiledocKit from 'mobiledoc-kit';
 import {
@@ -18,8 +24,6 @@ import {
   setup as setupThrowingAdapter,
   teardown as teardownThrowingAdapter
 } from '../../../helpers/create-throwing-adapter';
-
-let { Component } = Ember;
 
 const COMPONENT_CARD_EXPECTED_PROPS = ['env', 'editCard', 'saveCard', 'cancelCard', 'removeCard', 'postModel', 'options'];
 
@@ -156,12 +160,12 @@ test('wraps component-card adding in runloop correctly', function(assert) {
   `);
 
   // Add a card without being in a runloop
-  assert.ok(!Ember.run.currentRunLoop, 'precond - no run loop');
+  assert.ok(!run.currentRunLoop, 'precond - no run loop');
   editor.run((postEditor) => {
     let card = postEditor.builder.createCardSection('demo-card');
     postEditor.insertSection(card);
   });
-  assert.ok(!Ember.run.currentRunLoop, 'postcond - no run loop after editor.run');
+  assert.ok(!run.currentRunLoop, 'postcond - no run loop after editor.run');
 
   assert.ok(this.$('#demo-card').length, 'demo card is added');
 });
@@ -388,7 +392,7 @@ test('it links selected text and fires `on-change`', function(assert) {
     {{/mobiledoc-editor}}
   `);
   let { _editor: editor } = this;
-  let nextFrame = () => new Ember.RSVP.Promise(resolve => window.requestAnimationFrame(resolve));
+  let nextFrame = () => new EmberPromise(resolve => window.requestAnimationFrame(resolve));
 
   return selectRangeWithEditor(editor, new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition())).then(() => {
     this.$('button:contains(Link)').click();
@@ -540,7 +544,7 @@ test('can add a card to a blank post', function(assert) {
   return selectRange(editorEl, 0, editorEl, 0).then(() => {
     assert.ok(editor.hasCursor(), 'precond - editor has cursor');
     assert.ok(!this.$('#demo-card').length, 'precond - no card inserted');
-    Ember.run(() => editor.insertCard('demo-card'));
+    run(() => editor.insertCard('demo-card'));
     return wait();
   }).then(() => {
     assert.ok(this.$('#demo-card').length, 'inserts card');
@@ -571,14 +575,14 @@ test('it has `addCardInEditMode` action to add card in edit mode', function(asse
 test(`sets ${COMPONENT_CARD_EXPECTED_PROPS.join(',')} properties on card components`, function(assert) {
   assert.expect(COMPONENT_CARD_EXPECTED_PROPS.length);
 
-  let Component = Ember.Component.extend({
+  let DemoCardComponent = Component.extend({
     didInsertElement() {
       COMPONENT_CARD_EXPECTED_PROPS.forEach(propName => {
         assert.ok(!!this.get(propName), `has ${propName} property`);
       });
     }
   });
-  let card = this.registerCardComponent('demo-card', hbs`<div id='demo-card'></div>`, Component);
+  let card = this.registerCardComponent('demo-card', hbs`<div id='demo-card'></div>`, DemoCardComponent);
   this.set('cards', [card]);
   this.set('mobiledoc', mobiledocWithCard('demo-card'));
 
@@ -593,12 +597,12 @@ test(`passes options through to card components`, function(assert) {
   let cardOptions = {
     foo: 'bar'
   };
-  let Component = Ember.Component.extend({
+  let DemoCardComponent = Component.extend({
     didInsertElement() {
       assert.equal(this.get('options.foo'), 'bar', `options property has been passed`);
     }
   });
-  let card = this.registerCardComponent('demo-card', hbs`<div id='demo-card'></div>`, Component);
+  let card = this.registerCardComponent('demo-card', hbs`<div id='demo-card'></div>`, DemoCardComponent);
   this.set('cards', [card]);
   this.set('mobiledoc', mobiledocWithCard('demo-card'));
   this.set('cardOptions', cardOptions);
@@ -614,12 +618,12 @@ test(`passes options through to atom components`, function(assert) {
   let cardOptions = {
     foo: 'bar'
   };
-  let Component = Ember.Component.extend({
+  let DemoAtomComponent = Component.extend({
     didInsertElement() {
       assert.equal(this.get('options.foo'), 'bar', `options property has been passed`);
     }
   });
-  let atom = this.registerAtomComponent('demo-atom', hbs`I AM AN ATOM`, Component);
+  let atom = this.registerAtomComponent('demo-atom', hbs`I AM AN ATOM`, DemoAtomComponent);
   this.set('atoms', [atom]);
   this.set('mobiledoc', mobiledocWithAtom('demo-atom'));
   this.set('cardOptions', cardOptions);
@@ -634,12 +638,12 @@ test('component card `env` property exposes `isInEditor`', function(assert) {
   assert.expect(1);
 
   let env;
-  let Component = Ember.Component.extend({
+  let DemoCardComponent = Component.extend({
     didInsertElement() {
       env = this.get('env');
     }
   });
-  let card = this.registerCardComponent('demo-card', hbs`<div id='demo-card'></div>`, Component);
+  let card = this.registerCardComponent('demo-card', hbs`<div id='demo-card'></div>`, DemoCardComponent);
   this.set('cards', [card]);
   this.set('mobiledoc', mobiledocWithCard('demo-card'));
 
@@ -656,7 +660,7 @@ test('(deprecated) `addCard` passes `data`, breaks reference to original payload
 
   let passedPayload;
 
-  const DemoCardComponent = Ember.Component.extend({
+  const DemoCardComponent = Component.extend({
     init() {
       this._super(...arguments);
       passedPayload = this.get('data');
@@ -709,7 +713,7 @@ test('`addCard` passes `payload`, breaks reference to original payload', functio
 
   let passedPayload;
 
-  const DemoCardComponent = Ember.Component.extend({
+  const DemoCardComponent = Component.extend({
     init() {
       this._super(...arguments);
       passedPayload = this.get('payload');
@@ -944,13 +948,13 @@ test('wraps component-atom adding in runloop correctly', function(assert) {
     {{/mobiledoc-editor}}
   `);
 
-  assert.ok(!Ember.run.currentRunLoop, 'precond - no run loop');
+  assert.ok(!run.currentRunLoop, 'precond - no run loop');
   editor.run((postEditor) => {
     let position = editor.post.headPosition();
     let atom = postEditor.builder.createAtom('demo-atom', 'value', {});
     postEditor.insertMarkers(position, [atom]);
   });
-  assert.ok(!Ember.run.currentRunLoop, 'postcond - no run loop after editor.run');
+  assert.ok(!run.currentRunLoop, 'postcond - no run loop after editor.run');
 
   assert.ok(this.$('#demo-atom').length, 'demo atom is added');
 });
@@ -958,14 +962,14 @@ test('wraps component-atom adding in runloop correctly', function(assert) {
 test(`sets ${COMPONENT_ATOM_EXPECTED_PROPS.join(',')} properties on atom components`, function(assert) {
   assert.expect(COMPONENT_ATOM_EXPECTED_PROPS.length);
 
-  let Component = Ember.Component.extend({
+  let DemoAtomComponent = Component.extend({
     didInsertElement() {
       COMPONENT_ATOM_EXPECTED_PROPS.forEach(propName => {
         assert.ok(!!this.get(propName), `has ${propName} property`);
       });
     }
   });
-  let atom = this.registerAtomComponent('demo-atom', hbs`<div id='demo-atom'></div>`, Component);
+  let atom = this.registerAtomComponent('demo-atom', hbs`<div id='demo-atom'></div>`, DemoAtomComponent);
   this.set('atoms', [atom]);
   this.set('mobiledoc', mobiledocWithAtom('demo-atom'));
 
@@ -1073,7 +1077,7 @@ test('does not rerender atoms when updating text in section', function(assert) {
     renderCount = 0;
     return selectRangeWithEditor(editor, editor.post.tailPosition());
   }).then(() => {
-    Ember.run(() => editor.insertText('abc'));
+    run(() => editor.insertText('abc'));
     return wait();
   }).then(() => {
     assert.equal(renderCount, 0, 'does not rerender atom when inserting text');
