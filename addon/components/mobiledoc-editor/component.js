@@ -258,6 +258,12 @@ export default Component.extend({
         this.inputModeDidChange(editor);
       });
     });
+    editor.cursorDidChange(() => {
+      if (this.isDestroyed) { return; }
+      join(() => {
+        this.cursorDidChange(editor);
+      });
+    });
     if (this.get('isEditingDisabled')) {
       editor.disableEditing();
     }
@@ -314,6 +320,10 @@ export default Component.extend({
       this.set('activeMarkupTagNames', markupTags);
       this.set('activeSectionTagNames', sectionTags);
     }
+  },
+
+  cursorDidChange(editor) {
+
   },
 
   willCreateEditor() {
