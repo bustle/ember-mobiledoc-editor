@@ -270,7 +270,11 @@ export default Component.extend({
     if (!editor.hasRendered) {
       let editorElement = this.$('.mobiledoc-editor__editor')[0];
       this._isRenderingEditor = true;
-      editor.render(editorElement);
+      try {
+        editor.render(editorElement);
+      } catch(e) {
+        run.schedule('afterRender', () => { throw e; });
+      }
       this._isRenderingEditor = false;
     }
     this._setExpandoProperty(editor);

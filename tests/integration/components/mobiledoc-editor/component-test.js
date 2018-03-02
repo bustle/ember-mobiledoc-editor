@@ -331,16 +331,21 @@ test('toolbar buttons can be active', function(assert) {
     {{/mobiledoc-editor}}
   `);
   const textNode = this.$(`p:contains(${text})`)[0].firstChild;
+
+  const button = this.$(`button[title=Heading]`);
   return selectRange(textNode, 0, textNode, text.length).then(() => {
-    const button = this.$(`button[title=Heading]`);
     assert.ok(button.length, 'has heading toolbar button');
     button.click();
 
+    return wait();
+  }).then(() => {
     assert.ok(this.$(`h1:contains(${text})`).length, 'heading-ifies text');
     assert.ok(button.hasClass('active'), 'heading button is active');
 
     button.click();
 
+    return wait();
+  }).then(() => {
     assert.ok(!this.$(`h1`).length, 'heading is gone');
     assert.ok(!button.hasClass('active'), 'heading button is no longer active');
   });
