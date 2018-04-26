@@ -32,6 +32,20 @@ UI.
 * [`{{mobiledoc-link-button}}`](#mobiledoc-link-button)
 * [`{{mobiledoc-toolbar}}`](#mobiledoc-toolbar)
 
+### Configuration
+
+If you don't want default styles from mobiledoc-kit being added to your
+vendor.css file, add the following configuration to your
+`ember-cli-build.js` file:
+
+```js
+  let app = new EmberApp(defaults, {
+    'ember-mobiledoc-editor': {
+      skipStyleImport: true
+    }
+  }
+```
+
 #### `{{mobiledoc-editor}}`
 
 This component is the main entrance point for a mobiledoc editor instance
