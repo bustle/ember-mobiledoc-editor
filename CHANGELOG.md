@@ -1,7 +1,34 @@
+<a name="0.5.14"></a>
+## 0.5.14 (2018-06-25)
+
+* Fallback to parent coords in `tether-to-selection` (#141) ([1bfd8ca](https://github.com/bustle/ember-mobiledoc-editor/commit/1bfd8ca)), closes [#141](https://github.com/bustle/ember-mobiledoc-editor/issues/141)
+* Upgrade mobiledoc-kit to 0.11.1 ([cb3aa09](https://github.com/bustle/ember-mobiledoc-editor/commit/cb3aa09))
+* chore(ci): Temporary fix for Travis service issue (travis-ci#8836) ([b7bebe3](https://github.com/bustle/ember-mobiledoc-editor/commit/b7bebe3)), closes [travis-ci#8836](https://github.com/travis-ci/issues/8836) [travis-ci/travis-ci#8836](https://github.com/travis-ci/travis-ci/issues/8836)
+* chore(dependencies): Bump deps, with associated changes for Ember ecosystem ([3d15c82](https://github.com/bustle/ember-mobiledoc-editor/commit/3d15c82))
+* chore(fix tests): Throw editor render errors after runloop (#152) ([2fdfdad](https://github.com/bustle/ember-mobiledoc-editor/commit/2fdfdad)), closes [#152](https://github.com/bustle/ember-mobiledoc-editor/issues/152)
+
+
+
+<a name="0.5.13"></a>
+## 0.5.13 (2017-09-25)
+
+* v0.5.13 ([6036bd0](https://github.com/bustle/ember-mobiledoc-editor/commit/6036bd0))
+
+
+
+<a name="0.5.13-alpha"></a>
+## 0.5.13-alpha (2017-09-25)
+
+* Include mobiledoc-dom-renderer source map ([7f845de](https://github.com/bustle/ember-mobiledoc-editor/commit/7f845de))
+* v0.5.13-alpha ([d00adb2](https://github.com/bustle/ember-mobiledoc-editor/commit/d00adb2))
+
+
+
 <a name="0.5.12"></a>
 ## 0.5.12 (2017-08-14)
 
-* Upgrade mobiledoc-kit dep, use editor#toggleMarkup (#139) ([66d0e65](https://github.com/bustle/ember-mobiledoc-editor/commit/66d0e65))
+* Upgrade mobiledoc-kit dep, use editor#toggleMarkup (#139) ([66d0e65](https://github.com/bustle/ember-mobiledoc-editor/commit/66d0e65)), closes [#139](https://github.com/bustle/ember-mobiledoc-editor/issues/139)
+* v0.5.12 ([8f6c907](https://github.com/bustle/ember-mobiledoc-editor/commit/8f6c907))
 
 
 
@@ -10,11 +37,11 @@
 
 * Start documenting atoms for the editor ([8c6e979](https://github.com/bustle/ember-mobiledoc-editor/commit/8c6e979))
 * v0.5.11 ([d4b3534](https://github.com/bustle/ember-mobiledoc-editor/commit/d4b3534))
-* chore(dependencies): Add yarn.lock, specify yarn in README (#135) ([8edf7f8](https://github.com/bustle/ember-mobiledoc-editor/commit/8edf7f8))
-* chore(dependencies): Upgrade outdated packages (#138) ([0846c8e](https://github.com/bustle/ember-mobiledoc-editor/commit/0846c8e))
-* chore(docs): Add npm version and ember observer badges (#137) ([3a3804f](https://github.com/bustle/ember-mobiledoc-editor/commit/3a3804f))
-* chore(docs): change bustlelabs urls to bustle (#136) ([1006ced](https://github.com/bustle/ember-mobiledoc-editor/commit/1006ced))
-* fix(link prompt submit): Move link prompt submit action to submit button (#132) ([a31f0ef](https://github.com/bustle/ember-mobiledoc-editor/commit/a31f0ef))
+* chore(dependencies): Add yarn.lock, specify yarn in README (#135) ([8edf7f8](https://github.com/bustle/ember-mobiledoc-editor/commit/8edf7f8)), closes [#135](https://github.com/bustle/ember-mobiledoc-editor/issues/135)
+* chore(dependencies): Upgrade outdated packages (#138) ([0846c8e](https://github.com/bustle/ember-mobiledoc-editor/commit/0846c8e)), closes [#138](https://github.com/bustle/ember-mobiledoc-editor/issues/138)
+* chore(docs): Add npm version and ember observer badges (#137) ([3a3804f](https://github.com/bustle/ember-mobiledoc-editor/commit/3a3804f)), closes [#137](https://github.com/bustle/ember-mobiledoc-editor/issues/137)
+* chore(docs): change bustlelabs urls to bustle (#136) ([1006ced](https://github.com/bustle/ember-mobiledoc-editor/commit/1006ced)), closes [#136](https://github.com/bustle/ember-mobiledoc-editor/issues/136)
+* fix(link prompt submit): Move link prompt submit action to submit button (#132) ([a31f0ef](https://github.com/bustle/ember-mobiledoc-editor/commit/a31f0ef)), closes [#132](https://github.com/bustle/ember-mobiledoc-editor/issues/132)
 
 
 
@@ -22,9 +49,9 @@
 ## 0.5.10 (2017-03-14)
 
 * 0.5.10 ([f540182](https://github.com/bustle/ember-mobiledoc-editor/commit/f540182))
-* remove ember-cli-release (#131) ([4bf0c4a](https://github.com/bustle/ember-mobiledoc-editor/commit/4bf0c4a))
-* Upgrade dependencies (#130) ([e36db79](https://github.com/bustle/ember-mobiledoc-editor/commit/e36db79))
-* Use TestAdapter to ensure render errors are thrown (#129) ([b830f52](https://github.com/bustle/ember-mobiledoc-editor/commit/b830f52)), closes [#128](https://github.com/bustle/ember-mobiledoc-editor/issues/128)
+* remove ember-cli-release (#131) ([4bf0c4a](https://github.com/bustle/ember-mobiledoc-editor/commit/4bf0c4a)), closes [#131](https://github.com/bustle/ember-mobiledoc-editor/issues/131)
+* Upgrade dependencies (#130) ([e36db79](https://github.com/bustle/ember-mobiledoc-editor/commit/e36db79)), closes [#130](https://github.com/bustle/ember-mobiledoc-editor/issues/130)
+* Use TestAdapter to ensure render errors are thrown (#129) ([b830f52](https://github.com/bustle/ember-mobiledoc-editor/commit/b830f52)), closes [#129](https://github.com/bustle/ember-mobiledoc-editor/issues/129) [#128](https://github.com/bustle/ember-mobiledoc-editor/issues/128)
 
 
 
@@ -32,7 +59,7 @@
 ## 0.5.9 (2017-02-22)
 
 * 0.5.9 ([0c7bb50](https://github.com/bustle/ember-mobiledoc-editor/commit/0c7bb50))
-* Make mobiledoc-dom-renderer a dependency (#127) ([a4dfb67](https://github.com/bustle/ember-mobiledoc-editor/commit/a4dfb67))
+* Make mobiledoc-dom-renderer a dependency (#127) ([a4dfb67](https://github.com/bustle/ember-mobiledoc-editor/commit/a4dfb67)), closes [#127](https://github.com/bustle/ember-mobiledoc-editor/issues/127)
 
 
 
@@ -69,7 +96,7 @@
 ## 0.5.7 (2016-11-04)
 
 * 0.5.7 ([eada514](https://github.com/bustle/ember-mobiledoc-editor/commit/eada514))
-* feat(atom.save): Pass atom.save to atom components (#117) ([142ef3d](https://github.com/bustle/ember-mobiledoc-editor/commit/142ef3d))
+* feat(atom.save): Pass atom.save to atom components (#117) ([142ef3d](https://github.com/bustle/ember-mobiledoc-editor/commit/142ef3d)), closes [#117](https://github.com/bustle/ember-mobiledoc-editor/issues/117)
 
 
 
@@ -77,10 +104,10 @@
 ## 0.5.6 (2016-09-13)
 
 * 0.5.6 ([a5b2d54](https://github.com/bustle/ember-mobiledoc-editor/commit/a5b2d54))
-* tests(beta): remove beta from allowed failures (#111) ([675701f](https://github.com/bustle/ember-mobiledoc-editor/commit/675701f))
-* chore(npm): upgrade to mobiledoc-kit ^0.10.10 (#109) ([5394ee7](https://github.com/bustle/ember-mobiledoc-editor/commit/5394ee7))
-* feat(test-helpers): Add `insertText` and `run` ember-mobiledoc-kit editor helpers (#107) ([84f311e](https://github.com/bustle/ember-mobiledoc-editor/commit/84f311e)), closes [#100](https://github.com/bustle/ember-mobiledoc-editor/issues/100)
-* test(atoms): test that atoms do not rerender when section changes (#105) ([2a3e9a0](https://github.com/bustle/ember-mobiledoc-editor/commit/2a3e9a0)), closes [#90](https://github.com/bustle/ember-mobiledoc-editor/issues/90)
+* tests(beta): remove beta from allowed failures (#111) ([675701f](https://github.com/bustle/ember-mobiledoc-editor/commit/675701f)), closes [#111](https://github.com/bustle/ember-mobiledoc-editor/issues/111)
+* chore(npm): upgrade to mobiledoc-kit ^0.10.10 (#109) ([5394ee7](https://github.com/bustle/ember-mobiledoc-editor/commit/5394ee7)), closes [#109](https://github.com/bustle/ember-mobiledoc-editor/issues/109)
+* feat(test-helpers): Add `insertText` and `run` ember-mobiledoc-kit editor helpers (#107) ([84f311e](https://github.com/bustle/ember-mobiledoc-editor/commit/84f311e)), closes [#107](https://github.com/bustle/ember-mobiledoc-editor/issues/107) [#100](https://github.com/bustle/ember-mobiledoc-editor/issues/100)
+* test(atoms): test that atoms do not rerender when section changes (#105) ([2a3e9a0](https://github.com/bustle/ember-mobiledoc-editor/commit/2a3e9a0)), closes [#105](https://github.com/bustle/ember-mobiledoc-editor/issues/105) [#90](https://github.com/bustle/ember-mobiledoc-editor/issues/90)
 * test(beta): Fix beta tests, update to wormhole ^0.4.1 (#108) ([d24182b](https://github.com/bustle/ember-mobiledoc-editor/commit/d24182b)), closes [#108](https://github.com/bustle/ember-mobiledoc-editor/issues/108) [#99](https://github.com/bustle/ember-mobiledoc-editor/issues/99)
 
 
@@ -89,8 +116,8 @@
 ## 0.5.5 (2016-08-31)
 
 * 0.5.5 ([201f04b](https://github.com/bustle/ember-mobiledoc-editor/commit/201f04b))
-* chore(dependencies): bump mobiledoc-kit to ^0.10.9 (#103) ([5c4dce6](https://github.com/bustle/ember-mobiledoc-editor/commit/5c4dce6))
-* test(add-card): Test that adding a card to a blank post is allowed (#104) ([7cf04f7](https://github.com/bustle/ember-mobiledoc-editor/commit/7cf04f7)), closes [#86](https://github.com/bustle/ember-mobiledoc-editor/issues/86)
+* chore(dependencies): bump mobiledoc-kit to ^0.10.9 (#103) ([5c4dce6](https://github.com/bustle/ember-mobiledoc-editor/commit/5c4dce6)), closes [#103](https://github.com/bustle/ember-mobiledoc-editor/issues/103)
+* test(add-card): Test that adding a card to a blank post is allowed (#104) ([7cf04f7](https://github.com/bustle/ember-mobiledoc-editor/commit/7cf04f7)), closes [#104](https://github.com/bustle/ember-mobiledoc-editor/issues/104) [#86](https://github.com/bustle/ember-mobiledoc-editor/issues/86)
 * docs(changelog): update changelog ([52b3d52](https://github.com/bustle/ember-mobiledoc-editor/commit/52b3d52))
 
 
@@ -99,8 +126,8 @@
 ## 0.5.4 (2016-08-10)
 
 * 0.5.4 ([7846c63](https://github.com/bustle/ember-mobiledoc-editor/commit/7846c63))
-* feat(buttons): Add property for title attribute on button components (#102) ([3205b96](https://github.com/bustle/ember-mobiledoc-editor/commit/3205b96))
-* chore(npm): Use "version" script instead of "postversion" (#101) ([9aaeeab](https://github.com/bustle/ember-mobiledoc-editor/commit/9aaeeab))
+* feat(buttons): Add property for title attribute on button components (#102) ([3205b96](https://github.com/bustle/ember-mobiledoc-editor/commit/3205b96)), closes [#102](https://github.com/bustle/ember-mobiledoc-editor/issues/102)
+* chore(npm): Use "version" script instead of "postversion" (#101) ([9aaeeab](https://github.com/bustle/ember-mobiledoc-editor/commit/9aaeeab)), closes [#101](https://github.com/bustle/ember-mobiledoc-editor/issues/101)
 
 
 
@@ -117,11 +144,11 @@
 
 * 0.5.2 ([36384d0](https://github.com/bustle/ember-mobiledoc-editor/commit/36384d0))
 * allow ember-beta to fail ([df15cd8](https://github.com/bustle/ember-mobiledoc-editor/commit/df15cd8))
-* remove deprecated `createListSection` (#95) ([ca8f997](https://github.com/bustle/ember-mobiledoc-editor/commit/ca8f997))
-* Update mobiledoc-kit to ^0.10.3, mobiledoc-dom-renderer to ^0.5.3 (#96) ([6fe8884](https://github.com/bustle/ember-mobiledoc-editor/commit/6fe8884))
+* remove deprecated `createListSection` (#95) ([ca8f997](https://github.com/bustle/ember-mobiledoc-editor/commit/ca8f997)), closes [#95](https://github.com/bustle/ember-mobiledoc-editor/issues/95)
+* Update mobiledoc-kit to ^0.10.3, mobiledoc-dom-renderer to ^0.5.3 (#96) ([6fe8884](https://github.com/bustle/ember-mobiledoc-editor/commit/6fe8884)), closes [#96](https://github.com/bustle/ember-mobiledoc-editor/issues/96)
 * Update release instructions ([3380c85](https://github.com/bustle/ember-mobiledoc-editor/commit/3380c85))
 * update to ember-cli 1.13.15 ([736755b](https://github.com/bustle/ember-mobiledoc-editor/commit/736755b))
-* upgrade to ember-cli 1.13.12 (#81) ([20816f0](https://github.com/bustle/ember-mobiledoc-editor/commit/20816f0))
+* upgrade to ember-cli 1.13.12 (#81) ([20816f0](https://github.com/bustle/ember-mobiledoc-editor/commit/20816f0)), closes [#81](https://github.com/bustle/ember-mobiledoc-editor/issues/81)
 
 
 
@@ -129,9 +156,9 @@
 ## 0.5.1 (2016-07-19)
 
 * 0.5.1 ([b642347](https://github.com/bustle/ember-mobiledoc-editor/commit/b642347))
-* Update ember-wormhole (#93) ([02451ee](https://github.com/bustle/ember-mobiledoc-editor/commit/02451ee))
+* Update ember-wormhole (#93) ([02451ee](https://github.com/bustle/ember-mobiledoc-editor/commit/02451ee)), closes [#93](https://github.com/bustle/ember-mobiledoc-editor/issues/93)
 * update release instructions ([9e06a5f](https://github.com/bustle/ember-mobiledoc-editor/commit/9e06a5f))
-* Update travis.yml to use npm@3, node@6.2.0, and prebuilt phantom (#94) ([e6d5ebe](https://github.com/bustle/ember-mobiledoc-editor/commit/e6d5ebe))
+* Update travis.yml to use npm@3, node@6.2.0, and prebuilt phantom (#94) ([e6d5ebe](https://github.com/bustle/ember-mobiledoc-editor/commit/e6d5ebe)), closes [#94](https://github.com/bustle/ember-mobiledoc-editor/issues/94)
 
 
 
@@ -192,7 +219,7 @@
 # 0.4.0 (2016-03-22)
 
 * Expose card env to ember component cards ([44a6cd8](https://github.com/bustle/ember-mobiledoc-editor/commit/44a6cd8))
-* Test that component cards are passed env and other properties ([a2dff20](https://github.com/bustle/ember-mobiledoc-editor/commit/a2dff20))
+* Test that component cards are passed env and other properties ([a2dff20](https://github.com/bustle/ember-mobiledoc-editor/commit/a2dff20)), closes [#64](https://github.com/bustle/ember-mobiledoc-editor/issues/64)
 * update mobiledoc-kit dep to ^0.9.0 ([2c2c0f2](https://github.com/bustle/ember-mobiledoc-editor/commit/2c2c0f2))
 * v0.4.0 ([270cc33](https://github.com/bustle/ember-mobiledoc-editor/commit/270cc33))
 
@@ -304,7 +331,7 @@
 *  use beta 3 of mobiledoc-kit ([43085a8](https://github.com/bustle/ember-mobiledoc-editor/commit/43085a8))
 * Change test to ensure editor reference is maintained ([640a8fa](https://github.com/bustle/ember-mobiledoc-editor/commit/640a8fa))
 * ensure addCard action sets range ([87896bb](https://github.com/bustle/ember-mobiledoc-editor/commit/87896bb))
-* Minimize rerender from new Mobiledoc ([e80a320](https://github.com/bustle/ember-mobiledoc-editor/commit/e80a320))
+* Minimize rerender from new Mobiledoc ([e80a320](https://github.com/bustle/ember-mobiledoc-editor/commit/e80a320)), closes [#42](https://github.com/bustle/ember-mobiledoc-editor/issues/42)
 * Update changelog ([5c8733c](https://github.com/bustle/ember-mobiledoc-editor/commit/5c8733c))
 * v0.3.2-beta.1 ([ba833a5](https://github.com/bustle/ember-mobiledoc-editor/commit/ba833a5))
 
