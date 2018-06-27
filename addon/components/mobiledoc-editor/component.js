@@ -322,7 +322,7 @@ export default Component.extend({
     }
   },
 
-  cursorDidChange(editor) {
+  cursorDidChange(/*editor*/) {
 
   },
 
