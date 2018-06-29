@@ -1,8 +1,17 @@
+<a name="0.5.15"></a>
+## 0.5.15 (2018-06-29)
+
+* doc(lifecycle hooks): Document lifecycle hooks (#155) ([bb87a00](https://github.com/bustle/ember-mobiledoc-editor/commit/bb87a00)), closes [#155](https://github.com/bustle/ember-mobiledoc-editor/issues/155)
+* feat(cursorDidChange): Add cursorDidChange callback to editor compo (#148) ([39c573c](https://github.com/bustle/ember-mobiledoc-editor/commit/39c573c)), closes [#148](https://github.com/bustle/ember-mobiledoc-editor/issues/148)
+
+
+
 <a name="0.5.14"></a>
 ## 0.5.14 (2018-06-25)
 
 * Fallback to parent coords in `tether-to-selection` (#141) ([1bfd8ca](https://github.com/bustle/ember-mobiledoc-editor/commit/1bfd8ca)), closes [#141](https://github.com/bustle/ember-mobiledoc-editor/issues/141)
 * Upgrade mobiledoc-kit to 0.11.1 ([cb3aa09](https://github.com/bustle/ember-mobiledoc-editor/commit/cb3aa09))
+* v0.5.14 ([861bc06](https://github.com/bustle/ember-mobiledoc-editor/commit/861bc06))
 * chore(ci): Temporary fix for Travis service issue (travis-ci#8836) ([b7bebe3](https://github.com/bustle/ember-mobiledoc-editor/commit/b7bebe3)), closes [travis-ci#8836](https://github.com/travis-ci/issues/8836) [travis-ci/travis-ci#8836](https://github.com/travis-ci/travis-ci/issues/8836)
 * chore(dependencies): Bump deps, with associated changes for Ember ecosystem ([3d15c82](https://github.com/bustle/ember-mobiledoc-editor/commit/3d15c82))
 * chore(fix tests): Throw editor render errors after runloop (#152) ([2fdfdad](https://github.com/bustle/ember-mobiledoc-editor/commit/2fdfdad)), closes [#152](https://github.com/bustle/ember-mobiledoc-editor/issues/152)
