@@ -328,6 +328,27 @@ And pass that list into the `{{mobiledoc-editor}}` component:
 {{mobiledoc-editor atoms=atoms}}
 ```
 
+### Editor Lifecycle Hooks
+
+Currently editor lifecycle hooks are available by available by extending the mobiledoc-editor component.
+
+```js
+import Component from 'ember-mobiledoc-editor/components/mobiledoc-editor/component';
+
+export default Component.extend({
+  cursorDidChange(editor) {
+    this._super(...arguments);
+    // custom event handling goes here
+  }
+});
+```
+
+The following lifecycle hooks are available:
+* `willRender`
+* `didRender`
+* `postDidChange`
+* `inputModeDidChange`
+* `cursorDidChange`
 
 ### Test Helpers
 
