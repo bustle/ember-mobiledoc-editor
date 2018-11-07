@@ -337,7 +337,10 @@ export default Component.extend({
     let serializeVersion = this.get('serializeVersion');
     let updatedMobileDoc = editor.serialize(serializeVersion);
     this._localMobiledoc = updatedMobileDoc;
-    this.sendAction('on-change', updatedMobileDoc); // eslint-disable-line ember/closure-actions
+
+    if (this['on-change']) {
+      this['on-change'](updatedMobileDoc);
+    }
   },
 
   inputModeDidChange(editor) {
@@ -397,11 +400,15 @@ export default Component.extend({
   },
 
   willCreateEditor() {
-    this.sendAction(WILL_CREATE_EDITOR_ACTION); // eslint-disable-line ember/closure-actions
+    if (this[WILL_CREATE_EDITOR_ACTION]) {
+      this[WILL_CREATE_EDITOR_ACTION]();
+    }
   },
 
   didCreateEditor(editor) {
-    this.sendAction(DID_CREATE_EDITOR_ACTION, editor); // eslint-disable-line ember/closure-actions
+    if (this[DID_CREATE_EDITOR_ACTION]) {
+      this[DID_CREATE_EDITOR_ACTION](editor);
+    }
   },
 
   _addAtom(atomName, text, payload) {
