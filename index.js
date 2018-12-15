@@ -43,7 +43,7 @@ module.exports = {
   },
 
   included: function(app) {
-    let options = typeof app.options === 'object' ? app.options : {};
+    let options = (app.app && app.app.options) || app.options || {};
     let addonConfig = options['ember-mobiledoc-editor'] || {};
     if(!addonConfig.skipStyleImport) {
       app.import('vendor/mobiledoc-kit/css/mobiledoc-kit.css');
