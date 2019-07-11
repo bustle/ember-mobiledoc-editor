@@ -171,6 +171,7 @@ export default Component.extend({
         let destinationElementId = `mobiledoc-editor-card-${cardId}`;
         let element = document.createElement('div');
         element.id = destinationElementId;
+        element.className = 'mobiledoc-editor__card-wrapper';
 
         // The data must be copied to avoid sharing the reference
         payload = copy(payload, true);
