@@ -65,7 +65,7 @@ The components accepts these arguments:
 * `autofocus` boolean
 * `placeholder` string -- the placeholder text to display when the mobiledoc is blank
 * `options` hash -- any properties in the `options` hash will be passed to the MobiledocKitEditor constructor
-* `serializeVersion` string -- The mobiledoc version to serialize to when firing the on-change action. Default: 0.3.0
+* `serializeVersion` string -- The mobiledoc version to serialize to when firing the on-change action. Default: 0.3.2
 * `on-change` -- Accepts an action that the component will send every time the mobiledoc is updated
 * `will-create-editor` -- Accepts an action that will be sent when the instance of the MobiledocKitEditor is about to be created
   This action may be fired more than once if the component's `mobiledoc` property is set to a new value.

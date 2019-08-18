@@ -278,7 +278,7 @@ test('serializes mobiledoc to `mobiledocVersion`', function(assert) {
     this.$('button').click();
     assert.equal(version, '0.2.0', 'serializes to the passed serializeVersion (0.2.0)');
 
-    this.set('serializeVersion', '0.3.0');
+    this.set('serializeVersion', '0.3.2');
     version = null;
 
     textNode = this.$(`p strong:contains(${text})`)[0].firstChild;
@@ -286,7 +286,7 @@ test('serializes mobiledoc to `mobiledocVersion`', function(assert) {
 
   }).then(() => {
     this.$('button').click();
-    assert.equal(version, '0.3.0', 'serializes to the passed serializeVersion (0.3.0)');
+    assert.equal(version, '0.3.2', 'serializes to the passed serializeVersion (0.3.2)');
   });
 });
 

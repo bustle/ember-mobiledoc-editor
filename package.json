@@ -26,8 +26,8 @@
     "ember-cli-babel": "^6.7.2",
     "ember-cli-htmlbars": "^2.0.3",
     "ember-wormhole": "^0.5.1",
-    "mobiledoc-dom-renderer": "^0.6.5",
-    "mobiledoc-kit": "^0.11.2"
+    "mobiledoc-dom-renderer": "^0.7.0",
+    "mobiledoc-kit": "https://yapp-assets.s3.amazonaws.com/mobiledoc-kit-0c321e804ed3eaa196a44d4291746ff25233b13c.tgz"
   },
   "devDependencies": {
     "bower": "^1.8.2",

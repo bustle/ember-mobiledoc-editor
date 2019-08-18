@@ -19,7 +19,7 @@ test('it creates a renderable card', function(assert) {
   let renderer = new MobiledocDOMRenderer({cards: [card]});
 
   let {result} = renderer.render({
-    version: '0.3.0',
+    version: '0.3.2',
     cards: [
       ['foo-card', {}]
     ],
