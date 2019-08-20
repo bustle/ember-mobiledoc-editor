@@ -80,5 +80,32 @@
     Ordered List
   </button>
 </li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    type="button"
+    title="Align Left"
+    class="mobiledoc-toolbar__button {{if (includes editor.activeSectionAttributes.textAlign 'left') 'active'}}"
+    {{action editor.setAttribute 'text-align' 'left'}}>
+    Align Left
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    type="button"
+    title="Align Center"
+    class="mobiledoc-toolbar__button {{if (includes editor.activeSectionAttributes.textAlign 'center') 'active'}}"
+    {{action editor.setAttribute 'text-align' 'center'}}>
+    Align Center
+  </button>
+</li>
+<li class="mobiledoc-toolbar__control">
+  <button
+    type="button"
+    title="Align Right"
+    class="mobiledoc-toolbar__button {{if (includes editor.activeSectionAttributes.textAlign 'right') 'active'}}"
+    {{action editor.setAttribute 'text-align' 'right'}}>
+    Align Right
+  </button>
+</li>
 
 {{yield}}

@@ -52,7 +52,7 @@ Will render a blank Mobiledoc into the following DOM:
 </article>
 ```
 
-The components accepts these arguments:
+The component accepts these arguments:
 
 * `mobiledoc`, a Mobiledoc to be edited
 * `cards`, an array of available cards for use by the editor. Jump to
@@ -66,6 +66,7 @@ The components accepts these arguments:
 * `placeholder` string -- the placeholder text to display when the mobiledoc is blank
 * `options` hash -- any properties in the `options` hash will be passed to the MobiledocKitEditor constructor
 * `serializeVersion` string -- The mobiledoc version to serialize to when firing the on-change action. Default: 0.3.2
+* `sectionAttributesConfig` hash -- information about supported section attributes. defaults to `{ 'text-align': { values: ['left', 'center', 'right'], defaultValue: 'left' } }`
 * `on-change` -- Accepts an action that the component will send every time the mobiledoc is updated
 * `will-create-editor` -- Accepts an action that will be sent when the instance of the MobiledocKitEditor is about to be created
   This action may be fired more than once if the component's `mobiledoc` property is set to a new value.
@@ -140,6 +141,8 @@ Additionally `editor` provides the following actions:
 * `addCardInEditMode`, passed a card name and payload will add that card at the end of
   a post and render it in "edit" mode initially.
 * `addAtom`, passed an atomName, text, and payload, will add that atom at the cursor position.
+* `setAttribute`, passed an attribute name and attribute value, will add that attribute to the current section, or remove the attribute if the value is the default value.
+* `removeAttribute`, passed an attribute name, will remove that attribute from the current section.
 
 The `editor` object is often used indirectly by passing it to other
 components. For example:
@@ -236,6 +239,33 @@ Custom text for the HTML of the button can be yielded:
 
 When clicked, the presence of a link will be toggled. The user will be prompted
 for a URL if required.
+
+#### `{{mobiledoc-section-attribute-button}}`
+
+Requires two properties:
+
+* `attributeName`, the name of the attribute
+* `attributeValue`, the value of the attribute
+* `editor`, the `editor` instance from `mobiledoc-editor`
+
+And accepts one optional property:
+
+* `title`, added as the `title` attribute on the `button` element
+
+Creates a `<button>` element that has a class of `active` when the provided
+attributeValue is used in the current section. For example:
+
+```hbs
+{{mobiledoc-section-attribute-button editor=editor attributeName="text-align" attributeValue="center"}}
+```
+
+Alternatively, custom text for the HTML of the button can be yielded:
+
+```hbs
+{{#mobiledoc-section-attribute-button editor=editor attributeName="text-align" attributeValue="center"}}
+  Center
+{{/mobiledoc-section-attribute-button}}
+```
 
 #### `{{mobiledoc-toolbar}}`
 
