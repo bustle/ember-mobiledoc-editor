@@ -268,6 +268,10 @@ export default Component.extend({
       editor.disableEditing();
     }
     this.set('editor', editor);
+  },
+
+  didInsertElement() {
+    let editor = this.get('editor');
     this.didCreateEditor(editor);
   },
 

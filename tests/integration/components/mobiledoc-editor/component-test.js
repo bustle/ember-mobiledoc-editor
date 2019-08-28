@@ -110,6 +110,39 @@ test(`fires ${WILL_CREATE_EDITOR_ACTION} and ${DID_CREATE_EDITOR_ACTION} actions
   `);
 });
 
+test(`mobiledoc-editor component exists in DOM when ${DID_CREATE_EDITOR_ACTION} action is called`, function(assert) {
+  assert.expect(1);
+
+  this.set('mobiledoc', simpleMobileDoc('hello'));
+  this.on('didCreateEditor', () => {
+    assert.equal(this.$('.mobiledoc-editor').length, 1, 'mobiledoc-editor component exists in DOM');
+  });
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc
+                        did-create-editor=(action "didCreateEditor")}}
+    {{/mobiledoc-editor}}
+  `);
+});
+
+test(`does not throw a 'modified "editor" twice in a single render' error`, function(assert) {
+  assert.expect(1);
+
+  this.set('mobiledoc', simpleMobileDoc('hello'));
+  this.on('didCreateEditor', (_editor) => {
+    this.set('editor', _editor);
+  });
+
+  this.render(hbs`
+    {{editor}} {{!-- this line must be above the mobiledoc-editor component for this test --}}
+    {{#mobiledoc-editor mobiledoc=mobiledoc
+                        did-create-editor=(action "didCreateEditor")}}
+    {{/mobiledoc-editor}}
+  `);
+
+  assert.ok(true, `an error is not thrown`);
+});
+
 test('it does not create a new editor when the same mobiledoc is set', function(assert) {
   assert.expect(4);
   let mobiledoc = simpleMobileDoc('Howdy');
