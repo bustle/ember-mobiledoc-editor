@@ -338,15 +338,42 @@ export default Component.extend({
   },
 
   inputModeDidChange(editor) {
-    const markupTags = arrayToMap(editor.activeMarkups.map(m => m.tagName));
+    let activeMarkupTagNames = this.getActiveMarkupTagNames(editor);
+    let activeSectionTagNames = this.getActiveSectionTagNames(editor);
+    let activeSectionAttributes = this.getActiveSectionAttributes(editor);
+
+    let setEditorProps = () => {
+      this.setProperties({
+        activeMarkupTagNames,
+        activeSectionTagNames,
+        activeSectionAttributes
+      });
+    }
+    // Avoid updating this component's properties synchronously while
+    // rendering the editor (after rendering the component) because it
+    // causes Ember to display deprecation warnings
+    if (this._isRenderingEditor) {
+      schedule('afterRender', setEditorProps);
+    } else {
+      setEditorProps();
+    }
+  },
+
+  getActiveMarkupTagNames(editor) {
+    return arrayToMap(editor.activeMarkups.map(m => m.tagName));
+  },
+
+  getActiveSectionTagNames(editor) {
     // editor.activeSections are leaf sections.
     // Map parent section tag names (e.g. 'p', 'ul', 'ol') so that list buttons
     // can be bound.
-    // Also build a map of section attributes for the same reason.
     let sectionParentTagNames = editor.activeSections.map(s => {
       return s.isNested ? s.parent.tagName : s.tagName;
     });
-    const sectionTags = arrayToMap(sectionParentTagNames);
+    return arrayToMap(sectionParentTagNames);
+  },
+
+  getActiveSectionAttributes(editor) {
     const sectionAttributes = {};
     editor.activeSections.forEach(s => {
       let attributes = s.isNested ? s.parent.attributes : s.attributes;
@@ -359,22 +386,7 @@ export default Component.extend({
         }
       });
     });
-
-    let setEditorProps = () => {
-      this.setProperties({
-        activeMarkupTagNames: markupTags,
-        activeSectionTagNames: sectionTags,
-        activeSectionAttributes: sectionAttributes
-      });
-    }
-    // Avoid updating this component's properties synchronously while
-    // rendering the editor (after rendering the component) because it
-    // causes Ember to display deprecation warnings
-    if (this._isRenderingEditor) {
-      schedule('afterRender', setEditorProps);
-    } else {
-      setEditorProps();
-    }
+    return sectionAttributes;
   },
 
   cursorDidChange(/*editor*/) {
