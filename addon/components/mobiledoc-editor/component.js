@@ -28,6 +28,13 @@ const EMPTY_MOBILEDOC = {
   sections: []
 };
 
+export const DEFAULT_SECTION_ATTRIBUTES_CONFIG = {
+  'text-align': {
+    values: ['left', 'center', 'right'],
+    defaultValue: 'left'
+  }
+}
+
 function arrayToMap(array) {
   let map = Object.create(null);
   array.forEach(key => {
@@ -72,12 +79,26 @@ export default Component.extend({
       mobiledoc = EMPTY_MOBILEDOC;
       this.set('mobiledoc', mobiledoc);
     }
+    let sectionAttributesConfig = this.get('sectionAttributesConfig');
+    if (!sectionAttributesConfig) {
+      sectionAttributesConfig = DEFAULT_SECTION_ATTRIBUTES_CONFIG;
+      this.set('sectionAttributesConfig', sectionAttributesConfig);
+    }
     this.set('componentCards', A([]));
     this.set('componentAtoms', A([]));
     this.set('linkOffsets', null);
     this.set('activeMarkupTagNames', {});
     this.set('activeSectionTagNames', {});
+    this.set('activeSectionAttributes', {});
     this._startedRunLoop  = false;
+  },
+
+  isDefaultAttributeValue(attributeName, attributeValue) {
+    let defaultValue = this.sectionAttributesConfig[attributeName].defaultValue;
+    if (!defaultValue) {
+      throw new Error(`Default value is not configured for attribute '${attributeName}'`);
+    }
+    return attributeValue === defaultValue;
   },
 
   actions: {
@@ -89,6 +110,20 @@ export default Component.extend({
     toggleSection(sectionTagName) {
       let editor = this.get('editor');
       editor.toggleSection(sectionTagName);
+    },
+
+    setAttribute(attributeName, attributeValue) {
+      let editor = this.get('editor');
+      if (this.isDefaultAttributeValue(attributeName, attributeValue)) {
+        editor.removeAttribute(attributeName);
+      } else {
+        editor.setAttribute(attributeName, attributeValue);
+      }
+    },
+
+    removeAttribute(attributeName) {
+      let editor = this.get('editor');
+      editor.setAttribute(attributeName);
     },
 
     addCard(cardName, payload={}) {
@@ -126,6 +161,10 @@ export default Component.extend({
 
     cancelLink() {
       this.set('linkOffsets', null);
+    },
+
+    isDefaultAttributeValue() {
+      return this.isDefaultAttributeValue(...arguments);
     }
   },
 
@@ -299,27 +338,55 @@ export default Component.extend({
   },
 
   inputModeDidChange(editor) {
-    const markupTags = arrayToMap(editor.activeMarkups.map(m => m.tagName));
-    // editor.activeSections are leaf sections.
-    // Map parent section tag names (e.g. 'p', 'ul', 'ol') so that list buttons
-    // are updated.
-    let sectionParentTagNames = editor.activeSections.map(s => {
-      return s.isNested ? s.parent.tagName : s.tagName;
-    });
-    const sectionTags = arrayToMap(sectionParentTagNames);
+    let activeMarkupTagNames = this.getActiveMarkupTagNames(editor);
+    let activeSectionTagNames = this.getActiveSectionTagNames(editor);
+    let activeSectionAttributes = this.getActiveSectionAttributes(editor);
 
+    let setEditorProps = () => {
+      this.setProperties({
+        activeMarkupTagNames,
+        activeSectionTagNames,
+        activeSectionAttributes
+      });
+    }
     // Avoid updating this component's properties synchronously while
     // rendering the editor (after rendering the component) because it
     // causes Ember to display deprecation warnings
     if (this._isRenderingEditor) {
-      schedule('afterRender', () => {
-        this.set('activeMarkupTagNames', markupTags);
-        this.set('activeSectionTagNames', sectionTags);
-      });
+      schedule('afterRender', setEditorProps);
     } else {
-      this.set('activeMarkupTagNames', markupTags);
-      this.set('activeSectionTagNames', sectionTags);
+      setEditorProps();
     }
+  },
+
+  getActiveMarkupTagNames(editor) {
+    return arrayToMap(editor.activeMarkups.map(m => m.tagName));
+  },
+
+  getActiveSectionTagNames(editor) {
+    // editor.activeSections are leaf sections.
+    // Map parent section tag names (e.g. 'p', 'ul', 'ol') so that list buttons
+    // can be bound.
+    let sectionParentTagNames = editor.activeSections.map(s => {
+      return s.isNested ? s.parent.tagName : s.tagName;
+    });
+    return arrayToMap(sectionParentTagNames);
+  },
+
+  getActiveSectionAttributes(editor) {
+    const sectionAttributes = {};
+    editor.activeSections.forEach(s => {
+      let attributes = s.isNested ? s.parent.attributes : s.attributes;
+      Object.keys(attributes || {}).forEach(attrName => {
+        let camelizedAttrName = camelize(attrName.replace(/^data-md/, ''));
+        let attrValue = attributes[attrName];
+        sectionAttributes[camelizedAttrName] = sectionAttributes[camelizedAttrName] || [];
+        if (!sectionAttributes[camelizedAttrName].includes(attrValue)) {
+          sectionAttributes[camelizedAttrName].push(attrValue);
+        }
+      });
+    });
+    return sectionAttributes;
   },
 
   cursorDidChange(/*editor*/) {

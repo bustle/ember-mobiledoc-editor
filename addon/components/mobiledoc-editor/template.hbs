@@ -1,13 +1,16 @@
 {{yield (hash
   editor=editor
-  activeSectionTagNames=activeSectionTagNames
   activeMarkupTagNames=activeMarkupTagNames
+  activeSectionTagNames=activeSectionTagNames
+  activeSectionAttributes=activeSectionAttributes
   toggleMarkup=(action 'toggleMarkup')
   toggleLink=(action 'toggleLink')
   addCard=(action 'addCard')
   addAtom=(action 'addAtom')
   addCardInEditMode=(action 'addCardInEditMode')
   toggleSection=(action 'toggleSection')
+  setAttribute=(action 'setAttribute')
+  isDefaultAttributeValue=(action 'isDefaultAttributeValue')
 )}}
 
 <div class="mobiledoc-editor__editor-wrapper">

@@ -24,6 +24,20 @@ export function simpleMobileDoc(text) {
   };
 }
 
+export function alignCenterMobileDoc(text) {
+  return {
+    version: MOBILEDOC_VERSION,
+    markups: [],
+    atoms: [],
+    cards: [],
+    sections: [
+      [1, 'p', [
+        [0, [], 0, text]
+      ], ["data-md-text-align", "center"]]
+    ]
+  };
+}
+
 export function mobiledocWithList(text, listTagName='ol') {
   return {
     version: MOBILEDOC_VERSION,
@@ -89,4 +103,3 @@ export function linkMobileDoc(text) {
     ]
   };
 }
-

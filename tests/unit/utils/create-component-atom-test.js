@@ -18,7 +18,7 @@ test('it creates a renderable atom', function(assert) {
   let renderer = new MobiledocDOMRenderer({atoms: [atom]});
 
   let {result} = renderer.render({
-    version: '0.3.0',
+    version: '0.3.2',
     atoms: [
       ['foo-atom', '', {}]
     ],
