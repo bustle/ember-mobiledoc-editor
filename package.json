@@ -5,7 +5,7 @@
   "keywords": [
     "ember-addon"
   ],
-  "repository": "bustle/ember-mobiledoc-editor",
+  "repository": "https://github.com/bustle/ember-mobiledoc-editor",
   "license": "MIT",
   "author": "",
   "directories": {
