@@ -5,17 +5,18 @@
   "keywords": [
     "ember-addon"
   ],
+  "repository": "bustle/ember-mobiledoc-editor",
   "license": "MIT",
   "author": "",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "bustle/ember-mobiledoc-editor",
   "scripts": {
     "build": "ember build",
     "lint:js": "eslint ./*.js addon addon-test-support app config lib server test-support tests",
     "start": "ember serve",
+    "release": "release-it",
     "test": "ember try:each",
     "update-changelog": "conventional-changelog -i CHANGELOG.md -r 0 -s",
     "version": "npm run update-changelog && git add CHANGELOG.md"
@@ -50,12 +51,32 @@
     "ember-source": "~3.0.0",
     "eslint-plugin-ember": "^5.0.3",
     "eslint-plugin-node": "^5.2.1",
-    "loader.js": "^4.2.3"
+    "loader.js": "^4.2.3",
+    "release-it": "^13.6.0",
+    "release-it-lerna-changelog": "^2.3.0"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "ember-addon": {
     "configPath": "tests/dummy/config"
+  },
+  "release-it": {
+    "plugins": {
+      "release-it-lerna-changelog": {
+        "infile": "CHANGELOG.md",
+        "launchEditor": true
+      }
+    },
+    "git": {
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": true,
+      "tokenRef": "GITHUB_AUTH"
+    }
   }
 }
