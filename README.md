@@ -411,10 +411,7 @@ test('visit /', function(assert) {
 
 Releasing a new version:
 
-* Use `np` (`npm install -g np`)
-* `np <version>` # e.g. `np 0.6.0`
-* (np can get stuck when ember-try runs tests because it doesn't know which test suites are allowed to fail. If necessary, use `np --yolo` (see `np --help`))
-* `git push origin --tags`
+See RELEASE.md
 
 To get started:
 
