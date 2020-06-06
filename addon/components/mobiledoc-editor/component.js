@@ -54,6 +54,7 @@ export default Component.extend({
   placeholder: 'Write here...',
   spellcheck: true,
   autofocus: true,
+  showLinkTooltips: true,
   serializeVersion: MOBILEDOC_VERSION,
 
   options: null,
@@ -63,12 +64,13 @@ export default Component.extend({
     let options = this.get('options') || {};
 
     return assign({
-      placeholder: this.get('placeholder'),
-      spellcheck:  this.get('spellcheck'),
-      autofocus:   this.get('autofocus'),
-      cardOptions: this.get('cardOptions'),
-      cards:       this.get('cards') || [],
-      atoms:       this.get('atoms') || []
+      placeholder:      this.get('placeholder'),
+      spellcheck:       this.get('spellcheck'),
+      autofocus:        this.get('autofocus'),
+      showLinkTooltips: this.get('showLinkTooltips'),
+      cardOptions:      this.get('cardOptions'),
+      cards:            this.get('cards') || [],
+      atoms:            this.get('atoms') || []
     }, options);
   }),
 

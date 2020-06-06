@@ -63,6 +63,7 @@ The component accepts these arguments:
   to use atoms with Ember components.
 * `spellcheck` boolean
 * `autofocus` boolean
+* `showLinkTooltips` boolean
 * `placeholder` string -- the placeholder text to display when the mobiledoc is blank
 * `options` hash -- any properties in the `options` hash will be passed to the MobiledocKitEditor constructor
 * `serializeVersion` string -- The mobiledoc version to serialize to when firing the on-change action. Default: 0.3.2
