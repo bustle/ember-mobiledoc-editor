@@ -179,17 +179,14 @@ export default Component.extend({
     // early.
     let mobiledoc = this.get('mobiledoc') || EMPTY_MOBILEDOC;
     if (
-      (
-        (this._localMobiledoc && this._localMobiledoc === mobiledoc) ||
-        (this._upstreamMobiledoc && this._upstreamMobiledoc === mobiledoc)
-      ) && (this._lastIsEditingDisabled === this.get('isEditingDisabled'))
+      (this._mobiledoc && this._mobiledoc === mobiledoc)
+      && (this._lastIsEditingDisabled === this.get('isEditingDisabled'))
     ) {
       // No change to mobiledoc, no need to recreate the editor
       return;
     }
     this._lastIsEditingDisabled = this.get('isEditingDisabled');
-    this._upstreamMobiledoc = mobiledoc;
-    this._localMobiledoc = null;
+    this._mobiledoc = mobiledoc;
 
     this.willCreateEditor();
 
@@ -336,8 +333,10 @@ export default Component.extend({
   postDidChange(editor) {
     let serializeVersion = this.get('serializeVersion');
     let updatedMobileDoc = editor.serialize(serializeVersion);
-    this._localMobiledoc = updatedMobileDoc;
-    this.sendAction('on-change', updatedMobileDoc); // eslint-disable-line ember/closure-actions
+    if(this['on-change']) {
+      this._mobiledoc = updatedMobileDoc;
+      this['on-change'](updatedMobileDoc);
+    }
   },
 
   inputModeDidChange(editor) {

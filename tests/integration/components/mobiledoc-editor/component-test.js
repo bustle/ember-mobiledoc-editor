@@ -267,6 +267,7 @@ test('serializes mobiledoc to `mobiledocVersion`', function(assert) {
 
   this.on('on-change', (mobiledoc) => {
     version = mobiledoc.version;
+    this.set('mobiledoc', mobiledoc);
   });
   this.render(hbs`
     {{#mobiledoc-editor mobiledoc=mobiledoc serializeVersion=serializeVersion on-change=(action 'on-change') as |editor|}}
@@ -951,7 +952,7 @@ test('exposes `addAtom` action to add an atom', function(assert) {
   this.set('atoms', [createComponentAtom('ember-atom')]);
   this.set('atomText', 'atom text');
   this.set('atomPayload', {foo: 'bar'});
-  this.on('onChange', (_mobiledoc) => mobiledoc = _mobiledoc);
+  this.on('onChange', (mobiledoc) => this.set('mobiledoc', mobiledoc));
   this.on('didCreateEditor', (_editor) => editor = _editor);
   this.render(hbs`
     {{#mobiledoc-editor on-change=(action 'onChange') did-create-editor=(action 'didCreateEditor') mobiledoc=mobiledoc atoms=atoms as |editor|}}
@@ -971,7 +972,7 @@ test('exposes `addAtom` action to add an atom', function(assert) {
 
     assert.ok(this.$('span:contains(I AM AN ATOM)').length, 'atom is added after clicking');
 
-    let atom = mobiledoc.atoms[0];
+    let atom = this.get('mobiledoc').atoms[0];
     let [ name, text, payload ] = atom;
     assert.equal(name, 'ember-atom', 'correct atom name in mobiledoc');
     assert.equal(text, 'atom text', 'correct atom text in mobiledoc');
@@ -1128,5 +1129,42 @@ test('does not rerender atoms when updating text in section', function(assert) {
     return wait();
   }).then(() => {
     assert.equal(renderCount, 0, 'does not rerender atom when inserting text');
+  });
+});
+
+test('it respects resetting back to initial mobiledoc value', function(assert) {
+  let done = assert.async();
+  assert.expect(2);
+  let text = 'Howdy';
+  let initialDoc = simpleMobileDoc(text);
+  this.set('mobiledoc', initialDoc);
+
+  this.on('on-change', (mobiledoc) => {
+    this.set('mobiledoc', mobiledoc);
+  });
+
+  this.render(hbs`
+    {{#mobiledoc-editor mobiledoc=mobiledoc on-change=(action 'on-change') as |editor|}}
+      <button {{action editor.toggleMarkup 'strong'}}>Bold</button>
+    {{/mobiledoc-editor}}
+  `);
+  let textNode = this.$(`p:contains(${text})`)[0].firstChild;
+
+  return selectRange(textNode, 0, textNode, text.length).then(() => {
+    this.$('button').click();
+
+    assert.ok(
+      !!this.$('strong:contains(Howdy)').length,
+      'Bold tag contains text'
+    );
+    this.set('mobiledoc', initialDoc);
+    return wait();
+  }).then(() => {
+    assert.ok(
+      this.$('strong').length === 0,
+      'no more strong tag after resetting mobiledoc'
+    );
+
+    done();
   });
 });
