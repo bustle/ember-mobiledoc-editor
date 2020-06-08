@@ -1,6 +1,48 @@
+## v0.6.0 (2020-06-08)
+
+#### :rocket: Enhancement
+* [#170](https://github.com/bustle/ember-mobiledoc-editor/pull/170) Add support for mobiledoc 0.3.2 ([@lukemelia](https://github.com/lukemelia))
+* [#169](https://github.com/bustle/ember-mobiledoc-editor/pull/169) Add a class to the div wrapping a card ([@chrisgame](https://github.com/chrisgame))
+
+#### :boom: Breaking Change
+* [#182](https://github.com/bustle/ember-mobiledoc-editor/pull/182) Remove custom hash helper in favor of version ember's built-in one ([@lukemelia](https://github.com/lukemelia))
+  * If you are on an Ember version less than 2.3, use [ember-hash-helper-polyfill](https://github.com/cibernox/ember-hash-helper-polyfill)
+
+#### :house: Internal
+* [#178](https://github.com/bustle/ember-mobiledoc-editor/pull/178) Bump mixin-deep from 1.3.0 to 1.3.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#180](https://github.com/bustle/ember-mobiledoc-editor/pull/180) Adopt release-it for automating releases and changelog management ([@lukemelia](https://github.com/lukemelia))
+* [#179](https://github.com/bustle/ember-mobiledoc-editor/pull/179) Bump websocket-extensions from 0.1.3 to 0.1.4 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
+#### Committers: 4
+- Luke Melia ([@lukemelia](https://github.com/lukemelia))
+- Matt McManus ([@mattmcmanus](https://github.com/mattmcmanus))
+- The Game ([@chrisgame](https://github.com/chrisgame))
+- Tim Holman ([@tholman](https://github.com/tholman))
+
+<a name="0.6.0"></a>
+# 0.6.0 (2020-06-08)
+
+* Add polyfill for hash-helper on ember-1.13 ([9051e53](https://github.com/bustle/ember-mobiledoc-editor/commit/9051e53))
+* Adopt release-it for automating releases and changelog management ([9191f9b](https://github.com/bustle/ember-mobiledoc-editor/commit/9191f9b))
+* Bump mixin-deep from 1.3.0 to 1.3.2 ([197ce58](https://github.com/bustle/ember-mobiledoc-editor/commit/197ce58))
+* Bump websocket-extensions from 0.1.3 to 0.1.4 ([ae1e3c9](https://github.com/bustle/ember-mobiledoc-editor/commit/ae1e3c9))
+* Pass showLinkTooltips option to editor ([de8c70a](https://github.com/bustle/ember-mobiledoc-editor/commit/de8c70a))
+* Refactor inputModeDidChange to improve readability ([118b1d1](https://github.com/bustle/ember-mobiledoc-editor/commit/118b1d1))
+* Remove custom hash helper to use ember-source fallback ([0d020cf](https://github.com/bustle/ember-mobiledoc-editor/commit/0d020cf))
+* Remove unused helper re-export ([59b5edb](https://github.com/bustle/ember-mobiledoc-editor/commit/59b5edb))
+* Test with a supported version of node ([93653e2](https://github.com/bustle/ember-mobiledoc-editor/commit/93653e2))
+* update mobiledoc kit ([a1d6554](https://github.com/bustle/ember-mobiledoc-editor/commit/a1d6554))
+* Update mobiledoc-dom-renderer and mobiledoc-kit ([345d4d4](https://github.com/bustle/ember-mobiledoc-editor/commit/345d4d4))
+* Update repository to format expected by release-it ([774b9dc](https://github.com/bustle/ember-mobiledoc-editor/commit/774b9dc))
+* Update to support mobiledoc 0.3.2 ([f256fc9](https://github.com/bustle/ember-mobiledoc-editor/commit/f256fc9))
+* chore(css): add a class to the div wrapping a card ([cf71a12](https://github.com/bustle/ember-mobiledoc-editor/commit/cf71a12))
+
+
+
 <a name="0.5.15"></a>
 ## 0.5.15 (2018-06-29)
 
+* v0.5.15 ([95e1807](https://github.com/bustle/ember-mobiledoc-editor/commit/95e1807))
 * doc(lifecycle hooks): Document lifecycle hooks (#155) ([bb87a00](https://github.com/bustle/ember-mobiledoc-editor/commit/bb87a00)), closes [#155](https://github.com/bustle/ember-mobiledoc-editor/issues/155)
 * feat(cursorDidChange): Add cursorDidChange callback to editor compo (#148) ([39c573c](https://github.com/bustle/ember-mobiledoc-editor/commit/39c573c)), closes [#148](https://github.com/bustle/ember-mobiledoc-editor/issues/148)
 
