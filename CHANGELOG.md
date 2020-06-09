@@ -1,23 +1,19 @@
-## v0.6.0 (2020-06-08)
+## v0.6.1 (2020-06-09)
+
+Fewer warnings thanks to @backspace
 
 #### :rocket: Enhancement
-* [#170](https://github.com/bustle/ember-mobiledoc-editor/pull/170) Add support for mobiledoc 0.3.2 ([@lukemelia](https://github.com/lukemelia))
-* [#169](https://github.com/bustle/ember-mobiledoc-editor/pull/169) Add a class to the div wrapping a card ([@chrisgame](https://github.com/chrisgame))
+* [#163](https://github.com/bustle/ember-mobiledoc-editor/pull/163) Move away from deprecated sendAction function ([@backspace](https://github.com/backspace))
 
-#### :boom: Breaking Change
-* [#182](https://github.com/bustle/ember-mobiledoc-editor/pull/182) Remove custom hash helper in favor of version ember's built-in one ([@lukemelia](https://github.com/lukemelia))
-  * If you are on an Ember version less than 2.3, use [ember-hash-helper-polyfill](https://github.com/cibernox/ember-hash-helper-polyfill)
+#### Committers: 1
+- Buck Doyle ([@backspace](https://github.com/backspace))
 
-#### :house: Internal
-* [#178](https://github.com/bustle/ember-mobiledoc-editor/pull/178) Bump mixin-deep from 1.3.0 to 1.3.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
-* [#180](https://github.com/bustle/ember-mobiledoc-editor/pull/180) Adopt release-it for automating releases and changelog management ([@lukemelia](https://github.com/lukemelia))
-* [#179](https://github.com/bustle/ember-mobiledoc-editor/pull/179) Bump websocket-extensions from 0.1.3 to 0.1.4 ([@dependabot[bot]](https://github.com/apps/dependabot))
+<a name="0.6.1"></a>
+## 0.6.1 (2020-06-09)
 
-#### Committers: 4
-- Luke Melia ([@lukemelia](https://github.com/lukemelia))
-- Matt McManus ([@mattmcmanus](https://github.com/mattmcmanus))
-- The Game ([@chrisgame](https://github.com/chrisgame))
-- Tim Holman ([@tholman](https://github.com/tholman))
+* Move away from deprecated sendAction function ([42cfe9b](https://github.com/bustle/ember-mobiledoc-editor/commit/42cfe9b)), closes [#160](https://github.com/bustle/ember-mobiledoc-editor/issues/160)
+
+
 
 <a name="0.6.0"></a>
 # 0.6.0 (2020-06-08)
@@ -28,6 +24,7 @@
 * Bump websocket-extensions from 0.1.3 to 0.1.4 ([ae1e3c9](https://github.com/bustle/ember-mobiledoc-editor/commit/ae1e3c9))
 * Pass showLinkTooltips option to editor ([de8c70a](https://github.com/bustle/ember-mobiledoc-editor/commit/de8c70a))
 * Refactor inputModeDidChange to improve readability ([118b1d1](https://github.com/bustle/ember-mobiledoc-editor/commit/118b1d1))
+* Release 0.6.0 ([96b2925](https://github.com/bustle/ember-mobiledoc-editor/commit/96b2925))
 * Remove custom hash helper to use ember-source fallback ([0d020cf](https://github.com/bustle/ember-mobiledoc-editor/commit/0d020cf))
 * Remove unused helper re-export ([59b5edb](https://github.com/bustle/ember-mobiledoc-editor/commit/59b5edb))
 * Test with a supported version of node ([93653e2](https://github.com/bustle/ember-mobiledoc-editor/commit/93653e2))
