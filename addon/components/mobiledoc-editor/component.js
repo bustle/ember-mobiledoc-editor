@@ -316,7 +316,7 @@ export default Component.extend({
   didRender() {
     let editor = this.get('editor');
     if (!editor.hasRendered) {
-      let editorElement = this.$('.mobiledoc-editor__editor')[0];
+      let editorElement = this.element.querySelector('.mobiledoc-editor__editor');
       this._isRenderingEditor = true;
       try {
         editor.render(editorElement);
