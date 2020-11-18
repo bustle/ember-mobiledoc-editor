@@ -5,6 +5,6 @@ export default Component.extend({
   layout,
 
   didInsertElement() {
-    this.$('input').focus();
+    this.element.querySelector('input').focus();
   }
 });
