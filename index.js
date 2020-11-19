@@ -43,7 +43,11 @@ module.exports = {
   },
 
   included: function(app) {
-    app.import('vendor/mobiledoc-kit/css/mobiledoc-kit.css');
+    let options = (app.app && app.app.options) || app.options || {};
+    let addonConfig = options['ember-mobiledoc-editor'] || {};
+    if(!addonConfig.skipStyleImport) {
+      app.import('vendor/mobiledoc-kit/css/mobiledoc-kit.css');
+    }
     app.import('vendor/mobiledoc-kit/amd/mobiledoc-kit.js');
     var rendererDir = distDirFor('mobiledoc-dom-renderer');
     if (rendererDir) {
