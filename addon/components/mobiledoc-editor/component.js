@@ -237,6 +237,7 @@ export default Component.extend({
         let destinationElementId = `mobiledoc-editor-atom-${atomId}`;
         let element = document.createElement('span');
         element.id = destinationElementId;
+        element.classList.add(`__rendered-mobiledoc-atom-${atomName}`);
 
         // The data must be copied to avoid sharing the reference
         payload = copy(payload, true);
