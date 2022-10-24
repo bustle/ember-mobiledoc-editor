@@ -1,17 +1,29 @@
-## v0.6.1 (2020-06-09)
+## v0.7.0 (2022-10-24)
 
-Fewer warnings thanks to @backspace
+#### :boom: Breaking Change
+* [#203](https://github.com/bustle/ember-mobiledoc-editor/pull/203) Require node 10+. Update engine version to the one that allows yarn install to succeed ([@lukemelia](https://github.com/lukemelia))
 
 #### :rocket: Enhancement
-* [#163](https://github.com/bustle/ember-mobiledoc-editor/pull/163) Move away from deprecated sendAction function ([@backspace](https://github.com/backspace))
+* [#186](https://github.com/bustle/ember-mobiledoc-editor/pull/186) refactor: refactor jQuery usages to element selectors ([@srsgores](https://github.com/srsgores))
 
-#### Committers: 1
-- Buck Doyle ([@backspace](https://github.com/backspace))
+#### Committers: 2
+- Luke Melia ([@lukemelia](https://github.com/lukemelia))
+- Sean Goresht ([@srsgores](https://github.com/srsgores))
+
+
+<a name="0.7.0"></a>
+# 0.7.0 (2022-10-24)
+
+* Update engine version to the one that allows yarn install to succeed ([0992db1](https://github.com/bustle/ember-mobiledoc-editor/commit/0992db1))
+* refactor: refactor jQuery usages to element selectors ([95a2f7b](https://github.com/bustle/ember-mobiledoc-editor/commit/95a2f7b))
+
+
 
 <a name="0.6.1"></a>
 ## 0.6.1 (2020-06-09)
 
 * Move away from deprecated sendAction function ([42cfe9b](https://github.com/bustle/ember-mobiledoc-editor/commit/42cfe9b)), closes [#160](https://github.com/bustle/ember-mobiledoc-editor/issues/160)
+* Release 0.6.1 ([17eb948](https://github.com/bustle/ember-mobiledoc-editor/commit/17eb948))
 
 
 
