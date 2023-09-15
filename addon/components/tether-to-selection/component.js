@@ -24,7 +24,7 @@ export default Component.extend({
   dialogAnchor: null,
 
   style: computed('dialogAnchor', function () {
-    let dialogAnchor = this.get('dialogAnchor')
+    let dialogAnchor = this.dialogAnchor
     return htmlSafe(`position: fixed; left: ${dialogAnchor.left}px; bottom: ${dialogAnchor.bottom}px;`)
   }),
 
@@ -52,7 +52,7 @@ export default Component.extend({
       let dialogRect = this.element.getBoundingClientRect();
       let isOffscreen = isOutOfBounds(dialogRect, boundingRect);
       if (isOffscreen) {
-        let dialogAnchor = this.get('dialogAnchor');
+        let dialogAnchor = this.dialogAnchor;
         this.element.setAttribute('style', `
           position: 'fixed';
           left: ${isOffscreen.left ? DIALOG_MARGIN : (isOffscreen.right ? 'auto' : dialogAnchor.left)};

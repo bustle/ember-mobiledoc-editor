@@ -1,4 +1,4 @@
-import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
+import { MOBILEDOC_VERSION } from 'mobiledoc-kit';
 
 export function blankMobiledoc() {
   return {

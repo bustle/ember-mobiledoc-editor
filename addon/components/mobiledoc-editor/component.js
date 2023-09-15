@@ -6,8 +6,7 @@ import EmberObject, { computed } from '@ember/object';
 import Component from '@ember/component';
 import Ember from 'ember';
 import layout from './template';
-import Editor from 'mobiledoc-kit/editor/editor';
-import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
+import { Editor, MOBILEDOC_VERSION } from 'mobiledoc-kit';
 import assign from 'ember-mobiledoc-editor/utils/polyfill-assign';
 
 export const ADD_CARD_HOOK = 'addComponent';
@@ -61,27 +60,27 @@ export default Component.extend({
 
   // merge in named options with the `options` property data-bag
   editorOptions: computed(function() {
-    let options = this.get('options') || {};
+    let options = this.options || {};
 
     return assign({
-      placeholder:      this.get('placeholder'),
-      spellcheck:       this.get('spellcheck'),
-      autofocus:        this.get('autofocus'),
-      showLinkTooltips: this.get('showLinkTooltips'),
-      cardOptions:      this.get('cardOptions'),
-      cards:            this.get('cards') || [],
-      atoms:            this.get('atoms') || []
+      placeholder:      this.placeholder,
+      spellcheck:       this.spellcheck,
+      autofocus:        this.autofocus,
+      showLinkTooltips: this.showLinkTooltips,
+      cardOptions:      this.cardOptions,
+      cards:            this.cards || [],
+      atoms:            this.atoms || []
     }, options);
   }),
 
   init() {
     this._super(...arguments);
-    let mobiledoc = this.get('mobiledoc');
+    let mobiledoc = this.mobiledoc;
     if (!mobiledoc) {
       mobiledoc = EMPTY_MOBILEDOC;
       this.set('mobiledoc', mobiledoc);
     }
-    let sectionAttributesConfig = this.get('sectionAttributesConfig');
+    let sectionAttributesConfig = this.sectionAttributesConfig;
     if (!sectionAttributesConfig) {
       sectionAttributesConfig = DEFAULT_SECTION_ATTRIBUTES_CONFIG;
       this.set('sectionAttributesConfig', sectionAttributesConfig);
@@ -105,17 +104,17 @@ export default Component.extend({
 
   actions: {
     toggleMarkup(markupTagName) {
-      let editor = this.get('editor');
+      let editor = this.editor;
       editor.toggleMarkup(markupTagName);
     },
 
     toggleSection(sectionTagName) {
-      let editor = this.get('editor');
+      let editor = this.editor;
       editor.toggleSection(sectionTagName);
     },
 
     setAttribute(attributeName, attributeValue) {
-      let editor = this.get('editor');
+      let editor = this.editor;
       if (this.isDefaultAttributeValue(attributeName, attributeValue)) {
         editor.removeAttribute(attributeName);
       } else {
@@ -124,7 +123,7 @@ export default Component.extend({
     },
 
     removeAttribute(attributeName) {
-      let editor = this.get('editor');
+      let editor = this.editor;
       editor.setAttribute(attributeName);
     },
 
@@ -142,7 +141,7 @@ export default Component.extend({
     },
 
     toggleLink() {
-      let editor = this.get('editor');
+      let editor = this.editor;
       if (!editor.hasCursor()) {
         return;
       }
@@ -154,9 +153,9 @@ export default Component.extend({
     },
 
     completeLink(href) {
-      let offsets = this.get('linkOffsets');
+      let offsets = this.linkOffsets;
       this.set('linkOffsets', null);
-      let editor = this.get('editor');
+      let editor = this.editor;
       editor.selectRange(offsets);
       editor.toggleMarkup('a', {href});
     },
@@ -177,30 +176,30 @@ export default Component.extend({
   willRender() {
     // Use a default mobiledoc. If there are no changes, then return
     // early.
-    let mobiledoc = this.get('mobiledoc') || EMPTY_MOBILEDOC;
+    let mobiledoc = this.mobiledoc || EMPTY_MOBILEDOC;
     if (
       (
         (this._localMobiledoc && this._localMobiledoc === mobiledoc) ||
         (this._upstreamMobiledoc && this._upstreamMobiledoc === mobiledoc)
-      ) && (this._lastIsEditingDisabled === this.get('isEditingDisabled'))
+      ) && (this._lastIsEditingDisabled === this.isEditingDisabled)
     ) {
       // No change to mobiledoc, no need to recreate the editor
       return;
     }
-    this._lastIsEditingDisabled = this.get('isEditingDisabled');
+    this._lastIsEditingDisabled = this.isEditingDisabled;
     this._upstreamMobiledoc = mobiledoc;
     this._localMobiledoc = null;
 
     this.willCreateEditor();
 
     // Teardown any old editor that might be around.
-    let editor = this.get('editor');
+    let editor = this.editor;
     if (editor) {
       editor.destroy();
     }
 
     // Create a new editor.
-    let editorOptions = this.get('editorOptions');
+    let editorOptions = this.editorOptions;
     editorOptions.mobiledoc = mobiledoc;
     let componentHooks = {
       [ADD_CARD_HOOK]: ({env, options, payload}, isEditing=false) => {
@@ -227,7 +226,7 @@ export default Component.extend({
           postModel: env.postModel
         });
         schedule('afterRender', () => {
-          this.get('componentCards').pushObject(card);
+          this.componentCards.pushObject(card);
         });
         return { card, element };
       },
@@ -252,15 +251,15 @@ export default Component.extend({
           postModel: env.postModel
         });
         schedule('afterRender', () => {
-          this.get('componentAtoms').pushObject(atom);
+          this.componentAtoms.pushObject(atom);
         });
         return { atom, element };
       },
       [REMOVE_CARD_HOOK]: (card) => {
-        this.get('componentCards').removeObject(card);
+        this.componentCards.removeObject(card);
       },
       [REMOVE_ATOM_HOOK]: (atom) => {
-        this.get('componentAtoms').removeObject(atom);
+        this.componentAtoms.removeObject(atom);
       }
     };
     if (editorOptions.cardOptions) {
@@ -306,7 +305,7 @@ export default Component.extend({
         this.cursorDidChange(editor);
       });
     });
-    if (this.get('isEditingDisabled')) {
+    if (this.isEditingDisabled) {
       editor.disableEditing();
     }
     this.set('editor', editor);
@@ -314,7 +313,7 @@ export default Component.extend({
   },
 
   didRender() {
-    let editor = this.get('editor');
+    let editor = this.editor;
     if (!editor.hasRendered) {
       let editorElement = this.element.querySelector('.mobiledoc-editor__editor');
       this._isRenderingEditor = true;
@@ -329,12 +328,12 @@ export default Component.extend({
   },
 
   willDestroyElement() {
-    let editor = this.get('editor');
+    let editor = this.editor;
     editor.destroy();
   },
 
   postDidChange(editor) {
-    let serializeVersion = this.get('serializeVersion');
+    let serializeVersion = this.serializeVersion;
     let updatedMobileDoc = editor.serialize(serializeVersion);
     this._localMobiledoc = updatedMobileDoc;
 
@@ -412,12 +411,12 @@ export default Component.extend({
   },
 
   _addAtom(atomName, text, payload) {
-    let editor = this.get('editor');
+    let editor = this.editor;
     editor.insertAtom(atomName, text, payload);
   },
 
   _addCard(cardName, payload, editMode=false) {
-    let editor = this.get('editor');
+    let editor = this.editor;
     editor.insertCard(cardName, payload, editMode);
   },
 

@@ -1,4 +1,5 @@
 import { Promise as EmberPromise } from 'rsvp';
+import { findAll } from '@ember/test-helpers';
 
 function clearSelection() {
   window.getSelection().removeAllRanges();
@@ -8,7 +9,7 @@ let runLater = (cb) => window.requestAnimationFrame(cb);
 
 export function selectRangeWithEditor(editor, range) {
   editor.selectRange(range);
-  return new EmberPromise(resolve => runLater(resolve));
+  return new EmberPromise((resolve) => runLater(resolve));
 }
 
 export function selectRange(startNode, startOffset, endNode, endOffset) {
@@ -21,24 +22,37 @@ export function selectRange(startNode, startOffset, endNode, endOffset) {
   const selection = window.getSelection();
   selection.addRange(range);
 
-  return new EmberPromise(resolve => runLater(resolve));
+  return new EmberPromise((resolve) => runLater(resolve));
 }
 
-export function moveCursorTo(context, selector) {
-  let element = context.$(selector);
-  if (!element.length) {
+export function moveCursorTo(selector, containingText = undefined) {
+  let candidates = findAll(selector);
+  if (!candidates.length) {
     throw new Error(`could not find element from selector ${selector}`);
-  } else if (element.length > 1) {
+  }
+  if (containingText) {
+    candidates = candidates.filter((el) =>
+      el.textContent.includes(containingText)
+    );
+  }
+  if (!candidates.length) {
+    throw new Error(
+      `could not find element from selector ${selector} containing '#{containingText}'`
+    );
+  }
+
+  if (candidates.length > 1) {
     throw new Error(`ambiguous selector ${selector}`);
   }
+  let element = candidates[0];
 
   let selection = window.getSelection();
   selection.removeAllRanges();
 
-  let node = element[0].firstChild;
+  let node = element.firstChild;
   let range = document.createRange();
   range.selectNode(node);
   selection.addRange(range);
 
-  return new EmberPromise(resolve => runLater(resolve));
+  return new EmberPromise((resolve) => runLater(resolve));
 }

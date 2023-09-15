@@ -17,7 +17,7 @@ export default Component.extend({
     this._updateIsActiveCP();
   }),
   _updateIsActiveCP() {
-    let forProperty = this.get('for');
+    let forProperty = this['for'];
     let fullPath = `editor.activeSectionTagNames.is${titleize(forProperty)}`;
     let cp = computed(fullPath, function() {
       return this.get(fullPath);
@@ -25,8 +25,8 @@ export default Component.extend({
     defineProperty(this, 'isActive', cp);
   },
   click() {
-    let editor = this.get('editor');
-    let forProperty = this.get('for');
+    let editor = this.editor;
+    let forProperty = this['for'];
     editor.toggleSection(forProperty);
   }
 });

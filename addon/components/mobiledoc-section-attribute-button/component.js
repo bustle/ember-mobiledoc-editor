@@ -18,19 +18,19 @@ export default Component.extend({
     this._updateIsActiveCP();
   }),
   _updateIsActiveCP() {
-    let attributeName = this.get('attributeName');
+    let attributeName = this.attributeName;
     let fullPath = `editor.activeSectionAttributes.${camelize(attributeName)}`;
     let cp = computed(fullPath, 'attributeValue', function(){
       let activeValues = this.get(fullPath) || [];
-      let attributeValue = this.get('attributeValue');
+      let attributeValue = this.attributeValue;
       return activeValues.includes(attributeValue) || (isEmpty(activeValues) && this.editor.isDefaultAttributeValue(attributeName, attributeValue));
     });
     defineProperty(this, 'isActive', cp);
   },
   click() {
-    let editor = this.get('editor');
-    let attributeName = this.get('attributeName');
-    let attributeValue = this.get('attributeValue');
+    let editor = this.editor;
+    let attributeName = this.attributeName;
+    let attributeValue = this.attributeValue;
     editor.setAttribute(attributeName, attributeValue);
   }
 });

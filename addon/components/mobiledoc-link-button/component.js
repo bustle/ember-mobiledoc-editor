@@ -10,7 +10,7 @@ export default Component.extend({
   type: 'button',
   isActive: bool('editor.activeMarkupTagNames.isA'),
   click() {
-    let editor = this.get('editor');
+    let editor = this.editor;
     editor.toggleLink();
   }
 });

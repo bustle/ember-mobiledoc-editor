@@ -1,84 +1,83 @@
 import { run } from '@ember/runloop';
 import EObject from '@ember/object';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { click, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('mobiledoc-section-button', 'Integration | Component | mobiledoc section button', {
-  integration: true
-});
+module('Integration | Component | mobiledoc section button', function (hooks) {
+  setupRenderingTest(hooks);
 
-test('it displays button', function(assert) {
-  let editor = EObject.create({
-    toggleSection() {},
-    activeSectionTagNames: {}
+  test('it displays button', async function (assert) {
+    let editor = EObject.create({
+      toggleSection() {},
+      activeSectionTagNames: {},
+    });
+    this.set('editor', editor);
+    await render(hbs`<MobiledocSectionButton @editor={{editor}} @for="h1" />`);
+
+    assert
+      .dom('button')
+      .containsText('H1', 'default text is capitalization of `for`');
+    assert.dom('button').doesNotHaveClass('active', 'button is not active');
+
+    run(() => {
+      editor.set('activeSectionTagNames', { isH1: true });
+    });
+
+    assert.dom('button').hasClass('active', 'button activates');
   });
-  this.set('editor', editor);
-  this.render(hbs`{{mobiledoc-section-button editor=editor for="h1"}}`);
 
-  let button = this.$('button');
-  assert.equal(
-    button.html(), 'H1',
-    'default text is capitalization of `for`');
-  assert.ok(
-    !button.hasClass('active'),
-    'button is not active');
+  test('it includes `title` attribute when provided', async function (assert) {
+    await render(
+      hbs`<MobiledocSectionButton @for="strong" @title={{title}} />`
+    );
 
-  run(() => {
-    editor.set('activeSectionTagNames', { isH1: true });
+    assert
+      .dom('button')
+      .doesNotHaveAttribute(
+        'title',
+        'button does not have a `title` attribute by default'
+      );
+
+    this.set('title', 'Bold');
+
+    assert
+      .dom('button')
+      .hasAttribute(
+        'title',
+        'Bold',
+        'button has `title` attribute when provided'
+      );
   });
 
-  assert.ok(
-    button.hasClass('active'),
-    'button activates');
-});
+  test('it yields for html', async function (assert) {
+    this.set('editor', {
+      toggleSection() {},
+      activeSectionTagNames: {},
+    });
+    await render(hbs`
+      <MobiledocSectionButton @editor={{editor}} @for="h1">
+        Fuerte
+      </MobiledocSectionButton>
+    `);
 
-test('it includes `title` attribute when provided', function(assert) {
-  this.render(hbs`{{mobiledoc-section-button for="strong" title=title}}`);
-
-  let button = this.$('button');
-  assert.equal(
-    button.attr('title'),
-    undefined,
-    'button does not have a `title` attribute by default');
-
-  this.set('title', 'Bold');
-
-  assert.equal(
-    button.attr('title'),
-    'Bold',
-    'button has `title` attribute when provided');
-});
-
-test('it yields for html', function(assert) {
-  this.set('editor', {
-    toggleSection() {},
-    activeSectionTagNames: {}
+    assert.dom('button').containsText('Fuerte', 'text is yielded');
   });
-  this.render(hbs`
-    {{~#mobiledoc-section-button editor=editor for="h1"~}}
-      Fuerte
-    {{~/mobiledoc-section-button~}}
-  `);
 
-  let button = this.$('button');
-  assert.equal(
-    button.html(), 'Fuerte',
-    'text is yielded');
-});
+  test('it calls toggleSection on click', async function (assert) {
+    assert.expect(2);
+    this.set('editor', {
+      toggleSection(tag) {
+        assert.ok(true, 'toggleSection called');
+        assert.equal(tag, 'h1', 'toggleSection called with "for" value');
+      },
+      activeSectionTagNames: {},
+    });
+    await render(hbs`
+      <MobiledocSectionButton @editor={{editor}} @for="h1" />
+    `);
 
-test('it calls toggleSection on click', function(assert) {
-  assert.expect(2);
-  this.set('editor', {
-    toggleSection(tag) {
-      assert.ok(true, 'toggleSection called');
-      assert.equal(tag, 'h1', 'toggleSection called with "for" value');
-    },
-    activeSectionTagNames: {}
+    await click('button');
   });
-  this.render(hbs`
-    {{~mobiledoc-section-button editor=editor for="h1"~}}
-  `);
-
-  let button = this.$('button');
-  button.click();
 });
