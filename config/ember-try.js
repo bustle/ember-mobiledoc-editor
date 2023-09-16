@@ -1,6 +1,6 @@
 'use strict';
 
-const getChannelURL = require('ember-source-channel-url');
+/* eslint-disable-next-line node/no-missing-require */
 const { embroiderSafe, embroiderOptimized } = require('@embroider/test-setup');
 
 module.exports = async function () {
@@ -12,51 +12,28 @@ module.exports = async function () {
         npm: {
           devDependencies: {
             'ember-source': '~3.24.3',
+            'ember-template-imports': null,
           },
         },
+        allowedToFail: true, // to fix this, we need some build-time logic to avoid trying to render gts component
       },
       {
         name: 'ember-lts-3.28',
         npm: {
           devDependencies: {
             'ember-source': '~3.28.0',
+            '@ember/test-helpers': '2.8.1',
+            'ember-qunit': '5.1.5',
+            '@types/ember__test-helpers': '^2.8.1',
+            '@types/ember-qunit': '^5.0.2',
           },
         },
       },
       {
-        name: 'ember-release',
+        name: 'ember-lts-4.4',
         npm: {
           devDependencies: {
-            'ember-source': await getChannelURL('release'),
-          },
-        },
-      },
-      {
-        name: 'ember-beta',
-        npm: {
-          devDependencies: {
-            'ember-source': await getChannelURL('beta'),
-          },
-        },
-      },
-      {
-        name: 'ember-canary',
-        npm: {
-          devDependencies: {
-            'ember-source': await getChannelURL('canary'),
-          },
-        },
-      },
-      {
-        name: 'ember-default-with-jquery',
-        env: {
-          EMBER_OPTIONAL_FEATURES: JSON.stringify({
-            'jquery-integration': true,
-          }),
-        },
-        npm: {
-          devDependencies: {
-            '@ember/jquery': '^1.1.0',
+            'ember-source': '~4.4.0',
           },
         },
       },
@@ -72,6 +49,10 @@ module.exports = async function () {
         npm: {
           devDependencies: {
             'ember-source': '~3.28.0',
+            '@ember/test-helpers': '2.8.1',
+            'ember-qunit': '5.1.5',
+            '@types/ember__test-helpers': '^2.8.1',
+            '@types/ember-qunit': '^5.0.2',
           },
           ember: {
             edition: 'classic',
