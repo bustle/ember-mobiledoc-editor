@@ -1,5 +1,5 @@
 import { _getCurrentRunLoop, schedule, begin, end, join } from '@ember/runloop';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import { A } from '@ember/array';
 import { camelize, capitalize } from '@ember/string';
 import EmberObject, { computed } from '@ember/object';
