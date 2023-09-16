@@ -14,7 +14,7 @@ module('Integration | Component | mobiledoc link button', function (hooks) {
       activeMarkupTagNames: {},
     });
     this.set('editor', editor);
-    await render(hbs`<MobiledocLinkButton @editor={{editor}} />`);
+    await render(hbs`<MobiledocLinkButton @editor={{this.editor}} />`);
 
     let button = find('button');
     assert.dom(button).containsText('Link', 'default text is "Link"');
@@ -29,7 +29,7 @@ module('Integration | Component | mobiledoc link button', function (hooks) {
   });
 
   test('it includes `title` attribute when provided', async function (assert) {
-    await render(hbs`<MobiledocLinkButton @title={{title}} />`);
+    await render(hbs`<MobiledocLinkButton @title={{this.title}} />`);
 
     let button = find('button');
     assert
@@ -56,7 +56,7 @@ module('Integration | Component | mobiledoc link button', function (hooks) {
       activeMarkupTagNames: {},
     });
     await render(hbs`
-      <MobiledocLinkButton @editor={{editor}}>
+      <MobiledocLinkButton @editor={{this.editor}}>
         Fuerte
       </MobiledocLinkButton>
     `);
@@ -74,7 +74,7 @@ module('Integration | Component | mobiledoc link button', function (hooks) {
     };
     this.set('editor', mockEditor);
     await render(hbs`
-      {{~mobiledoc-link-button editor=editor~}}
+      <MobiledocLinkButton @editor={{this.editor}} />
     `);
 
     await click('button');

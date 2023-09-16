@@ -14,7 +14,9 @@ module('Integration | Component | mobiledoc section button', function (hooks) {
       activeSectionTagNames: {},
     });
     this.set('editor', editor);
-    await render(hbs`<MobiledocSectionButton @editor={{editor}} @for="h1" />`);
+    await render(
+      hbs`<MobiledocSectionButton @editor={{this.editor}} @for="h1" />`
+    );
 
     assert
       .dom('button')
@@ -30,7 +32,7 @@ module('Integration | Component | mobiledoc section button', function (hooks) {
 
   test('it includes `title` attribute when provided', async function (assert) {
     await render(
-      hbs`<MobiledocSectionButton @for="strong" @title={{title}} />`
+      hbs`<MobiledocSectionButton @for="strong" @title={{this.title}} />`
     );
 
     assert
@@ -57,7 +59,7 @@ module('Integration | Component | mobiledoc section button', function (hooks) {
       activeSectionTagNames: {},
     });
     await render(hbs`
-      <MobiledocSectionButton @editor={{editor}} @for="h1">
+      <MobiledocSectionButton @editor={{this.editor}} @for="h1">
         Fuerte
       </MobiledocSectionButton>
     `);
@@ -75,7 +77,7 @@ module('Integration | Component | mobiledoc section button', function (hooks) {
       activeSectionTagNames: {},
     });
     await render(hbs`
-      <MobiledocSectionButton @editor={{editor}} @for="h1" />
+      <MobiledocSectionButton @editor={{this.editor}} @for="h1" />
     `);
 
     await click('button');

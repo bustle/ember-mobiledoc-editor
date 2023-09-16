@@ -15,7 +15,7 @@ module('Integration | Component | mobiledoc markup button', function (hooks) {
     });
     this.set('editor', editor);
     await render(
-      hbs`<MobiledocMarkupButton @editor={{editor}} @for="strong" />`
+      hbs`<MobiledocMarkupButton @editor={{this.editor}} @for="strong" />`
     );
 
     assert
@@ -32,7 +32,9 @@ module('Integration | Component | mobiledoc markup button', function (hooks) {
   });
 
   test('it includes `title` attribute when provided', async function (assert) {
-    await render(hbs`<MobiledocMarkupButton @for="strong" @title={{title}} />`);
+    await render(
+      hbs`<MobiledocMarkupButton @for="strong" @title={{this.title}} />`
+    );
 
     assert
       .dom('button')
@@ -58,7 +60,7 @@ module('Integration | Component | mobiledoc markup button', function (hooks) {
       activeMarkupTagNames: {},
     });
     await render(hbs`
-      <MobiledocMarkupButton @editor={{editor}} @for="strong">
+      <MobiledocMarkupButton @editor={{this.editor}} @for="strong">
         Fuerte
       </MobiledocMarkupButton>
     `);
@@ -76,7 +78,7 @@ module('Integration | Component | mobiledoc markup button', function (hooks) {
       activeMarkupTagNames: {},
     });
     await render(hbs`
-      <MobiledocMarkupButton @editor={{editor}} @for="strong" />
+      <MobiledocMarkupButton @editor={{this.editor}} @for="strong" />
     `);
 
     await click('button');

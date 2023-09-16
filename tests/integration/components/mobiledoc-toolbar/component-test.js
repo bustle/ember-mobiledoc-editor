@@ -43,7 +43,7 @@ module('Integration | Component | mobiledoc toolbar', function (hooks) {
       setAttribute() {},
     };
     this.set('editor', mockEditor);
-    await render(hbs`<MobiledocToolbar @editor={{editor}} />`);
+    await render(hbs`<MobiledocToolbar @editor={{this.editor}} />`);
 
     buttonTitles.forEach((title) => {
       assert.dom(`button[title="${title}"]`).exists(`${title} button exists`);
@@ -56,7 +56,7 @@ module('Integration | Component | mobiledoc toolbar', function (hooks) {
     let editor;
     this.actions['did-create-editor'] = (_editor) => (editor = _editor);
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
         <MobiledocToolbar @editor={{editor}} />
       </MobiledocEditor>
     `);
@@ -80,7 +80,7 @@ module('Integration | Component | mobiledoc toolbar', function (hooks) {
     this.set('mobiledoc', mobiledocWithList(text, 'ul'));
     this.actions['did-create-editor'] = (editor) => (this._editor = editor);
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
         <MobiledocToolbar @editor={{editor}} />
       </MobiledocEditor>
     `);
@@ -140,7 +140,7 @@ module('Integration | Component | mobiledoc toolbar', function (hooks) {
     let editor;
     this.actions['did-create-editor'] = (_editor) => (editor = _editor);
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
         <MobiledocToolbar @editor={{editor}} />
       </MobiledocEditor>
     `);

@@ -20,7 +20,7 @@ module(
       });
       this.set('editor', editor);
       await render(
-        hbs`<MobiledocSectionAttributeButton @editor={{editor}} @attributeName="text-align" @attributeValue="left" />`
+        hbs`<MobiledocSectionAttributeButton @editor={{this.editor}} @attributeName="text-align" @attributeValue="left" />`
       );
 
       assert
@@ -60,7 +60,7 @@ module(
       });
       this.set('editor', editor);
       await render(
-        hbs`<MobiledocSectionAttributeButton @editor={{editor}} @title={{title}} @attributeName="text-align" @attributeValue="left" />`
+        hbs`<MobiledocSectionAttributeButton @editor={{this.editor}} @title={{this.title}} @attributeName="text-align" @attributeValue="left" />`
       );
 
       assert
@@ -90,7 +90,7 @@ module(
         },
       });
       await render(hbs`
-        <MobiledocSectionAttributeButton @editor={{editor}} @attributeName="text-align" @attributeValue="left">
+        <MobiledocSectionAttributeButton @editor={{this.editor}} @attributeName="text-align" @attributeValue="left">
           Izquierda
         </MobiledocSectionAttributeButton>
       `);
@@ -119,7 +119,7 @@ module(
         },
       });
       await render(hbs`
-      <MobiledocSectionAttributeButton @editor={{editor}} @attributeName="text-align" @attributeValue="left" />
+      <MobiledocSectionAttributeButton @editor={{this.editor}} @attributeName="text-align" @attributeValue="left" />
     `);
 
       await click('button');

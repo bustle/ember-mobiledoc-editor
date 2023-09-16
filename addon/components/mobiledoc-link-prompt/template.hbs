@@ -1,5 +1,5 @@
 <form>
-  {{input value=href}}
-  <button {{action attrs.on-submit href}} type="submit">Link</button>
+  {{input value=this.href}}
+  <button {{action attrs.on-submit this.href}} type="submit">Link</button>
   <button {{action attrs.on-cancel}}>Cancel</button>
 </form>

@@ -1,4 +1,4 @@
-import { schedule, run, begin, end, join } from '@ember/runloop';
+import { _getCurrentRunLoop, schedule, begin, end, join } from '@ember/runloop';
 import { copy } from '@ember/object/internals';
 import { A } from '@ember/array';
 import { camelize, capitalize } from '@ember/string';
@@ -24,20 +24,21 @@ const EMPTY_MOBILEDOC = {
   markups: [],
   atoms: [],
   cards: [],
-  sections: []
+  sections: [],
 };
 
 export const DEFAULT_SECTION_ATTRIBUTES_CONFIG = {
   'text-align': {
     values: ['left', 'center', 'right'],
-    defaultValue: 'left'
-  }
-}
+    defaultValue: 'left',
+  },
+};
 
 function arrayToMap(array) {
   let map = Object.create(null);
-  array.forEach(key => {
-    if (key) { // skip undefined/falsy key values
+  array.forEach((key) => {
+    if (key) {
+      // skip undefined/falsy key values
       key = `is${capitalize(camelize(key))}`;
       map[key] = true;
     }
@@ -59,19 +60,32 @@ export default Component.extend({
   options: null,
 
   // merge in named options with the `options` property data-bag
-  editorOptions: computed(function() {
-    let options = this.options || {};
+  editorOptions: computed(
+    'atoms',
+    'autofocus',
+    'cardOptions',
+    'cards',
+    'options',
+    'placeholder',
+    'showLinkTooltips',
+    'spellcheck',
+    function () {
+      let options = this.options || {};
 
-    return assign({
-      placeholder:      this.placeholder,
-      spellcheck:       this.spellcheck,
-      autofocus:        this.autofocus,
-      showLinkTooltips: this.showLinkTooltips,
-      cardOptions:      this.cardOptions,
-      cards:            this.cards || [],
-      atoms:            this.atoms || []
-    }, options);
-  }),
+      return assign(
+        {
+          placeholder: this.placeholder,
+          spellcheck: this.spellcheck,
+          autofocus: this.autofocus,
+          showLinkTooltips: this.showLinkTooltips,
+          cardOptions: this.cardOptions,
+          cards: this.cards || [],
+          atoms: this.atoms || [],
+        },
+        options
+      );
+    }
+  ),
 
   init() {
     this._super(...arguments);
@@ -91,13 +105,15 @@ export default Component.extend({
     this.set('activeMarkupTagNames', {});
     this.set('activeSectionTagNames', {});
     this.set('activeSectionAttributes', {});
-    this._startedRunLoop  = false;
+    this._startedRunLoop = false;
   },
 
   isDefaultAttributeValue(attributeName, attributeValue) {
     let defaultValue = this.sectionAttributesConfig[attributeName].defaultValue;
     if (!defaultValue) {
-      throw new Error(`Default value is not configured for attribute '${attributeName}'`);
+      throw new Error(
+        `Default value is not configured for attribute '${attributeName}'`
+      );
     }
     return attributeValue === defaultValue;
   },
@@ -127,15 +143,15 @@ export default Component.extend({
       editor.setAttribute(attributeName);
     },
 
-    addCard(cardName, payload={}) {
+    addCard(cardName, payload = {}) {
       this._addCard(cardName, payload);
     },
 
-    addAtom(atomName, text='', payload={}) {
+    addAtom(atomName, text = '', payload = {}) {
       this._addAtom(atomName, text, payload);
     },
 
-    addCardInEditMode(cardName, payload={}) {
+    addCardInEditMode(cardName, payload = {}) {
       let editMode = true;
       this._addCard(cardName, payload, editMode);
     },
@@ -157,7 +173,7 @@ export default Component.extend({
       this.set('linkOffsets', null);
       let editor = this.editor;
       editor.selectRange(offsets);
-      editor.toggleMarkup('a', {href});
+      editor.toggleMarkup('a', { href });
     },
 
     cancelLink() {
@@ -166,22 +182,22 @@ export default Component.extend({
 
     isDefaultAttributeValue() {
       return this.isDefaultAttributeValue(...arguments);
-    }
+    },
   },
 
-  editingContexts: computed(function() {
+  editingContexts: computed(function () {
     return A([]);
   }),
 
   willRender() {
+    this._super(...arguments);
     // Use a default mobiledoc. If there are no changes, then return
     // early.
     let mobiledoc = this.mobiledoc || EMPTY_MOBILEDOC;
     if (
-      (
-        (this._localMobiledoc && this._localMobiledoc === mobiledoc) ||
-        (this._upstreamMobiledoc && this._upstreamMobiledoc === mobiledoc)
-      ) && (this._lastIsEditingDisabled === this.isEditingDisabled)
+      ((this._localMobiledoc && this._localMobiledoc === mobiledoc) ||
+        (this._upstreamMobiledoc && this._upstreamMobiledoc === mobiledoc)) &&
+      this._lastIsEditingDisabled === this.isEditingDisabled
     ) {
       // No change to mobiledoc, no need to recreate the editor
       return;
@@ -202,7 +218,7 @@ export default Component.extend({
     let editorOptions = this.editorOptions;
     editorOptions.mobiledoc = mobiledoc;
     let componentHooks = {
-      [ADD_CARD_HOOK]: ({env, options, payload}, isEditing=false) => {
+      [ADD_CARD_HOOK]: ({ env, options, payload }, isEditing = false) => {
         let cardId = Ember.uuid();
         let cardName = env.name;
         if (isEditing) {
@@ -223,14 +239,14 @@ export default Component.extend({
           env,
           options,
           editor,
-          postModel: env.postModel
+          postModel: env.postModel,
         });
         schedule('afterRender', () => {
           this.componentCards.pushObject(card);
         });
         return { card, element };
       },
-      [ADD_ATOM_HOOK]: ({env, options, payload, value}) => {
+      [ADD_ATOM_HOOK]: ({ env, options, payload, value }) => {
         let atomId = Ember.uuid();
         let atomName = env.name;
         let destinationElementId = `mobiledoc-editor-atom-${atomId}`;
@@ -248,7 +264,7 @@ export default Component.extend({
           callbacks: env,
           options,
           editor,
-          postModel: env.postModel
+          postModel: env.postModel,
         });
         schedule('afterRender', () => {
           this.componentAtoms.pushObject(atom);
@@ -260,10 +276,13 @@ export default Component.extend({
       },
       [REMOVE_ATOM_HOOK]: (atom) => {
         this.componentAtoms.removeObject(atom);
-      }
+      },
     };
     if (editorOptions.cardOptions) {
-      editorOptions.cardOptions = assign(editorOptions.cardOptions, componentHooks);
+      editorOptions.cardOptions = assign(
+        editorOptions.cardOptions,
+        componentHooks
+      );
     } else {
       editorOptions.cardOptions = componentHooks;
     }
@@ -275,7 +294,7 @@ export default Component.extend({
       // When pasting text that gets turned into a card, for example,
       // the add card hook would run outside the runloop if we didn't begin a new
       // one now.
-      if (!run.currentRunLoop) {
+      if (!_getCurrentRunLoop()) {
         this._startedRunLoop = true;
         begin();
       }
@@ -294,13 +313,17 @@ export default Component.extend({
       });
     });
     editor.inputModeDidChange(() => {
-      if (this.isDestroyed) { return; }
+      if (this.isDestroyed) {
+        return;
+      }
       join(() => {
         this.inputModeDidChange(editor);
       });
     });
     editor.cursorDidChange(() => {
-      if (this.isDestroyed) { return; }
+      if (this.isDestroyed) {
+        return;
+      }
       join(() => {
         this.cursorDidChange(editor);
       });
@@ -313,14 +336,19 @@ export default Component.extend({
   },
 
   didRender() {
+    this._super(...arguments);
     let editor = this.editor;
     if (!editor.hasRendered) {
-      let editorElement = this.element.querySelector('.mobiledoc-editor__editor');
+      let editorElement = this.element.querySelector(
+        '.mobiledoc-editor__editor'
+      );
       this._isRenderingEditor = true;
       try {
         editor.render(editorElement);
-      } catch(e) {
-        run.schedule('afterRender', () => { throw e; });
+      } catch (e) {
+        schedule('afterRender', () => {
+          throw e;
+        });
       }
       this._isRenderingEditor = false;
     }
@@ -328,6 +356,7 @@ export default Component.extend({
   },
 
   willDestroyElement() {
+    this._super(...arguments);
     let editor = this.editor;
     editor.destroy();
   },
@@ -351,9 +380,9 @@ export default Component.extend({
       this.setProperties({
         activeMarkupTagNames,
         activeSectionTagNames,
-        activeSectionAttributes
+        activeSectionAttributes,
       });
-    }
+    };
     // Avoid updating this component's properties synchronously while
     // rendering the editor (after rendering the component) because it
     // causes Ember to display deprecation warnings
@@ -365,14 +394,14 @@ export default Component.extend({
   },
 
   getActiveMarkupTagNames(editor) {
-    return arrayToMap(editor.activeMarkups.map(m => m.tagName));
+    return arrayToMap(editor.activeMarkups.map((m) => m.tagName));
   },
 
   getActiveSectionTagNames(editor) {
     // editor.activeSections are leaf sections.
     // Map parent section tag names (e.g. 'p', 'ul', 'ol') so that list buttons
     // can be bound.
-    let sectionParentTagNames = editor.activeSections.map(s => {
+    let sectionParentTagNames = editor.activeSections.map((s) => {
       return s.isNested ? s.parent.tagName : s.tagName;
     });
     return arrayToMap(sectionParentTagNames);
@@ -380,12 +409,13 @@ export default Component.extend({
 
   getActiveSectionAttributes(editor) {
     const sectionAttributes = {};
-    editor.activeSections.forEach(s => {
+    editor.activeSections.forEach((s) => {
       let attributes = s.isNested ? s.parent.attributes : s.attributes;
-      Object.keys(attributes || {}).forEach(attrName => {
+      Object.keys(attributes || {}).forEach((attrName) => {
         let camelizedAttrName = camelize(attrName.replace(/^data-md/, ''));
         let attrValue = attributes[attrName];
-        sectionAttributes[camelizedAttrName] = sectionAttributes[camelizedAttrName] || [];
+        sectionAttributes[camelizedAttrName] =
+          sectionAttributes[camelizedAttrName] || [];
         if (!sectionAttributes[camelizedAttrName].includes(attrValue)) {
           sectionAttributes[camelizedAttrName].push(attrValue);
         }
@@ -394,9 +424,7 @@ export default Component.extend({
     return sectionAttributes;
   },
 
-  cursorDidChange(/*editor*/) {
-
-  },
+  cursorDidChange(/*editor*/) {},
 
   willCreateEditor() {
     if (this[WILL_CREATE_EDITOR_ACTION]) {
@@ -415,7 +443,7 @@ export default Component.extend({
     editor.insertAtom(atomName, text, payload);
   },
 
-  _addCard(cardName, payload, editMode=false) {
+  _addCard(cardName, payload, editMode = false) {
     let editor = this.editor;
     editor.insertCard(cardName, payload, editMode);
   },
@@ -425,5 +453,5 @@ export default Component.extend({
     if (this.element && Ember.testing) {
       this.element[TESTING_EXPANDO_PROPERTY] = editor;
     }
-  }
+  },
 });
