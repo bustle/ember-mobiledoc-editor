@@ -18,16 +18,16 @@
 </div>
 
 {{#if this.linkOffsets}}
-  {{#tether-to-selection}}
+  <TetherToSelection>
     <MobiledocLinkPrompt
       @on-submit={{action "completeLink"}}
       @on-cancel={{action "cancelLink"}}
     />
-  {{/tether-to-selection}}
+  </TetherToSelection>
 {{/if}}
 
 {{#each this.componentCards as |card|}}
-  {{#ember-wormhole to=card.destinationElementId}}
+  <EmberWormhole @to={{card.destinationElementId}}>
     {{! LEGACY: Payload is passed as the legacy "data" attr below. This
         is deprecated and should be removed before 1.0 }}
     {{component card.cardName
@@ -42,11 +42,11 @@
         saveCard=(action card.env.save)
         cancelCard=(action card.env.cancel)
         removeCard=(action card.env.remove)}}
-  {{/ember-wormhole}}
+  </EmberWormhole>
 {{/each}}
 
 {{#each this.componentAtoms as |atom|}}
-  {{#ember-wormhole to=atom.destinationElementId}}
+  <EmberWormhole @to={{atom.destinationElementId}}>
     {{component atom.atomName
         editor=this.editor
         postModel=atom.postModel
@@ -56,5 +56,5 @@
         options=atom.options
         saveAtom=(action atom.callbacks.save)
         }}
-  {{/ember-wormhole}}
+  </EmberWormhole>
 {{/each}}

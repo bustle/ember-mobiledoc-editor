@@ -1,3 +1,8 @@
+/* eslint-disable ember/no-component-lifecycle-hooks */
+/* eslint-disable ember/no-actions-hash */
+/* eslint-disable ember/require-tagless-components */
+/* eslint-disable ember/no-classic-classes */
+/* eslint-disable ember/no-classic-components */
 import { _getCurrentRunLoop, schedule, begin, end, join } from '@ember/runloop';
 import { copy } from 'ember-copy';
 import { A } from '@ember/array';

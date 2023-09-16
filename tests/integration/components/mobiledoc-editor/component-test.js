@@ -1,3 +1,6 @@
+/* eslint-disable ember/no-component-lifecycle-hooks */
+/* eslint-disable ember/no-classic-classes */
+/* eslint-disable ember/no-classic-components */
 import { Promise as EmberPromise } from 'rsvp';
 import { run, _getCurrentRunLoop } from '@ember/runloop';
 import Component from '@ember/component';
@@ -35,6 +38,7 @@ import {
   mobiledocWithAtom,
 } from '../../../helpers/create-mobiledoc';
 import $ from 'jquery';
+import { action } from '@ember/object';
 
 const COMPONENT_CARD_EXPECTED_PROPS = [
   'env',
@@ -742,6 +746,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
   });
 
   test(`passes options through to card components`, async function (assert) {
+    assert.expect(1);
     let cardOptions = {
       foo: 'bar',
     };
@@ -749,7 +754,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       didInsertElement() {
         this._super(...arguments);
         assert.equal(
-          this.get('options.foo'),
+          this.options.foo,
           'bar',
           `options property has been passed`
         );
@@ -771,6 +776,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
   });
 
   test(`passes options through to atom components`, async function (assert) {
+    assert.expect(1);
     let cardOptions = {
       foo: 'bar',
     };
@@ -778,7 +784,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       didInsertElement() {
         this._super(...arguments);
         assert.equal(
-          this.get('options.foo'),
+          this.options.foo,
           'bar',
           `options property has been passed`
         );
@@ -822,7 +828,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       </MobiledocEditor>
     `);
 
-    assert.ok(env && env.isInEditor, 'env.isInEditor is true');
+    assert.ok(env?.isInEditor, 'env.isInEditor is true');
   });
 
   test('(deprecated) `addCard` passes `data`, breaks reference to original payload', async function (assert) {
@@ -835,10 +841,9 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
         this._super(...arguments);
         passedPayload = this.data;
       },
-      actions: {
-        mutatePayload() {
-          this.set('data.foo', 'baz');
-        },
+      @action
+      mutatePayload() {
+        this.set('data.foo', 'baz');
       },
     });
 
@@ -847,7 +852,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       hbs`
       <div id="demo-card">
         {{this.data.foo}}
-        <button id='mutate-payload' {{action 'mutatePayload'}}></button>
+        <button id='mutate-payload' {{action this.mutatePayload}}></button>
       </div>
     `,
       DemoCardComponent
@@ -894,10 +899,9 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
         this._super(...arguments);
         passedPayload = this.payload;
       },
-      actions: {
-        mutatePayload() {
-          this.set('payload.foo', 'baz');
-        },
+      @action
+      mutatePayload() {
+        this.set('payload.foo', 'baz');
       },
     });
 
@@ -906,7 +910,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       hbs`
       <div id="demo-card">
         {{this.payload.foo}}
-        <button id='mutate-payload' {{action 'mutatePayload'}}></button>
+        <button id='mutate-payload' {{action this.mutatePayload}}></button>
       </div>
     `,
       DemoCardComponent
@@ -1048,6 +1052,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
         name: 'test-card',
         type: 'dom',
         render() {
+          // eslint-disable-next-line ember/no-jquery
           return $('<div id="card-test">CARD CONTENT</div>')[0];
         },
       },
@@ -1230,6 +1235,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
 
   // See https://github.com/bustle/ember-mobiledoc-editor/issues/90
   test('does not rerender atoms when updating text in section', async function (assert) {
+    assert.expect(1);
     let renderCount = 0;
     this.registerAtomComponent(
       'ember-atom',
@@ -1262,21 +1268,10 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       </MobiledocEditor>
     `);
 
-    return settled()
-      .then(() => {
-        renderCount = 0;
-        return selectRangeWithEditor(editor, editor.post.tailPosition());
-      })
-      .then(() => {
-        run(() => editor.insertText('abc'));
-        return settled();
-      })
-      .then(() => {
-        assert.equal(
-          renderCount,
-          0,
-          'does not rerender atom when inserting text'
-        );
-      });
+    renderCount = 0;
+    await selectRangeWithEditor(editor, editor.post.tailPosition());
+    run(() => editor.insertText('abc'));
+    await settled();
+    assert.equal(renderCount, 0, 'does not rerender atom when inserting text');
   });
 });

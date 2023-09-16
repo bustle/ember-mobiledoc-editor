@@ -1,3 +1,6 @@
+/* eslint-disable ember/no-classic-components */
+/* eslint-disable ember/require-tagless-components */
+/* eslint-disable ember/no-classic-classes */
 import { bool } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from './template';
@@ -12,5 +15,5 @@ export default Component.extend({
   click() {
     let editor = this.editor;
     editor.toggleLink();
-  }
+  },
 });
