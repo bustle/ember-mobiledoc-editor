@@ -37,7 +37,7 @@
     "ember-copy": "^2.0.1",
     "ember-wormhole": "^0.6.0",
     "mobiledoc-dom-renderer": "^0.7.2",
-    "mobiledoc-kit": "~0.13.3"
+    "mobiledoc-kit": "~0.15.0"
   },
   "devDependencies": {
     "@ember/jquery": "^2.0.0",

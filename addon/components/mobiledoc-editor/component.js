@@ -3,11 +3,18 @@
 /* eslint-disable ember/require-tagless-components */
 /* eslint-disable ember/no-classic-classes */
 /* eslint-disable ember/no-classic-components */
-import { _getCurrentRunLoop, schedule, begin, end, join } from '@ember/runloop';
+import {
+  _getCurrentRunLoop,
+  getCurrentRunLoop,
+  schedule,
+  begin,
+  end,
+  join,
+} from '@ember/runloop';
 import { copy } from 'ember-copy';
 import { A } from '@ember/array';
 import { camelize, capitalize } from '@ember/string';
-import EmberObject, { computed } from '@ember/object';
+import EmberObject, { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import Ember from 'ember';
 import layout from './template';
@@ -113,6 +120,7 @@ export default Component.extend({
     this._startedRunLoop = false;
   },
 
+  @action
   isDefaultAttributeValue(attributeName, attributeValue) {
     let defaultValue = this.sectionAttributesConfig[attributeName].defaultValue;
     if (!defaultValue) {
@@ -123,71 +131,75 @@ export default Component.extend({
     return attributeValue === defaultValue;
   },
 
-  actions: {
-    toggleMarkup(markupTagName) {
-      let editor = this.editor;
-      editor.toggleMarkup(markupTagName);
-    },
+  @action
+  toggleMarkup(markupTagName) {
+    let editor = this.editor;
+    editor.toggleMarkup(markupTagName);
+  },
 
-    toggleSection(sectionTagName) {
-      let editor = this.editor;
-      editor.toggleSection(sectionTagName);
-    },
+  @action
+  toggleSection(sectionTagName) {
+    let editor = this.editor;
+    editor.toggleSection(sectionTagName);
+  },
 
-    setAttribute(attributeName, attributeValue) {
-      let editor = this.editor;
-      if (this.isDefaultAttributeValue(attributeName, attributeValue)) {
-        editor.removeAttribute(attributeName);
-      } else {
-        editor.setAttribute(attributeName, attributeValue);
-      }
-    },
+  @action
+  setAttribute(attributeName, attributeValue) {
+    let editor = this.editor;
+    if (this.isDefaultAttributeValue(attributeName, attributeValue)) {
+      editor.removeAttribute(attributeName);
+    } else {
+      editor.setAttribute(attributeName, attributeValue);
+    }
+  },
 
-    removeAttribute(attributeName) {
-      let editor = this.editor;
-      editor.setAttribute(attributeName);
-    },
+  @action
+  removeAttribute(attributeName) {
+    let editor = this.editor;
+    editor.setAttribute(attributeName);
+  },
 
-    addCard(cardName, payload = {}) {
-      this._addCard(cardName, payload);
-    },
+  @action
+  addCard(cardName, payload = {}) {
+    this._addCard(cardName, payload);
+  },
 
-    addAtom(atomName, text = '', payload = {}) {
-      this._addAtom(atomName, text, payload);
-    },
+  @action
+  addAtom(atomName, text = '', payload = {}) {
+    this._addAtom(atomName, text, payload);
+  },
 
-    addCardInEditMode(cardName, payload = {}) {
-      let editMode = true;
-      this._addCard(cardName, payload, editMode);
-    },
+  @action
+  addCardInEditMode(cardName, payload = {}) {
+    let editMode = true;
+    this._addCard(cardName, payload, editMode);
+  },
 
-    toggleLink() {
-      let editor = this.editor;
-      if (!editor.hasCursor()) {
-        return;
-      }
-      if (editor.hasActiveMarkup('a')) {
-        editor.toggleMarkup('a');
-      } else {
-        this.set('linkOffsets', editor.range);
-      }
-    },
+  @action
+  toggleLink() {
+    let editor = this.editor;
+    if (!editor.hasCursor()) {
+      return;
+    }
+    if (editor.hasActiveMarkup('a')) {
+      editor.toggleMarkup('a');
+    } else {
+      this.set('linkOffsets', editor.range);
+    }
+  },
 
-    completeLink(href) {
-      let offsets = this.linkOffsets;
-      this.set('linkOffsets', null);
-      let editor = this.editor;
-      editor.selectRange(offsets);
-      editor.toggleMarkup('a', { href });
-    },
+  @action
+  completeLink(href) {
+    let offsets = this.linkOffsets;
+    this.set('linkOffsets', null);
+    let editor = this.editor;
+    editor.selectRange(offsets);
+    editor.toggleMarkup('a', { href });
+  },
 
-    cancelLink() {
-      this.set('linkOffsets', null);
-    },
-
-    isDefaultAttributeValue() {
-      return this.isDefaultAttributeValue(...arguments);
-    },
+  @action
+  cancelLink() {
+    this.set('linkOffsets', null);
   },
 
   editingContexts: computed(function () {
@@ -299,7 +311,11 @@ export default Component.extend({
       // When pasting text that gets turned into a card, for example,
       // the add card hook would run outside the runloop if we didn't begin a new
       // one now.
-      if (!_getCurrentRunLoop()) {
+      // Check for current run loop in two ways to avoid deprecations in different Ember versions
+      let currRunLoop = _getCurrentRunLoop
+        ? _getCurrentRunLoop()
+        : getCurrentRunLoop();
+      if (!currRunLoop) {
         this._startedRunLoop = true;
         begin();
       }

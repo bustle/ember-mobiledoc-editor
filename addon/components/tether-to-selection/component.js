@@ -7,7 +7,6 @@ import { assert } from '@ember/debug';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/string';
-import layout from './template';
 
 const DIALOG_MARGIN = 16;
 
@@ -24,7 +23,6 @@ function isOutOfBounds(rect, boundingRect) {
 }
 
 export default Component.extend({
-  layout,
   classNames: ['mobiledoc-selection-tether'],
   attributeBindings: ['style'],
   dialogAnchor: null,

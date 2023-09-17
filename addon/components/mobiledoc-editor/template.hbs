@@ -3,14 +3,14 @@
   activeMarkupTagNames=this.activeMarkupTagNames
   activeSectionTagNames=this.activeSectionTagNames
   activeSectionAttributes=this.activeSectionAttributes
-  toggleMarkup=(action 'toggleMarkup')
-  toggleLink=(action 'toggleLink')
-  addCard=(action 'addCard')
-  addAtom=(action 'addAtom')
-  addCardInEditMode=(action 'addCardInEditMode')
-  toggleSection=(action 'toggleSection')
-  setAttribute=(action 'setAttribute')
-  isDefaultAttributeValue=(action 'isDefaultAttributeValue')
+  toggleMarkup=this.toggleMarkup
+  toggleLink=this.toggleLink
+  addCard=this.addCard
+  addAtom=this.addAtom
+  addCardInEditMode=this.addCardInEditMode
+  toggleSection=this.toggleSection
+  setAttribute=this.setAttribute
+  isDefaultAttributeValue=this.isDefaultAttributeValue
 )}}
 
 <div class="mobiledoc-editor__editor-wrapper">
@@ -20,8 +20,8 @@
 {{#if this.linkOffsets}}
   <TetherToSelection>
     <MobiledocLinkPrompt
-      @on-submit={{action "completeLink"}}
-      @on-cancel={{action "cancelLink"}}
+      @on-submit={{this.completeLink}}
+      @on-cancel={{this.cancelLink}}
     />
   </TetherToSelection>
 {{/if}}
@@ -38,10 +38,11 @@
         data=card.payload
         env=card.env
         options=card.options
-        editCard=(action card.env.edit)
-        saveCard=(action card.env.save)
-        cancelCard=(action card.env.cancel)
-        removeCard=(action card.env.remove)}}
+        editCard=card.env.edit
+        saveCard=card.env.save
+        cancelCard=card.env.cancel
+        removeCard=card.env.remove
+    }}
   </EmberWormhole>
 {{/each}}
 
@@ -54,7 +55,7 @@
         payload=atom.payload
         value=atom.value
         options=atom.options
-        saveAtom=(action atom.callbacks.save)
+        saveAtom=atom.callbacks.save
         }}
   </EmberWormhole>
 {{/each}}
