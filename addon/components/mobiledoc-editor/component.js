@@ -3,14 +3,7 @@
 /* eslint-disable ember/require-tagless-components */
 /* eslint-disable ember/no-classic-classes */
 /* eslint-disable ember/no-classic-components */
-import {
-  _getCurrentRunLoop,
-  getCurrentRunLoop,
-  schedule,
-  begin,
-  end,
-  join,
-} from '@ember/runloop';
+import { schedule, begin, end, join, next } from '@ember/runloop';
 import { copy } from 'ember-copy';
 import { A } from '@ember/array';
 import { camelize, capitalize } from '@ember/string';
@@ -305,20 +298,21 @@ export default Component.extend({
     }
     editor = new Editor(editorOptions);
     editor.willRender(() => {
-      // The editor's render/rerender will happen after this `editor.willRender`,
-      // so we explicitly start a runloop here if there is none, so that the
-      // add/remove card hooks happen inside a runloop.
+      // The editor's rendering call will happen after this `editor.willRender`,
+      // so we explicitly start a runloop here, so that the add/remove card hooks
+      // happen inside a runloop.
       // When pasting text that gets turned into a card, for example,
-      // the add card hook would run outside the runloop if we didn't begin a new
+      // the add card hook could run outside the runloop if we didn't begin a new
       // one now.
-      // Check for current run loop in two ways to avoid deprecations in different Ember versions
-      let currRunLoop = _getCurrentRunLoop
-        ? _getCurrentRunLoop()
-        : getCurrentRunLoop();
-      if (!currRunLoop) {
-        this._startedRunLoop = true;
-        begin();
-      }
+      this._startedRunLoop = true;
+      begin();
+      // If this run loop is not ended by the next runloop, explicitly end it.
+      next(() => {
+        if (this._startedRunLoop) {
+          this._startedRunLoop = false;
+          end();
+        }
+      });
     });
     editor.didRender(() => {
       // If we had explicitly started a run loop in `editor.willRender`,
