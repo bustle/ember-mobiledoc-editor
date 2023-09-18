@@ -40,7 +40,6 @@
     "mobiledoc-kit": "~0.15.0"
   },
   "devDependencies": {
-    "@ember/jquery": "^2.0.0",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.6.0",
     "@embroider/test-setup": "^0.48.1",
