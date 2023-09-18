@@ -37,7 +37,6 @@ import {
   mobiledocWithCard,
   mobiledocWithAtom,
 } from '../../../helpers/create-mobiledoc';
-import $ from 'jquery';
 import { action } from '@ember/object';
 
 const COMPONENT_CARD_EXPECTED_PROPS = [
@@ -1052,8 +1051,9 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
         name: 'test-card',
         type: 'dom',
         render() {
-          // eslint-disable-next-line ember/no-jquery
-          return $('<div id="card-test">CARD CONTENT</div>')[0];
+          var template = document.createElement('template');
+          template.innerHTML = '<div id="card-test">CARD CONTENT</div>'; // Never return a text node of whitespace as the result
+          return template.content.firstChild;
         },
       },
     ]);
