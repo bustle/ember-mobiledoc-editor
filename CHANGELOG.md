@@ -1,19 +1,35 @@
-## v0.7.0 (2022-10-24)
+## v0.8.0 (2023-09-19)
 
 #### :boom: Breaking Change
-* [#203](https://github.com/bustle/ember-mobiledoc-editor/pull/203) Require node 10+. Update engine version to the one that allows yarn install to succeed ([@lukemelia](https://github.com/lukemelia))
+* [#208](https://github.com/bustle/ember-mobiledoc-editor/pull/208) Update ember to 3.28 ([@lukemelia](https://github.com/lukemelia))
 
 #### :rocket: Enhancement
-* [#186](https://github.com/bustle/ember-mobiledoc-editor/pull/186) refactor: refactor jQuery usages to element selectors ([@srsgores](https://github.com/srsgores))
+* [#208](https://github.com/bustle/ember-mobiledoc-editor/pull/208) Update ember to 3.28 ([@lukemelia](https://github.com/lukemelia))
 
-#### Committers: 2
+#### Committers: 1
 - Luke Melia ([@lukemelia](https://github.com/lukemelia))
-- Sean Goresht ([@srsgores](https://github.com/srsgores))
+
+<a name="0.8.0"></a>
+# 0.8.0 (2023-09-19)
+
+* Add github actions CI ([0953619](https://github.com/bustle/ember-mobiledoc-editor/commit/0953619))
+* Address lint errors ([9766b8a](https://github.com/bustle/ember-mobiledoc-editor/commit/9766b8a))
+* Allow embroider-optimized build to fail for now ([97e205f](https://github.com/bustle/ember-mobiledoc-editor/commit/97e205f))
+* Eliminate jquery usage ([101d39f](https://github.com/bustle/ember-mobiledoc-editor/commit/101d39f))
+* Eliminate remaining deprecations ([6caef24](https://github.com/bustle/ember-mobiledoc-editor/commit/6caef24))
+* Eliminate this-property-fallback deprecations ([bf8a22c](https://github.com/bustle/ember-mobiledoc-editor/commit/bf8a22c))
+* Refactor away from reliance on getting the current Ember run loop ([ffefeb7](https://github.com/bustle/ember-mobiledoc-editor/commit/ffefeb7))
+* Remove jquery dependency ([eee830d](https://github.com/bustle/ember-mobiledoc-editor/commit/eee830d))
+* Remove unused file ([585b43e](https://github.com/bustle/ember-mobiledoc-editor/commit/585b43e))
+* Replace usages of action helper ([7027350](https://github.com/bustle/ember-mobiledoc-editor/commit/7027350))
+* WIP Upgrade to support ember 3.28 ([a716a52](https://github.com/bustle/ember-mobiledoc-editor/commit/a716a52))
+
 
 
 <a name="0.7.0"></a>
 # 0.7.0 (2022-10-24)
 
+* Release 0.7.0 ([525aadb](https://github.com/bustle/ember-mobiledoc-editor/commit/525aadb))
 * Update engine version to the one that allows yarn install to succeed ([0992db1](https://github.com/bustle/ember-mobiledoc-editor/commit/0992db1))
 * refactor: refactor jQuery usages to element selectors ([95a2f7b](https://github.com/bustle/ember-mobiledoc-editor/commit/95a2f7b))
 
