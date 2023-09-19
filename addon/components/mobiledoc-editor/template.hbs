@@ -1,59 +1,61 @@
 {{yield (hash
-  editor=editor
-  activeMarkupTagNames=activeMarkupTagNames
-  activeSectionTagNames=activeSectionTagNames
-  activeSectionAttributes=activeSectionAttributes
-  toggleMarkup=(action 'toggleMarkup')
-  toggleLink=(action 'toggleLink')
-  addCard=(action 'addCard')
-  addAtom=(action 'addAtom')
-  addCardInEditMode=(action 'addCardInEditMode')
-  toggleSection=(action 'toggleSection')
-  setAttribute=(action 'setAttribute')
-  isDefaultAttributeValue=(action 'isDefaultAttributeValue')
+  editor=this.editor
+  activeMarkupTagNames=this.activeMarkupTagNames
+  activeSectionTagNames=this.activeSectionTagNames
+  activeSectionAttributes=this.activeSectionAttributes
+  toggleMarkup=this.toggleMarkup
+  toggleLink=this.toggleLink
+  addCard=this.addCard
+  addAtom=this.addAtom
+  addCardInEditMode=this.addCardInEditMode
+  toggleSection=this.toggleSection
+  setAttribute=this.setAttribute
+  isDefaultAttributeValue=this.isDefaultAttributeValue
 )}}
 
 <div class="mobiledoc-editor__editor-wrapper">
   <div class="mobiledoc-editor__editor"></div>
 </div>
 
-{{#if linkOffsets}}
-  {{#tether-to-selection}}
-    {{mobiledoc-link-prompt
-        on-submit=(action "completeLink")
-        on-cancel=(action "cancelLink")}}
-  {{/tether-to-selection}}
+{{#if this.linkOffsets}}
+  <TetherToSelection>
+    <MobiledocLinkPrompt
+      @on-submit={{this.completeLink}}
+      @on-cancel={{this.cancelLink}}
+    />
+  </TetherToSelection>
 {{/if}}
 
-{{#each componentCards as |card|}}
-  {{#ember-wormhole to=card.destinationElementId}}
+{{#each this.componentCards as |card|}}
+  <EmberWormhole @to={{card.destinationElementId}}>
     {{! LEGACY: Payload is passed as the legacy "data" attr below. This
         is deprecated and should be removed before 1.0 }}
     {{component card.cardName
-        editor=editor
+        editor=this.editor
         postModel=card.postModel
         cardName=card.cardName
         payload=card.payload
         data=card.payload
         env=card.env
         options=card.options
-        editCard=(action card.env.edit)
-        saveCard=(action card.env.save)
-        cancelCard=(action card.env.cancel)
-        removeCard=(action card.env.remove)}}
-  {{/ember-wormhole}}
+        editCard=card.env.edit
+        saveCard=card.env.save
+        cancelCard=card.env.cancel
+        removeCard=card.env.remove
+    }}
+  </EmberWormhole>
 {{/each}}
 
-{{#each componentAtoms as |atom|}}
-  {{#ember-wormhole to=atom.destinationElementId}}
+{{#each this.componentAtoms as |atom|}}
+  <EmberWormhole @to={{atom.destinationElementId}}>
     {{component atom.atomName
-        editor=editor
+        editor=this.editor
         postModel=atom.postModel
         atomName=atom.atomName
         payload=atom.payload
         value=atom.value
         options=atom.options
-        saveAtom=(action atom.callbacks.save)
+        saveAtom=atom.callbacks.save
         }}
-  {{/ember-wormhole}}
+  </EmberWormhole>
 {{/each}}

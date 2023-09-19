@@ -1,11 +1,12 @@
 import Controller from '@ember/controller';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 
-export default Controller.extend({
-  changeCount: 0,
+export default class extends Controller {
+  @tracked changeCount = 0;
 
-  actions: {
-    onChange() {
-      this.incrementProperty('changeCount');
-    }
+  @action
+  onChange() {
+    this.changeCount = this.changeCount + 1;
   }
-});
+}

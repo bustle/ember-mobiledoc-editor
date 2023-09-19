@@ -2,8 +2,8 @@
   <button
     type="button"
     title="Bold"
-    class="mobiledoc-toolbar__button {{if editor.activeMarkupTagNames.isStrong 'active'}}"
-    {{action editor.toggleMarkup 'strong'}}>
+    class="mobiledoc-toolbar__button {{if @editor.activeMarkupTagNames.isStrong 'active'}}"
+    {{on 'click' (fn @editor.toggleMarkup 'strong')}}>
     Bold
   </button>
 </li>
@@ -11,8 +11,8 @@
   <button
     type="button"
     title="Italic"
-    class="mobiledoc-toolbar__button {{if editor.activeMarkupTagNames.isEm 'active'}}"
-    {{action editor.toggleMarkup 'em'}}>
+    class="mobiledoc-toolbar__button {{if @editor.activeMarkupTagNames.isEm 'active'}}"
+    {{on 'click' (fn @editor.toggleMarkup 'em')}}>
     Italic
   </button>
 </li>
@@ -20,8 +20,8 @@
   <button
     type="button"
     title="Link"
-    class="mobiledoc-toolbar__button {{if editor.activeMarkupTagNames.isA 'active'}}"
-    {{action editor.toggleLink}}>
+    class="mobiledoc-toolbar__button {{if @editor.activeMarkupTagNames.isA 'active'}}"
+    {{on 'click' @editor.toggleLink}}>
     Link
   </button>
 </li>
@@ -29,8 +29,8 @@
   <button
     type="button"
     title="Heading"
-    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isH1 'active'}}"
-    {{action editor.toggleSection 'h1'}}>
+    class="mobiledoc-toolbar__button {{if @editor.activeSectionTagNames.isH1 'active'}}"
+    {{on 'click' (fn @editor.toggleSection 'h1')}}>
     Headline
   </button>
 </li>
@@ -38,8 +38,8 @@
   <button
     type="button"
     title="Subheading"
-    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isH2 'active'}}"
-    {{action editor.toggleSection 'h2'}}>
+    class="mobiledoc-toolbar__button {{if @editor.activeSectionTagNames.isH2 'active'}}"
+    {{on 'click' (fn @editor.toggleSection 'h2')}}>
     Subheadline
   </button>
 </li>
@@ -47,8 +47,8 @@
   <button
     type="button"
     title="Block Quote"
-    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isBlockquote 'active'}}"
-    {{action editor.toggleSection 'blockquote'}}>
+    class="mobiledoc-toolbar__button {{if @editor.activeSectionTagNames.isBlockquote 'active'}}"
+    {{on 'click' (fn @editor.toggleSection 'blockquote')}}>
     <i class="icon-quote-block"></i>
     Blockquote
   </button>
@@ -57,8 +57,8 @@
   <button
     type="button"
     title="Pull Quote"
-    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isPullQuote 'active'}}"
-    {{action editor.toggleSection 'pull-quote'}}>
+    class="mobiledoc-toolbar__button {{if @editor.activeSectionTagNames.isPullQuote 'active'}}"
+    {{on 'click' (fn @editor.toggleSection 'pull-quote')}}>
     Pull-quote
   </button>
 </li>
@@ -66,8 +66,8 @@
   <button
     type="button"
     title="List"
-    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isUl 'active'}}"
-    {{action editor.toggleSection 'ul'}}>
+    class="mobiledoc-toolbar__button {{if @editor.activeSectionTagNames.isUl 'active'}}"
+    {{on 'click' (fn @editor.toggleSection 'ul')}}>
     Unordered List
   </button>
 </li>
@@ -75,8 +75,8 @@
   <button
     type="button"
     title="Numbered List"
-    class="mobiledoc-toolbar__button {{if editor.activeSectionTagNames.isOl 'active'}}"
-    {{action editor.toggleSection 'ol'}}>
+    class="mobiledoc-toolbar__button {{if @editor.activeSectionTagNames.isOl 'active'}}"
+    {{on 'click' (fn @editor.toggleSection 'ol')}}>
     Ordered List
   </button>
 </li>
@@ -84,8 +84,8 @@
   <button
     type="button"
     title="Align Left"
-    class="mobiledoc-toolbar__button {{if (includes editor.activeSectionAttributes.textAlign 'left') 'active'}}"
-    {{action editor.setAttribute 'text-align' 'left'}}>
+    class="mobiledoc-toolbar__button {{if (includes @editor.activeSectionAttributes.textAlign 'left') 'active'}}"
+    {{on 'click' (fn @editor.setAttribute 'text-align' 'left')}}>
     Align Left
   </button>
 </li>
@@ -93,8 +93,8 @@
   <button
     type="button"
     title="Align Center"
-    class="mobiledoc-toolbar__button {{if (includes editor.activeSectionAttributes.textAlign 'center') 'active'}}"
-    {{action editor.setAttribute 'text-align' 'center'}}>
+    class="mobiledoc-toolbar__button {{if (includes @editor.activeSectionAttributes.textAlign 'center') 'active'}}"
+    {{on 'click' (fn @editor.setAttribute 'text-align' 'center')}}>
     Align Center
   </button>
 </li>
@@ -102,8 +102,8 @@
   <button
     type="button"
     title="Align Right"
-    class="mobiledoc-toolbar__button {{if (includes editor.activeSectionAttributes.textAlign 'right') 'active'}}"
-    {{action editor.setAttribute 'text-align' 'right'}}>
+    class="mobiledoc-toolbar__button {{if (includes @editor.activeSectionAttributes.textAlign 'right') 'active'}}"
+    {{on 'click' (fn @editor.setAttribute 'text-align' 'right')}}>
     Align Right
   </button>
 </li>

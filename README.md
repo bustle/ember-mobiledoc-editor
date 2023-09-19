@@ -391,11 +391,11 @@ Example usage:
 ```javascript
 // acceptance test
 import { insertText, run } from '../../helpers/ember-mobiledoc-editor';
-
+import { find } from '@enber/test-helpers';
 test('visit /', function(assert) {
   visit('/');
   andThen(() => {
-    let editorEl = find('.mobiledoc-editor__editor')[0];
+    let editorEl = find('.mobiledoc-editor__editor');
     return insertText(editorEl, 'here is some text');
     /* Or:
       return run(editorEl, (postEditor) => ...);
@@ -411,25 +411,27 @@ test('visit /', function(assert) {
 
 Releasing a new version:
 
-See RELEASE.md
+This README outlines the details of collaborating on this Ember addon.
 
-To get started:
+## Installation
 
-* `git clone` this repository
+* `git clone <repository-url>` this repository
+* `cd ember-mobiledoc-editor`
 * `yarn install`
 
 Run the development server:
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+* `ember serve`
+* Visit your app at [http://localhost:4200](http://localhost:4200).
 
-Run tests:
+## Running Tests
 
+* `yarn test` (Runs `ember try:each` to test your addon against multiple Ember versions)
 * `ember test`
 * `ember test --server`
 
-Build to `dist/`:
+## Building
 
 * `ember build`
 
-For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
+For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).

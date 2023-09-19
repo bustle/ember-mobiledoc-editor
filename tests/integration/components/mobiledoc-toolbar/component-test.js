@@ -1,106 +1,163 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { click, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import {
   alignCenterMobileDoc,
   linkMobileDoc,
-  mobiledocWithList
+  mobiledocWithList,
 } from '../../../helpers/create-mobiledoc';
-import MobiledocKit from 'mobiledoc-kit';
+import { Range } from 'mobiledoc-kit';
 
-moduleForComponent('mobiledoc-toolbar', 'Integration | Component | mobiledoc toolbar', {
-  integration: true
-});
+module('Integration | Component | mobiledoc toolbar', function (hooks) {
+  setupRenderingTest(hooks);
 
-const buttonTitles = ['Bold', 'Italic', 'Link', 'Heading', 'Subheading',
-  'Block Quote', 'Pull Quote', 'List', 'Numbered List', 'Align Left', 'Align Center', 'Align Right'];
-
-test('it displays buttons', function(assert) {
-  assert.expect(buttonTitles.length);
-
-  let mockEditor = {
-    toggleLink() {},
-    toggleMarkup() {},
-    toggleSection() {},
-    setAttribute() {}
-  };
-  this.set('editor', mockEditor);
-  this.render(hbs`{{mobiledoc-toolbar editor=editor}}`);
-
-  buttonTitles.forEach(title => {
-    assert.ok(!!this.$(`button[title="${title}"]`).length, `${title} button`);
+  hooks.beforeEach(function () {
+    this.actions = {};
+    this.send = (actionName, ...args) =>
+      this.actions[actionName].apply(this, args);
   });
-});
 
-test('Link button is active when text is linked', function(assert) {
-  let text = 'Hello';
-  this.set('mobiledoc', linkMobileDoc(text));
-  let editor;
-  this.on('did-create-editor', _editor => editor = _editor);
-  this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc autofocus=false did-create-editor=(action 'did-create-editor') as |editor|}}
-      {{mobiledoc-toolbar editor=editor}}
-    {{/mobiledoc-editor}}
-  `);
+  const buttonTitles = [
+    'Bold',
+    'Italic',
+    'Link',
+    'Heading',
+    'Subheading',
+    'Block Quote',
+    'Pull Quote',
+    'List',
+    'Numbered List',
+    'Align Left',
+    'Align Center',
+    'Align Right',
+  ];
 
-  let button = this.$('button[title="Link"]');
-  assert.ok(button.length, 'has link button');
-  assert.ok(!button.hasClass('active'), 'precond - not active');
+  test('it displays buttons', async function (assert) {
+    assert.expect(buttonTitles.length);
 
-  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
+    let mockEditor = {
+      toggleLink() {},
+      toggleMarkup() {},
+      toggleSection() {},
+      setAttribute() {},
+    };
+    this.set('editor', mockEditor);
+    await render(hbs`<MobiledocToolbar @editor={{this.editor}} />`);
 
-  assert.ok(button.hasClass('active'), 'button is active after selecting link text');
-});
+    buttonTitles.forEach((title) => {
+      assert.dom(`button[title="${title}"]`).exists(`${title} button exists`);
+    });
+  });
 
-test('List button is action when text is in list', function(assert) {
-  let text = 'Hello';
-  this.set('mobiledoc', mobiledocWithList(text, 'ul'));
-  this.on('did-create-editor', (editor) => this._editor = editor);
-  this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc autofocus=false did-create-editor=(action 'did-create-editor') as |editor|}}
-      {{mobiledoc-toolbar editor=editor}}
-    {{/mobiledoc-editor}}
-  `);
+  test('Link button is active when text is linked', async function (assert) {
+    let text = 'Hello';
+    this.set('mobiledoc', linkMobileDoc(text));
+    let editor;
+    this.actions['did-create-editor'] = (_editor) => (editor = _editor);
+    await render(hbs`
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
+        <MobiledocToolbar @editor={{editor}} />
+      </MobiledocEditor>
+    `);
 
-  let ulButton = this.$('button[title="List"]');
-  let olButton = this.$('button[title="Numbered List"]');
-  assert.ok(!ulButton.hasClass('active'), 'precond - ul not active');
-  assert.ok(!olButton.hasClass('active'), 'precond - ol not active');
+    assert.dom('button[title="Link"]').exists('has link button');
+    assert
+      .dom('button[title="Link"]')
+      .doesNotHaveClass('active', 'precond - not active');
 
-  let { _editor: editor } = this;
-  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
+    editor.selectRange(
+      new Range(editor.post.headPosition(), editor.post.tailPosition())
+    );
 
-  assert.ok(ulButton.hasClass('active'), 'ul button is active after selecting ul list text');
-  assert.ok(!olButton.hasClass('active'), 'ol button is not active after selecting ul list text');
+    assert
+      .dom('button[title="Link"]')
+      .hasClass('active', 'button is active after selecting link text');
+  });
 
-  // toggle ul->ol
-  olButton.click();
+  test('List button is action when text is in list', async function (assert) {
+    let text = 'Hello';
+    this.set('mobiledoc', mobiledocWithList(text, 'ul'));
+    this.actions['did-create-editor'] = (editor) => (this._editor = editor);
+    await render(hbs`
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
+        <MobiledocToolbar @editor={{editor}} />
+      </MobiledocEditor>
+    `);
 
-  assert.ok(!ulButton.hasClass('active'), 'ul button is inactive after toggle');
-  assert.ok(olButton.hasClass('active'), 'ol button is active after toggle');
+    assert
+      .dom('button[title="List"]')
+      .doesNotHaveClass('active', 'precond - ul not active');
+    assert
+      .dom('button[title="Numbered List"]')
+      .doesNotHaveClass('active', 'precond - ol not active');
 
-  // toggle ol->p
-  olButton.click();
+    let { _editor: editor } = this;
+    editor.selectRange(
+      new Range(editor.post.headPosition(), editor.post.tailPosition())
+    );
 
-  assert.ok(!ulButton.hasClass('active') && !olButton.hasClass('active'),
-            'ul and ol button are inactive after toggle off list');
-});
+    assert
+      .dom('button[title="List"]')
+      .hasClass('active', 'ul button is active after selecting ul list text');
+    assert
+      .dom('button[title="Numbered List"]')
+      .doesNotHaveClass(
+        'active',
+        'ol button is not active after selecting ul list text'
+      );
 
-test('Align Center button is active when text is aligned center', function(assert) {
-  let text = 'Hello';
-  this.set('mobiledoc', alignCenterMobileDoc(text));
-  let editor;
-  this.on('did-create-editor', _editor => editor = _editor);
-  this.render(hbs`
-    {{#mobiledoc-editor mobiledoc=mobiledoc autofocus=false did-create-editor=(action 'did-create-editor') as |editor|}}
-      {{mobiledoc-toolbar editor=editor}}
-    {{/mobiledoc-editor}}
-  `);
+    // toggle ul->ol
+    await click('button[title="Numbered List"]');
 
-  let button = this.$('button[title="Align Center"]');
-  assert.ok(button.length, 'has Align Center button');
-  assert.ok(!button.hasClass('active'), 'precond - not active');
+    assert
+      .dom('button[title="List"]')
+      .doesNotHaveClass('active', 'ul button is inactive after toggle');
+    assert
+      .dom('button[title="Numbered List"]')
+      .hasClass('active', 'ol button is active after toggle');
 
-  editor.selectRange(new MobiledocKit.Range(editor.post.headPosition(), editor.post.tailPosition()));
+    // toggle ol->p
+    await click('button[title="Numbered List"]');
 
-  assert.ok(button.hasClass('active'), 'button is active after selecting text');
+    assert
+      .dom('button[title="List"]')
+      .doesNotHaveClass(
+        'active',
+        'ul button is inactive after toggle off list'
+      );
+    assert
+      .dom('button[title="Numbered List"]')
+      .doesNotHaveClass(
+        'active',
+        'ol button is inactive after toggle off list'
+      );
+  });
+
+  test('Align Center button is active when text is aligned center', async function (assert) {
+    let text = 'Hello';
+    this.set('mobiledoc', alignCenterMobileDoc(text));
+    let editor;
+    this.actions['did-create-editor'] = (_editor) => (editor = _editor);
+    await render(hbs`
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
+        <MobiledocToolbar @editor={{editor}} />
+      </MobiledocEditor>
+    `);
+
+    assert
+      .dom('button[title="Align Center"]')
+      .exists('has Align Center button');
+    assert
+      .dom('button[title="Align Center"]')
+      .doesNotHaveClass('active', 'precond - not active');
+
+    editor.selectRange(
+      new Range(editor.post.headPosition(), editor.post.tailPosition())
+    );
+
+    assert
+      .dom('button[title="Align Center"]')
+      .hasClass('active', 'button is active after selecting text');
+  });
 });

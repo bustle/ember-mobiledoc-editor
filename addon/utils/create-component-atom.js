@@ -1,6 +1,9 @@
 const RENDER_TYPE = 'dom';
 
-import { ADD_ATOM_HOOK, REMOVE_ATOM_HOOK } from '../components/mobiledoc-editor/component';
+import {
+  ADD_ATOM_HOOK,
+  REMOVE_ATOM_HOOK,
+} from '../components/mobiledoc-editor/component';
 
 function renderFallback(doc) {
   let element = document.createElement('span');
@@ -10,12 +13,11 @@ function renderFallback(doc) {
 }
 
 export default function createComponentAtom(name, doc = window.document) {
-
   return {
     name,
     type: RENDER_TYPE,
     render(atomArg) {
-      let {env, options} = atomArg;
+      let { env, options } = atomArg;
       if (!options[ADD_ATOM_HOOK]) {
         return renderFallback(doc);
       }
@@ -26,7 +28,6 @@ export default function createComponentAtom(name, doc = window.document) {
       onTeardown(() => options[REMOVE_ATOM_HOOK](atom));
 
       return element;
-    }
+    },
   };
-
 }

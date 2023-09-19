@@ -1,6 +1,9 @@
 const RENDER_TYPE = 'dom';
 
-import { ADD_CARD_HOOK, REMOVE_CARD_HOOK } from '../components/mobiledoc-editor/component';
+import {
+  ADD_CARD_HOOK,
+  REMOVE_CARD_HOOK,
+} from '../components/mobiledoc-editor/component';
 
 function renderFallback(doc) {
   let element = doc.createElement('div');
@@ -10,12 +13,11 @@ function renderFallback(doc) {
 }
 
 export default function createComponentCard(name, doc = window.document) {
-
   return {
     name,
     type: RENDER_TYPE,
     render(cardArg) {
-      let {env, options} = cardArg;
+      let { env, options } = cardArg;
       if (!options[ADD_CARD_HOOK]) {
         return renderFallback(doc);
       }
@@ -28,7 +30,7 @@ export default function createComponentCard(name, doc = window.document) {
       return element;
     },
     edit(cardArg) {
-      let {env, options} = cardArg;
+      let { env, options } = cardArg;
       if (!options[ADD_CARD_HOOK]) {
         return renderFallback(doc);
       }
@@ -40,7 +42,6 @@ export default function createComponentCard(name, doc = window.document) {
       onTeardown(() => options[REMOVE_CARD_HOOK](card));
 
       return element;
-    }
+    },
   };
-
 }

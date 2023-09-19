@@ -1,13 +1,17 @@
-import { schedule, run, begin, end, join } from '@ember/runloop';
-import { copy } from '@ember/object/internals';
+/* eslint-disable ember/no-component-lifecycle-hooks */
+/* eslint-disable ember/no-actions-hash */
+/* eslint-disable ember/require-tagless-components */
+/* eslint-disable ember/no-classic-classes */
+/* eslint-disable ember/no-classic-components */
+import { schedule, begin, end, join, next } from '@ember/runloop';
+import { copy } from 'ember-copy';
 import { A } from '@ember/array';
 import { camelize, capitalize } from '@ember/string';
-import EmberObject, { computed } from '@ember/object';
+import EmberObject, { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import Ember from 'ember';
 import layout from './template';
-import Editor from 'mobiledoc-kit/editor/editor';
-import { MOBILEDOC_VERSION } from 'mobiledoc-kit/renderers/mobiledoc';
+import { Editor, MOBILEDOC_VERSION } from 'mobiledoc-kit';
 import assign from 'ember-mobiledoc-editor/utils/polyfill-assign';
 
 export const ADD_CARD_HOOK = 'addComponent';
@@ -25,20 +29,21 @@ const EMPTY_MOBILEDOC = {
   markups: [],
   atoms: [],
   cards: [],
-  sections: []
+  sections: [],
 };
 
 export const DEFAULT_SECTION_ATTRIBUTES_CONFIG = {
   'text-align': {
     values: ['left', 'center', 'right'],
-    defaultValue: 'left'
-  }
-}
+    defaultValue: 'left',
+  },
+};
 
 function arrayToMap(array) {
   let map = Object.create(null);
-  array.forEach(key => {
-    if (key) { // skip undefined/falsy key values
+  array.forEach((key) => {
+    if (key) {
+      // skip undefined/falsy key values
       key = `is${capitalize(camelize(key))}`;
       map[key] = true;
     }
@@ -60,28 +65,41 @@ export default Component.extend({
   options: null,
 
   // merge in named options with the `options` property data-bag
-  editorOptions: computed(function() {
-    let options = this.get('options') || {};
+  editorOptions: computed(
+    'atoms',
+    'autofocus',
+    'cardOptions',
+    'cards',
+    'options',
+    'placeholder',
+    'showLinkTooltips',
+    'spellcheck',
+    function () {
+      let options = this.options || {};
 
-    return assign({
-      placeholder:      this.get('placeholder'),
-      spellcheck:       this.get('spellcheck'),
-      autofocus:        this.get('autofocus'),
-      showLinkTooltips: this.get('showLinkTooltips'),
-      cardOptions:      this.get('cardOptions'),
-      cards:            this.get('cards') || [],
-      atoms:            this.get('atoms') || []
-    }, options);
-  }),
+      return assign(
+        {
+          placeholder: this.placeholder,
+          spellcheck: this.spellcheck,
+          autofocus: this.autofocus,
+          showLinkTooltips: this.showLinkTooltips,
+          cardOptions: this.cardOptions,
+          cards: this.cards || [],
+          atoms: this.atoms || [],
+        },
+        options
+      );
+    }
+  ),
 
   init() {
     this._super(...arguments);
-    let mobiledoc = this.get('mobiledoc');
+    let mobiledoc = this.mobiledoc;
     if (!mobiledoc) {
       mobiledoc = EMPTY_MOBILEDOC;
       this.set('mobiledoc', mobiledoc);
     }
-    let sectionAttributesConfig = this.get('sectionAttributesConfig');
+    let sectionAttributesConfig = this.sectionAttributesConfig;
     if (!sectionAttributesConfig) {
       sectionAttributesConfig = DEFAULT_SECTION_ATTRIBUTES_CONFIG;
       this.set('sectionAttributesConfig', sectionAttributesConfig);
@@ -92,118 +110,125 @@ export default Component.extend({
     this.set('activeMarkupTagNames', {});
     this.set('activeSectionTagNames', {});
     this.set('activeSectionAttributes', {});
-    this._startedRunLoop  = false;
+    this._startedRunLoop = false;
   },
 
+  @action
   isDefaultAttributeValue(attributeName, attributeValue) {
     let defaultValue = this.sectionAttributesConfig[attributeName].defaultValue;
     if (!defaultValue) {
-      throw new Error(`Default value is not configured for attribute '${attributeName}'`);
+      throw new Error(
+        `Default value is not configured for attribute '${attributeName}'`
+      );
     }
     return attributeValue === defaultValue;
   },
 
-  actions: {
-    toggleMarkup(markupTagName) {
-      let editor = this.get('editor');
-      editor.toggleMarkup(markupTagName);
-    },
+  @action
+  toggleMarkup(markupTagName) {
+    let editor = this.editor;
+    editor.toggleMarkup(markupTagName);
+  },
 
-    toggleSection(sectionTagName) {
-      let editor = this.get('editor');
-      editor.toggleSection(sectionTagName);
-    },
+  @action
+  toggleSection(sectionTagName) {
+    let editor = this.editor;
+    editor.toggleSection(sectionTagName);
+  },
 
-    setAttribute(attributeName, attributeValue) {
-      let editor = this.get('editor');
-      if (this.isDefaultAttributeValue(attributeName, attributeValue)) {
-        editor.removeAttribute(attributeName);
-      } else {
-        editor.setAttribute(attributeName, attributeValue);
-      }
-    },
-
-    removeAttribute(attributeName) {
-      let editor = this.get('editor');
-      editor.setAttribute(attributeName);
-    },
-
-    addCard(cardName, payload={}) {
-      this._addCard(cardName, payload);
-    },
-
-    addAtom(atomName, text='', payload={}) {
-      this._addAtom(atomName, text, payload);
-    },
-
-    addCardInEditMode(cardName, payload={}) {
-      let editMode = true;
-      this._addCard(cardName, payload, editMode);
-    },
-
-    toggleLink() {
-      let editor = this.get('editor');
-      if (!editor.hasCursor()) {
-        return;
-      }
-      if (editor.hasActiveMarkup('a')) {
-        editor.toggleMarkup('a');
-      } else {
-        this.set('linkOffsets', editor.range);
-      }
-    },
-
-    completeLink(href) {
-      let offsets = this.get('linkOffsets');
-      this.set('linkOffsets', null);
-      let editor = this.get('editor');
-      editor.selectRange(offsets);
-      editor.toggleMarkup('a', {href});
-    },
-
-    cancelLink() {
-      this.set('linkOffsets', null);
-    },
-
-    isDefaultAttributeValue() {
-      return this.isDefaultAttributeValue(...arguments);
+  @action
+  setAttribute(attributeName, attributeValue) {
+    let editor = this.editor;
+    if (this.isDefaultAttributeValue(attributeName, attributeValue)) {
+      editor.removeAttribute(attributeName);
+    } else {
+      editor.setAttribute(attributeName, attributeValue);
     }
   },
 
-  editingContexts: computed(function() {
+  @action
+  removeAttribute(attributeName) {
+    let editor = this.editor;
+    editor.setAttribute(attributeName);
+  },
+
+  @action
+  addCard(cardName, payload = {}) {
+    this._addCard(cardName, payload);
+  },
+
+  @action
+  addAtom(atomName, text = '', payload = {}) {
+    this._addAtom(atomName, text, payload);
+  },
+
+  @action
+  addCardInEditMode(cardName, payload = {}) {
+    let editMode = true;
+    this._addCard(cardName, payload, editMode);
+  },
+
+  @action
+  toggleLink() {
+    let editor = this.editor;
+    if (!editor.hasCursor()) {
+      return;
+    }
+    if (editor.hasActiveMarkup('a')) {
+      editor.toggleMarkup('a');
+    } else {
+      this.set('linkOffsets', editor.range);
+    }
+  },
+
+  @action
+  completeLink(href) {
+    let offsets = this.linkOffsets;
+    this.set('linkOffsets', null);
+    let editor = this.editor;
+    editor.selectRange(offsets);
+    editor.toggleMarkup('a', { href });
+  },
+
+  @action
+  cancelLink() {
+    this.set('linkOffsets', null);
+  },
+
+  editingContexts: computed(function () {
     return A([]);
   }),
 
   willRender() {
+    this._super(...arguments);
     // Use a default mobiledoc. If there are no changes, then return
     // early.
-    let mobiledoc = this.get('mobiledoc') || EMPTY_MOBILEDOC;
+    let mobiledoc = this.mobiledoc || EMPTY_MOBILEDOC;
     if (
-      (
-        (this._localMobiledoc && this._localMobiledoc === mobiledoc) ||
-        (this._upstreamMobiledoc && this._upstreamMobiledoc === mobiledoc)
-      ) && (this._lastIsEditingDisabled === this.get('isEditingDisabled'))
+      ((this._localMobiledoc && this._localMobiledoc === mobiledoc) ||
+        (this._upstreamMobiledoc && this._upstreamMobiledoc === mobiledoc)) &&
+      this._lastIsEditingDisabled === this.isEditingDisabled
     ) {
       // No change to mobiledoc, no need to recreate the editor
       return;
     }
-    this._lastIsEditingDisabled = this.get('isEditingDisabled');
+    this._lastIsEditingDisabled = this.isEditingDisabled;
     this._upstreamMobiledoc = mobiledoc;
     this._localMobiledoc = null;
 
     this.willCreateEditor();
 
     // Teardown any old editor that might be around.
-    let editor = this.get('editor');
+    let editor = this.editor;
     if (editor) {
       editor.destroy();
     }
 
     // Create a new editor.
-    let editorOptions = this.get('editorOptions');
+    let editorOptions = this.editorOptions;
     editorOptions.mobiledoc = mobiledoc;
     let componentHooks = {
-      [ADD_CARD_HOOK]: ({env, options, payload}, isEditing=false) => {
+      [ADD_CARD_HOOK]: ({ env, options, payload }, isEditing = false) => {
         let cardId = Ember.uuid();
         let cardName = env.name;
         if (isEditing) {
@@ -224,14 +249,14 @@ export default Component.extend({
           env,
           options,
           editor,
-          postModel: env.postModel
+          postModel: env.postModel,
         });
         schedule('afterRender', () => {
-          this.get('componentCards').pushObject(card);
+          this.componentCards.pushObject(card);
         });
         return { card, element };
       },
-      [ADD_ATOM_HOOK]: ({env, options, payload, value}) => {
+      [ADD_ATOM_HOOK]: ({ env, options, payload, value }) => {
         let atomId = Ember.uuid();
         let atomName = env.name;
         let destinationElementId = `mobiledoc-editor-atom-${atomId}`;
@@ -249,37 +274,45 @@ export default Component.extend({
           callbacks: env,
           options,
           editor,
-          postModel: env.postModel
+          postModel: env.postModel,
         });
         schedule('afterRender', () => {
-          this.get('componentAtoms').pushObject(atom);
+          this.componentAtoms.pushObject(atom);
         });
         return { atom, element };
       },
       [REMOVE_CARD_HOOK]: (card) => {
-        this.get('componentCards').removeObject(card);
+        this.componentCards.removeObject(card);
       },
       [REMOVE_ATOM_HOOK]: (atom) => {
-        this.get('componentAtoms').removeObject(atom);
-      }
+        this.componentAtoms.removeObject(atom);
+      },
     };
     if (editorOptions.cardOptions) {
-      editorOptions.cardOptions = assign(editorOptions.cardOptions, componentHooks);
+      editorOptions.cardOptions = assign(
+        editorOptions.cardOptions,
+        componentHooks
+      );
     } else {
       editorOptions.cardOptions = componentHooks;
     }
     editor = new Editor(editorOptions);
     editor.willRender(() => {
-      // The editor's render/rerender will happen after this `editor.willRender`,
-      // so we explicitly start a runloop here if there is none, so that the
-      // add/remove card hooks happen inside a runloop.
+      // The editor's rendering call will happen after this `editor.willRender`,
+      // so we explicitly start a runloop here, so that the add/remove card hooks
+      // happen inside a runloop.
       // When pasting text that gets turned into a card, for example,
-      // the add card hook would run outside the runloop if we didn't begin a new
+      // the add card hook could run outside the runloop if we didn't begin a new
       // one now.
-      if (!run.currentRunLoop) {
-        this._startedRunLoop = true;
-        begin();
-      }
+      this._startedRunLoop = true;
+      begin();
+      // If this run loop is not ended by the next runloop, explicitly end it.
+      next(() => {
+        if (this._startedRunLoop) {
+          this._startedRunLoop = false;
+          end();
+        }
+      });
     });
     editor.didRender(() => {
       // If we had explicitly started a run loop in `editor.willRender`,
@@ -295,18 +328,22 @@ export default Component.extend({
       });
     });
     editor.inputModeDidChange(() => {
-      if (this.isDestroyed) { return; }
+      if (this.isDestroyed) {
+        return;
+      }
       join(() => {
         this.inputModeDidChange(editor);
       });
     });
     editor.cursorDidChange(() => {
-      if (this.isDestroyed) { return; }
+      if (this.isDestroyed) {
+        return;
+      }
       join(() => {
         this.cursorDidChange(editor);
       });
     });
-    if (this.get('isEditingDisabled')) {
+    if (this.isEditingDisabled) {
       editor.disableEditing();
     }
     this.set('editor', editor);
@@ -314,14 +351,19 @@ export default Component.extend({
   },
 
   didRender() {
-    let editor = this.get('editor');
+    this._super(...arguments);
+    let editor = this.editor;
     if (!editor.hasRendered) {
-      let editorElement = this.element.querySelector('.mobiledoc-editor__editor');
+      let editorElement = this.element.querySelector(
+        '.mobiledoc-editor__editor'
+      );
       this._isRenderingEditor = true;
       try {
         editor.render(editorElement);
-      } catch(e) {
-        run.schedule('afterRender', () => { throw e; });
+      } catch (e) {
+        schedule('afterRender', () => {
+          throw e;
+        });
       }
       this._isRenderingEditor = false;
     }
@@ -329,12 +371,13 @@ export default Component.extend({
   },
 
   willDestroyElement() {
-    let editor = this.get('editor');
+    this._super(...arguments);
+    let editor = this.editor;
     editor.destroy();
   },
 
   postDidChange(editor) {
-    let serializeVersion = this.get('serializeVersion');
+    let serializeVersion = this.serializeVersion;
     let updatedMobileDoc = editor.serialize(serializeVersion);
     this._localMobiledoc = updatedMobileDoc;
 
@@ -352,9 +395,9 @@ export default Component.extend({
       this.setProperties({
         activeMarkupTagNames,
         activeSectionTagNames,
-        activeSectionAttributes
+        activeSectionAttributes,
       });
-    }
+    };
     // Avoid updating this component's properties synchronously while
     // rendering the editor (after rendering the component) because it
     // causes Ember to display deprecation warnings
@@ -366,14 +409,14 @@ export default Component.extend({
   },
 
   getActiveMarkupTagNames(editor) {
-    return arrayToMap(editor.activeMarkups.map(m => m.tagName));
+    return arrayToMap(editor.activeMarkups.map((m) => m.tagName));
   },
 
   getActiveSectionTagNames(editor) {
     // editor.activeSections are leaf sections.
     // Map parent section tag names (e.g. 'p', 'ul', 'ol') so that list buttons
     // can be bound.
-    let sectionParentTagNames = editor.activeSections.map(s => {
+    let sectionParentTagNames = editor.activeSections.map((s) => {
       return s.isNested ? s.parent.tagName : s.tagName;
     });
     return arrayToMap(sectionParentTagNames);
@@ -381,12 +424,13 @@ export default Component.extend({
 
   getActiveSectionAttributes(editor) {
     const sectionAttributes = {};
-    editor.activeSections.forEach(s => {
+    editor.activeSections.forEach((s) => {
       let attributes = s.isNested ? s.parent.attributes : s.attributes;
-      Object.keys(attributes || {}).forEach(attrName => {
+      Object.keys(attributes || {}).forEach((attrName) => {
         let camelizedAttrName = camelize(attrName.replace(/^data-md/, ''));
         let attrValue = attributes[attrName];
-        sectionAttributes[camelizedAttrName] = sectionAttributes[camelizedAttrName] || [];
+        sectionAttributes[camelizedAttrName] =
+          sectionAttributes[camelizedAttrName] || [];
         if (!sectionAttributes[camelizedAttrName].includes(attrValue)) {
           sectionAttributes[camelizedAttrName].push(attrValue);
         }
@@ -395,9 +439,7 @@ export default Component.extend({
     return sectionAttributes;
   },
 
-  cursorDidChange(/*editor*/) {
-
-  },
+  cursorDidChange(/*editor*/) {},
 
   willCreateEditor() {
     if (this[WILL_CREATE_EDITOR_ACTION]) {
@@ -412,12 +454,12 @@ export default Component.extend({
   },
 
   _addAtom(atomName, text, payload) {
-    let editor = this.get('editor');
+    let editor = this.editor;
     editor.insertAtom(atomName, text, payload);
   },
 
-  _addCard(cardName, payload, editMode=false) {
-    let editor = this.get('editor');
+  _addCard(cardName, payload, editMode = false) {
+    let editor = this.editor;
     editor.insertCard(cardName, payload, editMode);
   },
 
@@ -426,5 +468,5 @@ export default Component.extend({
     if (this.element && Ember.testing) {
       this.element[TESTING_EXPANDO_PROPERTY] = editor;
     }
-  }
+  },
 });
