@@ -1274,4 +1274,34 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     await settled();
     assert.equal(renderCount, 0, 'does not rerender atom when inserting text');
   });
+
+  test('can add text at the end of a document containing a single card', async function (assert) {
+    assert.expect(1);
+    this.registerCardComponent(
+      'demo-card',
+      hbs`
+      <div id="demo-card">demo-card</div>
+    `
+    );
+    this.set('cards', [createComponentCard('demo-card')]);
+    this.set(
+      'mobiledoc',
+      this.set('mobiledoc', mobiledocWithCard('demo-card'))
+    );
+    let editor;
+    this.actions.didCreateEditor = (_editor) => (editor = _editor);
+    await render(hbs`
+      <MobiledocEditor
+        @mobiledoc={{this.mobiledoc}}
+        @cards={{this.cards}}
+        @did-create-editor={{action 'didCreateEditor'}} as |editor|>
+      </MobiledocEditor>
+    `);
+    await selectRangeWithEditor(editor, editor.post.tailPosition());
+    run(() => editor.insertText('abc'));
+    await settled();
+    assert
+      .dom('.mobiledoc-editor__editor')
+      .containsText('abc', 'Mobiledoc editor is updated');
+  });
 });

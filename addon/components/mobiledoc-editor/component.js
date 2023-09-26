@@ -339,6 +339,8 @@ export default Component.extend({
       if (this.isDestroyed) {
         return;
       }
+      this.ensureMarkerableSection();
+
       join(() => {
         this.cursorDidChange(editor);
       });
@@ -350,6 +352,36 @@ export default Component.extend({
     this.didCreateEditor(editor);
   },
 
+  ensureMarkerableSection() {
+    let { editor } = this;
+    let { offsets } = editor.cursor;
+    if (
+      !offsets.isCollapsed ||
+      !offsets.head.section ||
+      offsets.head.section.isMarkerable
+    ) {
+      return;
+    }
+    if (offsets.head.isHeadOfPost()) {
+      editor.run((postEditor) => {
+        const section = postEditor.builder.createMarkupSection('p');
+        postEditor.insertSectionBefore(
+          editor.post.sections,
+          section,
+          offsets.head.section
+        );
+        postEditor.setRange(section.toRange());
+      });
+    }
+
+    if (offsets.head.isTailOfPost()) {
+      editor.run((postEditor) => {
+        const section = postEditor.builder.createMarkupSection('p');
+        postEditor.insertSectionBefore(editor.post.sections, section, false);
+        postEditor.setRange(section.toRange());
+      });
+    }
+  },
   didRender() {
     this._super(...arguments);
     let editor = this.editor;
