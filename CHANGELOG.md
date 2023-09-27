@@ -1,13 +1,17 @@
-## v0.8.0 (2023-09-19)
+## v0.8.1 (2023-09-27)
 
-#### :boom: Breaking Change
-* [#208](https://github.com/bustle/ember-mobiledoc-editor/pull/208) Update ember to 3.28 ([@lukemelia](https://github.com/lukemelia))
-
-#### :rocket: Enhancement
-* [#208](https://github.com/bustle/ember-mobiledoc-editor/pull/208) Update ember to 3.28 ([@lukemelia](https://github.com/lukemelia))
+#### :bug: Bug Fix
+* [#216](https://github.com/bustle/ember-mobiledoc-editor/pull/216) [BUG] Import mobiledoc-kit css ([@cyril-sf](https://github.com/cyril-sf))
 
 #### Committers: 1
-- Luke Melia ([@lukemelia](https://github.com/lukemelia))
+- Cyril Fluck ([@cyril-sf](https://github.com/cyril-sf))
+
+<a name="0.8.1"></a>
+## 0.8.1 (2023-09-27)
+
+* [BUG] Import mobiledoc-kit css ([c76031c](https://github.com/bustle/ember-mobiledoc-editor/commit/c76031c))
+
+
 
 <a name="0.8.0"></a>
 # 0.8.0 (2023-09-19)
@@ -19,6 +23,7 @@
 * Eliminate remaining deprecations ([6caef24](https://github.com/bustle/ember-mobiledoc-editor/commit/6caef24))
 * Eliminate this-property-fallback deprecations ([bf8a22c](https://github.com/bustle/ember-mobiledoc-editor/commit/bf8a22c))
 * Refactor away from reliance on getting the current Ember run loop ([ffefeb7](https://github.com/bustle/ember-mobiledoc-editor/commit/ffefeb7))
+* Release 0.8.0 ([1dd5f35](https://github.com/bustle/ember-mobiledoc-editor/commit/1dd5f35))
 * Remove jquery dependency ([eee830d](https://github.com/bustle/ember-mobiledoc-editor/commit/eee830d))
 * Remove unused file ([585b43e](https://github.com/bustle/ember-mobiledoc-editor/commit/585b43e))
 * Replace usages of action helper ([7027350](https://github.com/bustle/ember-mobiledoc-editor/commit/7027350))
