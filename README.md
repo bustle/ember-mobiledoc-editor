@@ -417,7 +417,7 @@ This README outlines the details of collaborating on this Ember addon.
 
 * `git clone <repository-url>` this repository
 * `cd ember-mobiledoc-editor`
-* `yarn install`
+* `pnpm install`
 
 Run the development server:
 
@@ -426,7 +426,7 @@ Run the development server:
 
 ## Running Tests
 
-* `yarn test` (Runs `ember try:each` to test your addon against multiple Ember versions)
+* `pnpm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
 * `ember test`
 * `ember test --server`
 
