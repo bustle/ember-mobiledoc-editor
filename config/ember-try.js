@@ -49,7 +49,7 @@ module.exports = async function () {
         // Needs a build-infrastructure refresh (dummy app initializer wiring
         // + webpack config) before it can pass. Surfacing regressions here
         // is still useful — allowedToFail so CI doesn't block on it.
-        name: 'ember-lts-5.12',
+        name: 'ember-lts-5.12-failing',
         npm: {
           devDependencies: {
             '@ember/string': '^4.0.0',
@@ -62,7 +62,7 @@ module.exports = async function () {
       {
         // Same story as ember-lts-5.12 — build infrastructure needs a
         // refresh before this can pass cleanly.
-        name: 'ember-6.12',
+        name: 'ember-6.12-failing',
         npm: {
           devDependencies: {
             '@ember/string': '^4.0.0',
