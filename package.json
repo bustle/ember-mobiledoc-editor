@@ -66,7 +66,7 @@
     "ember-source": "~3.28.8",
     "ember-source-channel-url": "^3.0.0",
     "ember-template-lint": "^3.15.0",
-    "ember-try": "^1.4.0",
+    "ember-try": "^3.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-ember": "^10.5.8",
@@ -111,6 +111,7 @@
   },
   "volta": {
     "node": "20.19.1",
-    "yarn": "1.22.19"
-  }
+    "pnpm": "10.12.1"
+  },
+  "packageManager": "pnpm@10.12.1"
 }
