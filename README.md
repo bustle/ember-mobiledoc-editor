@@ -1,7 +1,7 @@
 ## ember-mobiledoc-editor
 
 [![npm version](https://badge.fury.io/js/ember-mobiledoc-editor.svg)](https://badge.fury.io/js/ember-mobiledoc-editor)
-[![Build Status](https://travis-ci.org/bustle/ember-mobiledoc-editor.svg)](https://travis-ci.org/bustle/ember-mobiledoc-editor)
+[![CI](https://github.com/bustle/ember-mobiledoc-editor/actions/workflows/ci.yml/badge.svg)](https://github.com/bustle/ember-mobiledoc-editor/actions/workflows/ci.yml)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-mobiledoc-editor.svg)](https://emberobserver.com/addons/ember-mobiledoc-editor)
 
 A Mobiledoc editor written using Ember.js UI components and
@@ -75,40 +75,44 @@ The component accepts these arguments:
   The action is passed the created editor instance.
   This action may be fired more than once if the component's `mobiledoc` property is set to a new value.
 
-For example, the following index route and template would log before and
+For example, the following component and template would log before and
 after creating the MobiledocKitEditor, and every time the user modified the
 mobiledoc (by typing some text, e.g.).
 
 ```javascript
-// routes/index.js
+// components/my-editor.js
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
 
-export default Ember.Route.extend({
- ...,
- actions: {
-   mobiledocWasUpdated(updatedMobiledoc) {
-     console.log('New mobiledoc:',updatedMobiledoc);
-     // note that this action will be fired for every changed character,
-     // so you may want to debounce API calls if you are using it for
-     // an "autosave" feature.
-   },
-   willCreateEditor() {
-     console.log('about to create the editor');
-   },
-   didCreateEditor(editor) {
-     console.log('created the editor:', editor);
-   }
- }
-});
+export default class MyEditor extends Component {
+  @action
+  mobiledocWasUpdated(updatedMobiledoc) {
+    console.log('New mobiledoc:', updatedMobiledoc);
+    // note that this handler will be fired for every changed character,
+    // so you may want to debounce API calls if you are using it for
+    // an "autosave" feature.
+  }
+
+  @action
+  willCreateEditor() {
+    console.log('about to create the editor');
+  }
+
+  @action
+  didCreateEditor(editor) {
+    console.log('created the editor:', editor);
+  }
+}
 ```
 
 ```hbs
-{{! index.hbs }}
+{{! components/my-editor.hbs }}
 
-{{mobiledoc-editor
-    on-change=(action 'mobiledocWasUpdated')
-    will-create-editor=(action 'willCreateEditor')
-    did-create-editor=(action 'didCreateEditor')
-}}
+<MobiledocEditor
+  @on-change={{this.mobiledocWasUpdated}}
+  @will-create-editor={{this.willCreateEditor}}
+  @did-create-editor={{this.didCreateEditor}}
+/>
 ```
 
 Of course often you want to provide a user interface to bold text, create
@@ -294,22 +298,18 @@ components as the display and edit modes of a card. Create a list of cards
 using the `createComponentCard` helper:
 
 ```js
-import Ember from 'ember';
+import Component from '@glimmer/component';
 import createComponentCard from 'ember-mobiledoc-editor/utils/create-component-card';
 
-export default Ember.Component.extend({
-  cards: Ember.computed(function() {
-    return [
-      createComponentCard('demo-card')
-    ];
-  })
-});
+export default class MyEditor extends Component {
+  cards = [createComponentCard('demo-card')];
+}
 ```
 
 And pass that list into the `{{mobiledoc-editor}}` component:
 
 ```hbs
-{{mobiledoc-editor cards=cards}}
+<MobiledocEditor @cards={{this.cards}} />
 ```
 
 When added to the post (or loaded from a passed-in Mobiledoc), these components
@@ -341,27 +341,23 @@ ember-mobiledoc-editor comes with a handle helper for using Ember
 components as an atom. Create a list of atoms using the `createComponentAtom` helper:
 
 ```js
-import Ember from 'ember';
+import Component from '@glimmer/component';
 import createComponentAtom from 'ember-mobiledoc-editor/utils/create-component-atom';
 
-export default Ember.Component.extend({
-  atoms: Ember.computed(function() {
-    return [
-      createComponentAtom('demo-atom')
-    ];
-  })
-});
+export default class MyEditor extends Component {
+  atoms = [createComponentAtom('demo-atom')];
+}
 ```
 
 And pass that list into the `{{mobiledoc-editor}}` component:
 
 ```hbs
-{{mobiledoc-editor atoms=atoms}}
+<MobiledocEditor @atoms={{this.atoms}} />
 ```
 
 ### Editor Lifecycle Hooks
 
-Currently editor lifecycle hooks are available by available by extending the mobiledoc-editor component.
+Currently editor lifecycle hooks are available by extending the mobiledoc-editor component.
 
 ```js
 import Component from 'ember-mobiledoc-editor/components/mobiledoc-editor/component';
@@ -390,18 +386,21 @@ ember-mobiledoc-editor exposes two test helpers for use in your acceptance tests
 Example usage:
 ```javascript
 // acceptance test
-import { insertText, run } from '../../helpers/ember-mobiledoc-editor';
-import { find } from '@enber/test-helpers';
-test('visit /', function(assert) {
-  visit('/');
-  andThen(() => {
-    let editorEl = find('.mobiledoc-editor__editor');
-    return insertText(editorEl, 'here is some text');
-    /* Or:
-      return run(editorEl, (postEditor) => ...);
-    */
-  });
-  andThen(() => {
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
+import { visit, find } from '@ember/test-helpers';
+import { insertText, run } from '../helpers/ember-mobiledoc-editor';
+
+module('Acceptance | editor', function (hooks) {
+  setupApplicationTest(hooks);
+
+  test('visiting /', async function (assert) {
+    await visit('/');
+
+    const editorEl = find('.mobiledoc-editor__editor');
+    await insertText(editorEl, 'here is some text');
+    // Or: await run(editorEl, (postEditor) => ...);
+
     // assert text inserted, etc.
   });
 });
@@ -409,29 +408,25 @@ test('visit /', function(assert) {
 
 ### Developing ember-mobiledoc-editor
 
-Releasing a new version:
+#### Setup
 
-This README outlines the details of collaborating on this Ember addon.
-
-## Installation
-
-* `git clone <repository-url>` this repository
+* `git clone git@github.com:bustle/ember-mobiledoc-editor.git`
 * `cd ember-mobiledoc-editor`
 * `pnpm install`
 
 Run the development server:
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+* `pnpm start`
+* Visit the dummy app at [http://localhost:4200](http://localhost:4200).
 
-## Running Tests
+#### Running Tests
 
-* `pnpm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+* `pnpm test` — runs lint, the current-Ember test suite, and `ember try:each` against every supported Ember version.
+* `pnpm test:ember` — runs the dummy-app test suite once.
+* `ember test --server` — dev-friendly watcher.
 
-## Building
+#### Building
 
-* `ember build`
+* `pnpm build`
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
