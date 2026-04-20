@@ -12,12 +12,6 @@ import { Range } from 'mobiledoc-kit';
 module('Integration | Component | mobiledoc toolbar', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function () {
-    this.actions = {};
-    this.send = (actionName, ...args) =>
-      this.actions[actionName].apply(this, args);
-  });
-
   const buttonTitles = [
     'Bold',
     'Italic',
@@ -54,9 +48,9 @@ module('Integration | Component | mobiledoc toolbar', function (hooks) {
     let text = 'Hello';
     this.set('mobiledoc', linkMobileDoc(text));
     let editor;
-    this.actions['did-create-editor'] = (_editor) => (editor = _editor);
+    this.didCreateEditor = (_editor) => (editor = _editor);
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{this.didCreateEditor}} as |editor|>
         <MobiledocToolbar @editor={{editor}} />
       </MobiledocEditor>
     `);
@@ -78,9 +72,9 @@ module('Integration | Component | mobiledoc toolbar', function (hooks) {
   test('List button is action when text is in list', async function (assert) {
     let text = 'Hello';
     this.set('mobiledoc', mobiledocWithList(text, 'ul'));
-    this.actions['did-create-editor'] = (editor) => (this._editor = editor);
+    this.didCreateEditor = (editor) => (this._editor = editor);
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{this.didCreateEditor}} as |editor|>
         <MobiledocToolbar @editor={{editor}} />
       </MobiledocEditor>
     `);
@@ -138,9 +132,9 @@ module('Integration | Component | mobiledoc toolbar', function (hooks) {
     let text = 'Hello';
     this.set('mobiledoc', alignCenterMobileDoc(text));
     let editor;
-    this.actions['did-create-editor'] = (_editor) => (editor = _editor);
+    this.didCreateEditor = (_editor) => (editor = _editor);
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @autofocus={{false}} @did-create-editor={{this.didCreateEditor}} as |editor|>
         <MobiledocToolbar @editor={{editor}} />
       </MobiledocEditor>
     `);

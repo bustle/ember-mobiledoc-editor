@@ -3,7 +3,8 @@
 /* eslint-disable ember/no-classic-components */
 import { Promise as EmberPromise } from 'rsvp';
 import { run, _getCurrentRunLoop } from '@ember/runloop';
-import Component from '@ember/component';
+import Component, { setComponentTemplate } from '@ember/component';
+import templateOnly from '@ember/component/template-only';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import {
@@ -59,19 +60,13 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function () {
-    this.actions = {};
-    this.send = (actionName, ...args) =>
-      this.actions[actionName].apply(this, args);
-  });
-
-  hooks.beforeEach(function () {
     this.registerAtomComponent = (
       atomName,
       template,
       componentClass = Component.extend({ tagName: 'span' })
     ) => {
+      setComponentTemplate(template, componentClass);
       this.owner.register(`component:${atomName}`, componentClass);
-      this.owner.register(`template:components/${atomName}`, template);
       return createComponentAtom(atomName);
     };
     this.registerCardComponent = (
@@ -79,8 +74,8 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       template,
       componentClass = Component.extend()
     ) => {
+      setComponentTemplate(template, componentClass);
       this.owner.register(`component:${cardName}`, componentClass);
-      this.owner.register(`template:components/${cardName}`, template);
       return createComponentCard(cardName);
     };
     this.registerCardComponentWithEditor = (
@@ -91,11 +86,8 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       editorClass = Component.extend()
     ) => {
       let card = this.registerCardComponent(cardName, template, componentClass);
+      setComponentTemplate(editorTemplate, editorClass);
       this.owner.register(`component:${cardName}-editor`, editorClass);
-      this.owner.register(
-        `template:components/${cardName}-editor`,
-        editorTemplate
-      );
       return card;
     };
   });
@@ -143,12 +135,12 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
 
     this.set('mobiledoc', simpleMobileDoc('hello'));
 
-    this.actions.willCreateEditor = () => {
+    this.willCreateEditor = () => {
       willCreateCalls++;
       assert.notOk(editor, 'calls willCreateEditor before didCreateEditor');
     };
 
-    this.actions.didCreateEditor = (editor) => {
+    this.didCreateEditor = (editor) => {
       assert.equal(
         willCreateCalls,
         1,
@@ -163,8 +155,8 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
 
     await render(hbs`
       <MobiledocEditor @mobiledoc={{this.mobiledoc}}
-          @will-create-editor={{action "willCreateEditor"}}
-          @did-create-editor={{action "didCreateEditor"}} as |editor|>
+          @will-create-editor={{this.willCreateEditor}}
+          @did-create-editor={{this.didCreateEditor}} as |editor|>
       </MobiledocEditor>
     `);
   });
@@ -177,16 +169,17 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     let didCreateCalls = 0;
 
     this.set('mobiledoc', mobiledoc);
-    this.actions.willCreateEditor = () => willCreateCalls++;
-    this.actions.didCreateEditor = (_editor) => {
+    this.willCreateEditor = () => willCreateCalls++;
+    this.didCreateEditor = (_editor) => {
       editor = _editor;
       didCreateCalls++;
     };
+    this.updateMobiledoc = (value) => this.set('mobiledoc', value);
     await render(hbs`
       <MobiledocEditor @mobiledoc={{readonly this.mobiledoc}}
-                          @will-create-editor={{action "willCreateEditor"}}
-                          @did-create-editor={{action "didCreateEditor"}}
-                          @on-change={{action (mut this.mobiledoc)}} as |editor|>
+                          @will-create-editor={{this.willCreateEditor}}
+                          @did-create-editor={{this.didCreateEditor}}
+                          @on-change={{this.updateMobiledoc}} as |editor|>
       </MobiledocEditor>
     `);
 
@@ -207,7 +200,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     let editor;
 
     this.set('mobiledoc', mobiledoc);
-    this.actions.didCreateEditor = (_editor) => (editor = _editor);
+    this.didCreateEditor = (_editor) => (editor = _editor);
     let card = this.registerCardComponent(
       'demo-card',
       hbs`
@@ -217,7 +210,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     this.set('cards', [card]);
     this.set('mobiledoc', simpleMobileDoc());
     await render(hbs`
-      <MobiledocEditor @did-create-editor={{action 'didCreateEditor'}} @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
+      <MobiledocEditor @did-create-editor={{this.didCreateEditor}} @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
       </MobiledocEditor>
     `);
 
@@ -291,13 +284,13 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     this.set('mobiledoc', simpleMobileDoc(text));
 
     let changeEvents = [];
-    this.actions['on-change'] = (mobiledoc) => {
+    this.onChange = (mobiledoc) => {
       changeEvents.push(mobiledoc);
     };
 
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @on-change={{action 'on-change'}} as |editor|>
-        <button {{action editor.toggleMarkup 'strong'}}>Bold</button>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @on-change={{this.onChange}} as |editor|>
+        <button {{on 'click' (fn editor.toggleMarkup 'strong')}}>Bold</button>
       </MobiledocEditor>
     `);
     let textNode = findAll('p').find((el) =>
@@ -322,12 +315,12 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
 
     let version;
 
-    this.actions['on-change'] = (mobiledoc) => {
+    this.onChange = (mobiledoc) => {
       version = mobiledoc.version;
     };
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @serializeVersion={{this.serializeVersion}} @on-change={{action 'on-change'}} as |editor|>
-        <button {{action editor.toggleMarkup 'strong'}}>Bold</button>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @serializeVersion={{this.serializeVersion}} @on-change={{this.onChange}} as |editor|>
+        <button {{on 'click' (fn editor.toggleMarkup 'strong')}}>Bold</button>
       </MobiledocEditor>
     `);
     let textNode = findAll('p').find((el) =>
@@ -363,10 +356,10 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
 
     let text = 'Howdy';
     this.set('mobiledoc', simpleMobileDoc(text));
-    this.actions['on-change'] = () => onChangeCount++;
+    this.onChange = () => onChangeCount++;
     await render(hbs`
-      {{#mobiledoc-editor mobiledoc=this.mobiledoc on-change=(action 'on-change') as |editor|}}
-        <button {{action editor.toggleSection 'h2'}}>H2</button>
+      {{#mobiledoc-editor mobiledoc=this.mobiledoc on-change=this.onChange as |editor|}}
+        <button {{on 'click' (fn editor.toggleSection 'h2')}}>H2</button>
       {{/mobiledoc-editor}}
     `);
     let textNode = findAll('p').find((el) =>
@@ -396,9 +389,9 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
 
     let text = 'Howdy';
     this.set('mobiledoc', simpleMobileDoc(text));
-    this.actions['on-change'] = () => onChangeCount++;
+    this.onChange = () => onChangeCount++;
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @on-change={{action 'on-change'}} as |editor|>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @on-change={{this.onChange}} as |editor|>
         <MobiledocSectionAttributeButton @editor={{editor}} @attributeName="text-align" @attributeValue="left" />
         <MobiledocSectionAttributeButton @editor={{editor}} @attributeName="text-align" @attributeValue="center" />
       </MobiledocEditor>
@@ -486,10 +479,10 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
   test('toggleLink action is no-op when nothing is selected', async function (assert) {
     assert.expect(2);
     this.set('mobiledoc', simpleMobileDoc(''));
-    this.actions.didCreateEditor = (editor) => (this._editor = editor);
+    this.didCreateEditor = (editor) => (this._editor = editor);
     await render(hbs`
-      {{#mobiledoc-editor autofocus=false mobiledoc=this.mobiledoc did-create-editor=(action 'didCreateEditor') as |editor|}}
-        <button {{action editor.toggleLink}}>Link</button>
+      {{#mobiledoc-editor autofocus=false mobiledoc=this.mobiledoc did-create-editor=this.didCreateEditor as |editor|}}
+        <button {{on 'click' editor.toggleLink}}>Link</button>
       {{/mobiledoc-editor}}
     `);
 
@@ -502,11 +495,11 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     assert.expect(2);
     let text = 'Howdy';
     this.set('mobiledoc', simpleMobileDoc(text));
-    this.actions['on-change'] = (mobiledoc) => (this._mobiledoc = mobiledoc);
-    this.actions.didCreateEditor = (editor) => (this._editor = editor);
+    this.onChange = (mobiledoc) => (this._mobiledoc = mobiledoc);
+    this.didCreateEditor = (editor) => (this._editor = editor);
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @on-change={{action 'on-change'}} @did-create-editor={{action 'didCreateEditor'}} as |editor|>
-        <button {{action editor.toggleLink}} data-test-link-button>Link</button>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @on-change={{this.onChange}} @did-create-editor={{this.didCreateEditor}} as |editor|>
+        <button {{on 'click' editor.toggleLink}} data-test-link-button>Link</button>
       </MobiledocEditor>
     `);
     let { _editor: editor } = this;
@@ -539,11 +532,11 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     assert.expect(2);
     let text = 'Howdy';
     this.set('mobiledoc', linkMobileDoc(text));
-    this.actions['on-change'] = (mobiledoc) => (this._mobiledoc = mobiledoc);
-    this.actions['did-create-editor'] = (editor) => (this._editor = editor);
+    this.onChange = (mobiledoc) => (this._mobiledoc = mobiledoc);
+    this.didCreateEditor = (editor) => (this._editor = editor);
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @on-change={{action 'on-change'}} @did-create-editor={{action 'did-create-editor'}} as |editor|>
-        <button {{action editor.toggleLink}} data-test-link-button>Link</button>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @on-change={{this.onChange}} @did-create-editor={{this.didCreateEditor}} as |editor|>
+        <button {{on 'click' editor.toggleLink}} data-test-link-button>Link</button>
       </MobiledocEditor>
     `);
 
@@ -561,20 +554,26 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
   test('it adds a component in display mode to the mobiledoc editor', async function (assert) {
     assert.expect(5);
     this.owner.register(
-      'template:components/demo-card',
-      hbs`
-      <div id="demo-card"><button id='edit-card' {{action @editCard}}>CLICK ME</button></div>
-     `
+      'component:demo-card',
+      setComponentTemplate(
+        hbs`
+      <div id="demo-card"><button id='edit-card' {{on 'click' @editCard}}>CLICK ME</button></div>
+     `,
+        templateOnly()
+      )
     );
     this.owner.register(
-      'template:components/demo-card-editor',
-      hbs`<div id="demo-card-editor"></div>`
+      'component:demo-card-editor',
+      setComponentTemplate(
+        hbs`<div id="demo-card-editor"></div>`,
+        templateOnly()
+      )
     );
     this.set('cards', [createComponentCard('demo-card')]);
     this.set('mobiledoc', simpleMobileDoc());
     await render(hbs`
       <MobiledocEditor @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
-        <button id='add-card' {{action editor.addCard 'demo-card'}}>Add card</button>
+        <button id='add-card' {{on 'click' (fn editor.addCard 'demo-card')}}>Add card</button>
       </MobiledocEditor>
     `);
 
@@ -596,15 +595,15 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     let card = this.registerCardComponent(
       'demo-card',
       hbs`
-      <div id="demo-card"><button id='edit-card' {{action this.editCard}}></button></div>
+      <div id="demo-card"><button id='edit-card' {{on 'click' this.editCard}}></button></div>
      `
     );
     this.set('cards', [card]);
     this.set('mobiledoc', simpleMobileDoc());
-    this.actions.didCreateEditor = (_editor) => (editor = _editor);
+    this.didCreateEditor = (_editor) => (editor = _editor);
     await render(hbs`
-      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} @did-create-editor={{action "didCreateEditor"}} as |editor|>
-        <button id='add-card' {{action editor.addCard 'demo-card'}}></button>
+      <MobiledocEditor @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} @did-create-editor={{this.didCreateEditor}} as |editor|>
+        <button id='add-card' {{on 'click' (fn editor.addCard 'demo-card')}}></button>
       </MobiledocEditor>
     `);
 
@@ -625,16 +624,16 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     let card = this.registerCardComponent(
       'demo-card',
       hbs`
-      <div id="demo-card"><button id='edit-card' {{action @editCard}}>DEMO CARD</button></div>
+      <div id="demo-card"><button id='edit-card' {{on 'click' @editCard}}>DEMO CARD</button></div>
      `
     );
     this.set('cards', [card]);
     let editor;
-    this.actions.didCreateEditor = (_editor) => (editor = _editor);
+    this.didCreateEditor = (_editor) => (editor = _editor);
     this.set('mobiledoc', simpleMobileDoc());
     await render(hbs`
-      <MobiledocEditor @autofocus={{false}} @did-create-editor={{action 'didCreateEditor'}} @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
-        <button id='add-card' {{action editor.addCard 'demo-card'}}>ADD CARD</button>
+      <MobiledocEditor @autofocus={{false}} @did-create-editor={{this.didCreateEditor}} @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
+        <button id='add-card' {{on 'click' (fn editor.addCard 'demo-card')}}>ADD CARD</button>
       </MobiledocEditor>
     `);
 
@@ -676,10 +675,10 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     );
     this.set('cards', [card]);
     let editor;
-    this.actions.didCreateEditor = (_editor) => (editor = _editor);
+    this.didCreateEditor = (_editor) => (editor = _editor);
     this.set('mobiledoc', blankMobiledoc());
     await render(hbs`
-      <MobiledocEditor @did-create-editor={{action 'didCreateEditor'}} @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
+      <MobiledocEditor @did-create-editor={{this.didCreateEditor}} @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
       </MobiledocEditor>
     `);
 
@@ -695,19 +694,22 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
   test('it has `addCardInEditMode` action to add card in edit mode', async function (assert) {
     assert.expect(2);
     this.owner.register(
-      'template:components/demo-card',
-      hbs`<div id="demo-card"></div>`
+      'component:demo-card',
+      setComponentTemplate(hbs`<div id="demo-card"></div>`, templateOnly())
     );
     this.owner.register(
-      'template:components/demo-card-editor',
-      hbs`<div id="demo-card-editor"></div>`
+      'component:demo-card-editor',
+      setComponentTemplate(
+        hbs`<div id="demo-card-editor"></div>`,
+        templateOnly()
+      )
     );
     this.set('cards', [createComponentCard('demo-card')]);
     this.set('mobiledoc', simpleMobileDoc());
 
     await render(hbs`
       <MobiledocEditor @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
-        <button id='add-card' {{action editor.addCardInEditMode 'demo-card'}}>Add Card</button>
+        <button id='add-card' {{on 'click' (fn editor.addCardInEditMode 'demo-card')}}>Add Card</button>
       </MobiledocEditor>
     `);
 
@@ -851,7 +853,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       hbs`
       <div id="demo-card">
         {{this.data.foo}}
-        <button id='mutate-payload' {{action this.mutatePayload}}></button>
+        <button id='mutate-payload' {{on 'click' this.mutatePayload}}></button>
       </div>
     `,
       DemoCardComponent
@@ -864,7 +866,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
 
     await render(hbs`
       <MobiledocEditor @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
-        <button id='add-card' {{action editor.addCard 'demo-card' this.payload}}>
+        <button id='add-card' {{on 'click' (fn editor.addCard 'demo-card' this.payload)}}>
         </button>
       </MobiledocEditor>
     `);
@@ -909,7 +911,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
       hbs`
       <div id="demo-card">
         {{this.payload.foo}}
-        <button id='mutate-payload' {{action this.mutatePayload}}></button>
+        <button id='mutate-payload' {{on 'click' this.mutatePayload}}></button>
       </div>
     `,
       DemoCardComponent
@@ -922,7 +924,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
 
     await render(hbs`
       <MobiledocEditor @mobiledoc={{this.mobiledoc}} @cards={{this.cards}} as |editor|>
-        <button id='add-card' {{action editor.addCard 'demo-card' this.payload}}>
+        <button id='add-card' {{on 'click' (fn editor.addCard 'demo-card' this.payload)}}>
         </button>
       </MobiledocEditor>
     `);
@@ -1087,16 +1089,16 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     this.set('atoms', [createComponentAtom('ember-atom')]);
     this.set('atomText', 'atom text');
     this.set('atomPayload', { foo: 'bar' });
-    this.actions.onChange = (_mobiledoc) => (mobiledoc = _mobiledoc);
-    this.actions.didCreateEditor = (_editor) => (editor = _editor);
+    this.onChange = (_mobiledoc) => (mobiledoc = _mobiledoc);
+    this.didCreateEditor = (_editor) => (editor = _editor);
     await render(hbs`
       <MobiledocEditor
-        @on-change={{action 'onChange'}}
-        @did-create-editor={{action 'didCreateEditor'}}
+        @on-change={{this.onChange}}
+        @did-create-editor={{this.didCreateEditor}}
         @mobiledoc={{this.mobiledoc}}
         @atoms={{this.atoms}}
       as |editor|>
-        <button id='add-atom' {{action editor.addAtom 'ember-atom' this.atomText this.atomPayload}}>Add Ember Atom</button>
+        <button id='add-atom' {{on 'click' (fn editor.addAtom 'ember-atom' this.atomText this.atomPayload)}}>Add Ember Atom</button>
       </MobiledocEditor>
     `);
 
@@ -1125,7 +1127,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     assert.expect(3);
     let editor;
 
-    this.actions.didCreateEditor = (_editor) => (editor = _editor);
+    this.didCreateEditor = (_editor) => (editor = _editor);
     let atom = this.registerAtomComponent(
       'demo-atom',
       hbs`<span id='demo-atom'>demo-atom</span>`
@@ -1133,7 +1135,7 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     this.set('atoms', [atom]);
     this.set('mobiledoc', simpleMobileDoc());
     await render(hbs`
-      <MobiledocEditor @did-create-editor={{action 'didCreateEditor'}} @mobiledoc={{this.mobiledoc}} @atoms={{this.atoms}} as |editor|>
+      <MobiledocEditor @did-create-editor={{this.didCreateEditor}} @mobiledoc={{this.mobiledoc}} @atoms={{this.atoms}} as |editor|>
       </MobiledocEditor>
     `);
 
@@ -1258,13 +1260,13 @@ module('Integration | Component | mobiledoc editor', function (hooks) {
     });
 
     let editor;
-    this.actions.didCreateEditor = (_editor) => (editor = _editor);
+    this.didCreateEditor = (_editor) => (editor = _editor);
 
     await render(hbs`
       <MobiledocEditor
         @mobiledoc={{this.mobiledoc}}
         @atoms={{this.atoms}}
-        @did-create-editor={{action 'didCreateEditor'}} as |editor|>
+        @did-create-editor={{this.didCreateEditor}} as |editor|>
       </MobiledocEditor>
     `);
 
