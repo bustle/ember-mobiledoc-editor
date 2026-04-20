@@ -1,10 +1,19 @@
-## v0.9.0 (2026-04-19)
+## v0.10.0 (2026-04-20)
 
-#### :boom: Breaking Change
-* [#224](https://github.com/bustle/ember-mobiledoc-editor/pull/224) Bump engines.node and volta.node to Node 20 ([@lukemelia](https://github.com/lukemelia))
+#### :rocket: Enhancement
+* [#227](https://github.com/bustle/ember-mobiledoc-editor/pull/227) Make ember-lts-5.12 and ember-6.12 scenarios pass ([@lukemelia](https://github.com/lukemelia))
 
 #### Committers: 1
 - Luke Melia ([@lukemelia](https://github.com/lukemelia))
+
+<a name="0.10.0"></a>
+## 0.10.0 (2026-04-20)
+
+* Make ember-lts-5.12 and ember-6.12 scenarios pass ([cf75212](https://github.com/bustle/ember-mobiledoc-editor/commit/cf75212)), closes [#226](https://github.com/bustle/ember-mobiledoc-editor/issues/226)
+* Modernize README examples ([5bc73b2](https://github.com/bustle/ember-mobiledoc-editor/commit/5bc73b2))
+* Update CI matrix to match renamed ember-try scenarios ([4430fab](https://github.com/bustle/ember-mobiledoc-editor/commit/4430fab))
+
+
 
 <a name="0.9.0"></a>
 ## 0.9.0 (2026-04-19)
@@ -14,6 +23,7 @@
 * Drop @ember/polyfills assign in favor of Object.assign ([3864e38](https://github.com/bustle/ember-mobiledoc-editor/commit/3864e38))
 * Import htmlSafe from @ember/template (not @ember/string) ([983388f](https://github.com/bustle/ember-mobiledoc-editor/commit/983388f))
 * Migrate from yarn to pnpm ([026307f](https://github.com/bustle/ember-mobiledoc-editor/commit/026307f))
+* Release 0.9.0 ([701501d](https://github.com/bustle/ember-mobiledoc-editor/commit/701501d))
 * Rename the not-yet-passing scenarios with -failing suffix ([6d0e7e3](https://github.com/bustle/ember-mobiledoc-editor/commit/6d0e7e3))
 * ci: bump Node to 20.x and actions/checkout+setup-node to v4 ([0dc7136](https://github.com/bustle/ember-mobiledoc-editor/commit/0dc7136))
 
